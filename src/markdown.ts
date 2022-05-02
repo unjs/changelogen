@@ -1,4 +1,4 @@
-import { upperFirst } from 'scule'
+import { splitByCase, upperFirst } from 'scule'
 import type { ChangelogConfig } from './config'
 import type { GitCommit } from './git'
 
@@ -28,7 +28,7 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
     }
   }
 
-  let authors = commits.flatMap(commit => commit.authors.map(author => upperFirst(author.name)))
+  let authors = commits.flatMap(commit => commit.authors.map(author => formatName(author.name)))
   authors = uniq(authors).sort()
 
   if (authors.length) {
@@ -47,6 +47,10 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
 
 function formatTitle (title: string = '') {
   return title.length <= 3 ? title.toUpperCase() : upperFirst(title)
+}
+
+function formatName (name: string = '') {
+  return name.split(' ').map(p => upperFirst(p.trim())).join(' ')
 }
 
 function groupBy (items: any[], key: string) {
