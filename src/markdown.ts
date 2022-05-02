@@ -1,4 +1,4 @@
-import { splitByCase, upperFirst } from 'scule'
+import { upperFirst } from 'scule'
 import type { ChangelogConfig } from './config'
 import type { GitCommit } from './git'
 
@@ -6,6 +6,7 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
   const typeGroups = groupBy(commits, 'type')
 
   let markdown = ''
+  const breakingChanges = []
 
   for (const type in config.types) {
     const group = typeGroups[type]
@@ -14,18 +15,25 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
     }
 
     markdown += '\n\n' + '### ' + config.types[type].title + '\n\n'
-
     const scopeGroups = groupBy(group, 'scope')
     for (const scopeName in scopeGroups) {
       markdown += '\n#### ' + formatTitle(scopeName) + '\n\n'
       for (const commit of scopeGroups[scopeName].reverse()) {
-        markdown += '  - ' +
+        const line = '  - ' +
         (commit.isBreaking ? '⚠️  ' : '') +
          (commit.references.join(', ') + ' ') +
-         upperFirst(commit.description) +
-          '\n'
+         upperFirst(commit.description)
+        markdown += line + '\n'
+        if (commit.isBreaking) {
+          breakingChanges.push(line)
+        }
       }
     }
+  }
+
+  if (breakingChanges.length) {
+    markdown += '\n#### ⚠️  Breaking Changes \n\n'
+    markdown += breakingChanges.join('\n')
   }
 
   let authors = commits.flatMap(commit => commit.authors.map(author => formatName(author.name)))
