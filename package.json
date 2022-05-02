@@ -1,0 +1,52 @@
+{
+  "name": "changelogen",
+  "version": "0.0.1",
+  "description": "Generate Beautiful Changelogs using Conventional Commits",
+  "repository": "unjs/changelogen",
+  "license": "MIT",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "bin": {
+    "changelogen": "./dist/cli.mjs"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "changelogen": "jiti ./src/cli.ts",
+    "dev": "vitest dev",
+    "lint": "eslint --ext .ts,.js,.mjs,.cjs .",
+    "prepack": "unbuild",
+    "release": "pnpm test && standard-version && git push --follow-tags && pnpm publish",
+    "test": "pnpm lint && vitest run"
+  },
+  "dependencies": {
+    "c12": "^0.2.7",
+    "consola": "^2.15.3",
+    "execa": "^6.1.0",
+    "mri": "^1.2.0",
+    "scule": "^0.2.1"
+  },
+  "devDependencies": {
+    "@nuxtjs/eslint-config-typescript": "latest",
+    "@types/node": "^17.0.31",
+    "c8": "latest",
+    "eslint": "latest",
+    "jiti": "^1.13.0",
+    "standard-version": "latest",
+    "typescript": "latest",
+    "unbuild": "latest",
+    "vitest": "latest"
+  },
+  "packageManager": "pnpm@7.0.0"
+}
