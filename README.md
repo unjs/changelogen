@@ -33,7 +33,7 @@ npx changelogen [--from=] [--to=...] [<rootDir>]
 
 ## Configuration
 
-Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `changelog.json`, `changelog.{ts,js,mjs,cjs}` or `.changelogrc` or `changelog` field in package.json.
+Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `changelog.json`, `changelog.{ts,js,mjs,cjs}`, `.changelogrc` or use the `changelog` field in `package.json`.
 
 See [./src/config.ts](./src/config.ts) for available options and defaults.
 
