@@ -1,6 +1,6 @@
 {
   "name": "changelogen",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Generate Beautiful Changelogs using Conventional Commits",
   "repository": "unjs/changelogen",
   "license": "MIT",
