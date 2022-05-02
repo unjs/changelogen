@@ -54,11 +54,12 @@ export function parseCommits (commits: RawGitCommit[], config: ChangelogConfig):
 
 // https://www.conventionalcommits.org/en/v1.0.0/
 // https://regex101.com/r/FSfNvA/1
-const ConventionalCommitRegex = /(?<type>[a-z]+)(\((?<scope>.+)\))?(?<breaking>!)?: (?<description>.+)/gmi
+const ConventionalCommitRegex = /(?<type>[a-z]+)(\((?<scope>.+)\))?(?<breaking>!)?: (?<description>.+)/i
 const CoAuthoredByRegex = /Co-authored-by:\s*(?<name>.+)(<(?<email>.+)>)/gmi
+const ReferencesRegex = /#[0-9]+/gm
 
 export function parseGitCommit (commit: RawGitCommit, config: ChangelogConfig): GitCommit | null {
-  const match = ConventionalCommitRegex.exec(commit.message)
+  const match = commit.message.match(ConventionalCommitRegex)
   if (!match) {
     return null
   }
@@ -73,9 +74,8 @@ export function parseGitCommit (commit: RawGitCommit, config: ChangelogConfig): 
 
   // Extract references from message
   const references = []
-  const referencesRegex = /#[0-9]+/g
-  let m
-  while (m = referencesRegex.exec(description)) { // eslint-disable-line no-cond-assign
+  const matches = description.matchAll(ReferencesRegex)
+  for (const m of matches) {
     references.push(m[0])
   }
   if (!references.length) {
@@ -83,7 +83,7 @@ export function parseGitCommit (commit: RawGitCommit, config: ChangelogConfig): 
   }
 
   // Remove references and normalize
-  description = description.replace(referencesRegex, '').replace(/\(\)/g, '').trim()
+  description = description.replace(ReferencesRegex, '').replace(/\(\)/g, '').trim()
 
   // Find all authors
   const authors: GitCommitAuthor[] = [commit.author]
