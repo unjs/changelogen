@@ -11,7 +11,7 @@ export interface ChangelogConfig {
 
 const ConfigDefaults: ChangelogConfig = {
   types: {
-    fix: { title: '🐛 Bug Fixes' },
+    fix: { title: '🐛 Fixes' },
     feat: { title: '🚀 Features' },
     refactor: { title: '💅 Refactors' },
     perf: { title: '🔥 Performance' },
@@ -19,8 +19,8 @@ const ConfigDefaults: ChangelogConfig = {
     docs: { title: '📖 Documentation' },
     chore: { title: '🏡 Chore' },
     build: { title: '📦 Build' },
-    test: { title: '👓 Tests' },
-    types: { title: '🇹 Types' }
+    test: { title: '✅ Tests' },
+    types: { title: '🌊 Types' }
   },
   github: '',
   from: '',
