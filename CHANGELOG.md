@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.5](https://github.com/unjs/changelogen/compare/v0.0.4...v0.0.5) (2022-05-05)
+
+
+### Features
+
+* add missing commitlint types ([#6](https://github.com/unjs/changelogen/issues/6)) ([0a6deef](https://github.com/unjs/changelogen/commit/0a6deefae9a433bbb2136ac8675976ac455dd159))
+
 ### [0.0.4](https://github.com/unjs/changelogen/compare/v0.0.3...v0.0.4) (2022-05-05)
 
 
