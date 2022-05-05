@@ -19,7 +19,7 @@ npx changelogen@latest
 ## CLI Usage
 
 ```sh
-npx changelogen@latest [--from=] [--to=...] [<rootDir>]
+npx changelogen@latest [--from=...] [--to=...] [<rootDir>]
 ```
 
 **Arguments:**
