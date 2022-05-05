@@ -20,7 +20,9 @@ const ConfigDefaults: ChangelogConfig = {
     chore: { title: '🏡 Chore' },
     build: { title: '📦 Build' },
     test: { title: '✅ Tests' },
-    types: { title: '🌊 Types' }
+    types: { title: '🌊 Types' },
+    style: { title: '🎨 Styles' },
+    ci: { title: '🤖 CI' }
   },
   github: '',
   from: '',
