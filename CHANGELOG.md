@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/unjs/changelogen/compare/v0.0.3...v0.0.4) (2022-05-05)
+
+
+### Bug Fixes
+
+* **cli:** use `/usr/bin/env` (resolves [#5](https://github.com/unjs/changelogen/issues/5)) ([e4218cc](https://github.com/unjs/changelogen/commit/e4218cc08d07b597137469396ba83ec709d7f174))
+
 ### [0.0.3](https://github.com/unjs/changelogen/compare/v0.0.2...v0.0.3) (2022-05-02)
 
 
