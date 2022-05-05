@@ -12,14 +12,14 @@
 Generate changelog in markdown format to the console output:
 
 ```sh
-npx changelogen
+npx changelogen@latest
 ```
 
 
 ## CLI Usage
 
 ```sh
-npx changelogen [--from=] [--to=...] [<rootDir>]
+npx changelogen@latest [--from=] [--to=...] [<rootDir>]
 ```
 
 **Arguments:**
