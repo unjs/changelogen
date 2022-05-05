@@ -1,4 +1,4 @@
-#!/bin/env node
+#!/usr/bin/env node
 import { resolve } from 'path'
 import consola from 'consola'
 import mri from 'mri'
