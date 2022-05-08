@@ -27,7 +27,7 @@ npx changelogen@latest [--from=...] [--to=...] [<rootDir>]
 - `from`: Start commit reference. When not provided, **latest git tag** will be used as default.
 - `to`: End commit reference. When not provided, **latest commit in HEAD** will be used as default.
 - `rootDir`: Path to git repository. When not provided, **current working directory** will be used as as default.
-
+- `quite`: Console output will be suppressed. Default is false.
 
 
 

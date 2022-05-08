@@ -13,10 +13,14 @@ async function main () {
 
   const config = await loadChangelogConfig(cwd, {
     from: args.from,
-    to: args.to
+    to: args.to,
+    quite: args.quite,
   })
 
-  const logger = consola.create({ stdout: process.stderr })
+  const logger = consola.create({
+    stdout: process.stderr,
+    level: config.quite ? 0 : 3
+  })
   logger.info(`Generating changelog for ${config.from}...${config.to}`)
 
   const rawCommits = await getGitDiff(config.from, config.to)
