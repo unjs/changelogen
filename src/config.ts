@@ -7,6 +7,7 @@ export interface ChangelogConfig {
   github: string
   from: string
   to: string
+  quite: boolean
 }
 
 const ConfigDefaults: ChangelogConfig = {
@@ -27,7 +28,8 @@ const ConfigDefaults: ChangelogConfig = {
   github: '',
   from: '',
   to: '',
-  scopeMap: {}
+  scopeMap: {},
+  quite: false
 }
 
 export async function loadChangelogConfig (cwd: string, overrides?: Partial<ChangelogConfig>): Promise<ChangelogConfig> {
