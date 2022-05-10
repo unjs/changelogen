@@ -11,10 +11,10 @@ export interface ChangelogConfig {
 
 const ConfigDefaults: ChangelogConfig = {
   types: {
-    fix: { title: '🐛 Fixes' },
-    feat: { title: '🚀 Features' },
-    refactor: { title: '💅 Refactors' },
+    feat: { title: '🚀 Enhancements' },
     perf: { title: '🔥 Performance' },
+    fix: { title: '🩹 Fixes' },
+    refactor: { title: '💅 Refactors' },
     examples: { title: '🏀 Examples' },
     docs: { title: '📖 Documentation' },
     chore: { title: '🏡 Chore' },
