@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1](https://github.com/unjs/changelogen/compare/v0.1.0...v0.1.1) (2022-06-12)
+
+
+### Bug Fixes
+
+* remove `general` in entries without scope ([31a0861](https://github.com/unjs/changelogen/commit/31a08615bb7da611dcaefe33b510d23aa7d2cc29))
+
 ## [0.1.0](https://github.com/unjs/changelogen/compare/v0.0.6...v0.1.0) (2022-06-12)
 
 
