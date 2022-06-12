@@ -50,9 +50,9 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
   return markdown.trim()
 }
 
-function formatTitle (title: string = '') {
-  return title.length <= 3 ? title.toUpperCase() : upperFirst(title)
-}
+// function formatTitle (title: string = '') {
+//   return title.length <= 3 ? title.toUpperCase() : upperFirst(title)
+// }
 
 function formatName (name: string = '') {
   return name.split(' ').map(p => upperFirst(p.trim())).join(' ')
