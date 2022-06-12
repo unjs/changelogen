@@ -1,4 +1,3 @@
-import { execa } from 'execa'
 import type { ChangelogConfig } from './config'
 
 export interface GitCommitAuthor {
@@ -105,6 +104,8 @@ export function parseGitCommit (commit: RawGitCommit, config: ChangelogConfig): 
   }
 }
 
-function execCommand (cmd, args) {
-  return execa(cmd, args).then(r => r.stdout)
+async function execCommand (cmd, args) {
+  const { execa } = await import('execa')
+  const res = await execa(cmd, args)
+  return res.stdout
 }
