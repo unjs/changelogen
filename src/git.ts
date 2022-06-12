@@ -66,7 +66,7 @@ export function parseGitCommit (commit: RawGitCommit, config: ChangelogConfig): 
 
   const type = match.groups.type
 
-  let scope = match.groups.scope || 'general'
+  let scope = match.groups.scope || ''
   scope = config.scopeMap[scope] || scope
 
   const isBreaking = Boolean(match.groups.breaking)

@@ -17,7 +17,7 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
     markdown += '\n\n' + '### ' + config.types[type].title + '\n\n'
     for (const commit of group.reverse()) {
       const line = '  - ' +
-        `**${commit.scope.trim()}:** ` +
+        (commit.scope ? `**${commit.scope.trim()}:** ` : '') +
         (commit.isBreaking ? '⚠️  ' : '') +
          upperFirst(commit.description) +
          ` (${commit.references.join(', ')})`
