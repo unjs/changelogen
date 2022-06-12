@@ -15,18 +15,15 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
     }
 
     markdown += '\n\n' + '### ' + config.types[type].title + '\n\n'
-    const scopeGroups = groupBy(group, 'scope')
-    for (const scopeName in scopeGroups) {
-      markdown += '\n#### ' + formatTitle(scopeName) + '\n\n'
-      for (const commit of scopeGroups[scopeName].reverse()) {
-        const line = '  - ' +
+    for (const commit of group.reverse()) {
+      const line = '  - ' +
+        `**${commit.scope.trim()}:** ` +
         (commit.isBreaking ? '⚠️  ' : '') +
-         (commit.references.join(', ') + ' ') +
-         upperFirst(commit.description)
-        markdown += line + '\n'
-        if (commit.isBreaking) {
-          breakingChanges.push(line)
-        }
+         upperFirst(commit.description) +
+         ` (${commit.references.join(', ')})`
+      markdown += line + '\n'
+      if (commit.isBreaking) {
+        breakingChanges.push(line)
       }
     }
   }
