@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.1.0](https://github.com/unjs/changelogen/compare/v0.0.6...v0.1.0) (2022-06-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* use flat scopes
+
+* use flat scopes ([8e33e93](https://github.com/unjs/changelogen/commit/8e33e93e6c4aa4b0b727d351fd73590626d1d6ce))
+
 ### [0.0.6](https://github.com/unjs/changelogen/compare/v0.0.5...v0.0.6) (2022-05-10)
 
 ### [0.0.5](https://github.com/unjs/changelogen/compare/v0.0.4...v0.0.5) (2022-05-05)
