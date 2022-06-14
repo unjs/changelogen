@@ -5,7 +5,7 @@ import type { GitCommit } from './git'
 export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig) {
   const typeGroups = groupBy(commits, 'type')
 
-  let markdown = ''
+  const markdown: string[] = []
   const breakingChanges = []
 
   for (const type in config.types) {
@@ -14,14 +14,14 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
       continue
     }
 
-    markdown += '\n\n' + '### ' + config.types[type].title + '\n\n'
+    markdown.push('', '### ' + config.types[type].title, '')
     for (const commit of group.reverse()) {
       const line = '  - ' +
         (commit.scope ? `**${commit.scope.trim()}:** ` : '') +
         (commit.isBreaking ? '⚠️  ' : '') +
          upperFirst(commit.description) +
          ` (${commit.references.join(', ')})`
-      markdown += line + '\n'
+      markdown.push(line)
       if (commit.isBreaking) {
         breakingChanges.push(line)
       }
@@ -29,25 +29,29 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
   }
 
   if (breakingChanges.length) {
-    markdown += '\n#### ⚠️  Breaking Changes \n\n'
-    markdown += breakingChanges.join('\n')
+    markdown.push(
+      '', '#### ⚠️  Breaking Changes', '',
+      ...breakingChanges
+    )
   }
 
   let authors = commits.flatMap(commit => commit.authors.map(author => formatName(author.name)))
   authors = uniq(authors).sort()
 
   if (authors.length) {
-    markdown += '\n\n' + '### ' + '❤️  Contributors' + '\n\n'
-    markdown += authors.map(name => '- ' + name).join('\n')
+    markdown.push(
+      '', '### ' + '❤️  Contributors', '',
+      ...authors.map(name => '- ' + name)
+    )
   }
 
-  markdown += '\n\n----\n\n'
-  markdown += `Changes from **${config.from}...${config.to}**\n`
+  markdown.push('\n\n----\n\n')
+  markdown.push(`Changes from **${config.from}...${config.to}**`, '')
   if (config.github) {
-    markdown += `\nSee all changes: https://github.com/${config.github}/compare/${config.from}...${config.to}\n`
+    markdown.push(`See all changes: https://github.com/${config.github}/compare/${config.from}...${config.to}`)
   }
 
-  return markdown.trim()
+  return markdown.join('\n').trim()
 }
 
 // function formatTitle (title: string = '') {
