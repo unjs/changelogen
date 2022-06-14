@@ -16,11 +16,7 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
 
     markdown.push('', '### ' + config.types[type].title, '')
     for (const commit of group.reverse()) {
-      const line = '  - ' +
-        (commit.scope ? `**${commit.scope.trim()}:** ` : '') +
-        (commit.isBreaking ? '⚠️  ' : '') +
-         upperFirst(commit.description) +
-         ` (${commit.references.join(', ')})`
+      const line = formatCommit(commit)
       markdown.push(line)
       if (commit.isBreaking) {
         breakingChanges.push(line)
@@ -52,6 +48,14 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
   }
 
   return markdown.join('\n').trim()
+}
+
+function formatCommit (commit: GitCommit) {
+  return '  - ' +
+  (commit.scope ? `**${commit.scope.trim()}:** ` : '') +
+  (commit.isBreaking ? '⚠️  ' : '') +
+   upperFirst(commit.description) +
+   ` (${commit.references.join(', ')})`
 }
 
 // function formatTitle (title: string = '') {
