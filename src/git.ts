@@ -27,8 +27,15 @@ export async function getLastGitTag () {
 }
 
 export async function getCurrentGitBranch () {
-  const r = await execCommand('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
-  return r
+  return await execCommand('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
+}
+
+export async function getCurrentGitTag () {
+  return await execCommand('git', ['tag', '--points-at', 'HEAD'])
+}
+
+export async function getCurrentGitRef () {
+  return await getCurrentGitTag() || await getCurrentGitBranch()
 }
 
 export async function getGitDiff (from, to): Promise<RawGitCommit[]> {

@@ -1,5 +1,5 @@
 import { loadConfig } from 'c12'
-import { getLastGitTag, getCurrentGitBranch } from './git'
+import { getLastGitTag, getCurrentGitRef } from './git'
 
 export interface ChangelogConfig {
   types: Record<string, { title: string}>
@@ -43,7 +43,7 @@ export async function loadChangelogConfig (cwd: string, overrides?: Partial<Chan
   }
 
   if (!config.to) {
-    config.to = await getCurrentGitBranch()
+    config.to = await getCurrentGitRef()
   }
 
   return config
