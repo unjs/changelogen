@@ -31,9 +31,9 @@ export async function getCurrentGitBranch () {
   return r
 }
 
-export async function getGitDiff (from, to): Promise<RawGitCommit[]> {
+export async function getGitDiff (from: string | undefined, to: string): Promise<RawGitCommit[]> {
   // https://git-scm.com/docs/pretty-formats
-  const r = await execCommand('git', ['--no-pager', 'log', `${from}...${to}`, '--pretty="----%n%s|%h|%an|%ae%n%b"', '--name-status'])
+  const r = await execCommand('git', ['--no-pager', 'log', `${from ? `${from}...` : ''}${to}`, '--pretty="----%n%s|%h|%an|%ae%n%b"', '--name-status'])
   return r.split('----\n').splice(1).map((line) => {
     const [firstLine, ..._body] = line.split('\n')
     const [message, shortHash, authorName, authorEmail] = firstLine.split('|')
