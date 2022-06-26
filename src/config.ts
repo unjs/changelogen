@@ -7,6 +7,8 @@ export interface ChangelogConfig {
   github: string
   from: string
   to: string
+  appendFile: boolean
+  filename: string
 }
 
 const ConfigDefaults: ChangelogConfig = {
@@ -27,6 +29,8 @@ const ConfigDefaults: ChangelogConfig = {
   github: '',
   from: '',
   to: '',
+  appendFile: false,
+  filename: 'CHANGELOG',
   scopeMap: {}
 }
 
