@@ -1,4 +1,6 @@
+import { readFileSync, writeFileSync } from 'fs'
 import { upperFirst } from 'scule'
+import consola from 'consola'
 import type { ChangelogConfig } from './config'
 import type { GitCommit } from './git'
 
@@ -48,6 +50,16 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
   }
 
   return markdown.join('\n').trim()
+}
+
+export function appendFile (markdown: string, fileName: string) {
+  try {
+    const currentChangelog = readFileSync(`${fileName}.md`)
+    const newChangelog = markdown + '\n\n' + currentChangelog
+    writeFileSync(`${fileName}.md`, newChangelog)
+  } catch (err) {
+    consola.error(err)
+  }
 }
 
 function formatCommit (commit: GitCommit) {
