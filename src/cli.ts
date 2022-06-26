@@ -4,7 +4,7 @@ import consola from 'consola'
 import mri from 'mri'
 import { getGitDiff, parseCommits } from './git'
 import { loadChangelogConfig } from './config'
-import { generateMarkDown } from './markdown'
+import { appendFile, generateMarkDown } from './markdown'
 
 async function main () {
   const args = mri(process.argv.splice(2))
@@ -13,7 +13,8 @@ async function main () {
 
   const config = await loadChangelogConfig(cwd, {
     from: args.from,
-    to: args.to
+    to: args.to,
+    filename: args.filename
   })
 
   const logger = consola.create({ stdout: process.stderr })
@@ -29,6 +30,13 @@ async function main () {
 
   // Generate markdown
   const markdown = generateMarkDown(commits, config)
+
+  console.log(config)
+  // Update changelog file
+  if (config.appendFile) {
+    consola.info(`Updating ${config.filename}.md`)
+    appendFile(markdown, config.filename)
+  }
 
   consola.log('\n\n' + markdown + '\n\n')
 }
