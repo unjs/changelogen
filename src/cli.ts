@@ -31,7 +31,6 @@ async function main () {
   // Generate markdown
   const markdown = generateMarkDown(commits, config)
 
-  console.log(config)
   // Update changelog file
   if (config.appendFile) {
     consola.info(`Updating ${config.filename}.md`)
