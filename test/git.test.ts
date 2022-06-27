@@ -8,7 +8,7 @@ describe('git', () => {
   test('getGitDiff should work', async () => {
     expect((await getGitDiff(COMMIT_INITIAL, COMMIT_VER002)).length).toBe(2)
 
-    const all = await getGitDiff(undefined, 'HEAD')
+    const all = await getGitDiff()
     expect((await getGitDiff(COMMIT_INITIAL, 'HEAD')).length + 1).toBe(
       all.length
     )
