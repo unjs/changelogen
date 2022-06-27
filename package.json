@@ -42,11 +42,11 @@
     "@types/node": "^17.0.31",
     "c8": "latest",
     "eslint": "latest",
-    "jiti": "^1.13.0",
+    "jiti": "^1.14.0",
     "standard-version": "latest",
     "typescript": "latest",
     "unbuild": "latest",
     "vitest": "latest"
   },
-  "packageManager": "pnpm@7.2.1"
+  "packageManager": "pnpm@7.3.0"
 }
