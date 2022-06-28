@@ -10,6 +10,11 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
   const markdown: string[] = []
   const breakingChanges = []
 
+  const version = JSON.parse(readFileSync('package.json', 'utf8')).version
+
+  // Version Title
+  markdown.push('', '## ' + version)
+
   for (const type in config.types) {
     const group = typeGroups[type]
     if (!group || !group.length) {
