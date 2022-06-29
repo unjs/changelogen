@@ -1,5 +1,5 @@
 import { upperFirst } from 'scule'
-import { convert } from "convert-gitmoji"
+import { convert } from 'convert-gitmoji'
 import type { ChangelogConfig } from './config'
 import type { GitCommit } from './git'
 
