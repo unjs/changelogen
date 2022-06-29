@@ -27,13 +27,20 @@ export async function getLastGitTag () {
 }
 
 export async function getCurrentGitBranch () {
-  const r = await execCommand('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
-  return r
+  return await execCommand('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
 }
 
-export async function getGitDiff (from, to): Promise<RawGitCommit[]> {
+export async function getCurrentGitTag () {
+  return await execCommand('git', ['tag', '--points-at', 'HEAD'])
+}
+
+export async function getCurrentGitRef () {
+  return await getCurrentGitTag() || await getCurrentGitBranch()
+}
+
+export async function getGitDiff (from: string | undefined, to: string = 'HEAD'): Promise<RawGitCommit[]> {
   // https://git-scm.com/docs/pretty-formats
-  const r = await execCommand('git', ['--no-pager', 'log', `${from}...${to}`, '--pretty="----%n%s|%h|%an|%ae%n%b"', '--name-status'])
+  const r = await execCommand('git', ['--no-pager', 'log', `${from ? `${from}...` : ''}${to}`, '--pretty="----%n%s|%h|%an|%ae%n%b"', '--name-status'])
   return r.split('----\n').splice(1).map((line) => {
     const [firstLine, ..._body] = line.split('\n')
     const [message, shortHash, authorName, authorEmail] = firstLine.split('|')
