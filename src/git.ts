@@ -62,7 +62,7 @@ export function parseCommits (commits: RawGitCommit[], config: ChangelogConfig):
 // https://regex101.com/r/FSfNvA/1
 const ConventionalCommitRegex = /(?<type>[a-z]+)(\((?<scope>.+)\))?(?<breaking>!)?: (?<description>.+)/i
 const CoAuthoredByRegex = /Co-authored-by:\s*(?<name>.+)(<(?<email>.+)>)/gmi
-const ReferencesRegex = /#[0-9]+/gm
+const ReferencesRegex = /\(#[0-9]+\)/gm
 
 export function parseGitCommit (commit: RawGitCommit, config: ChangelogConfig): GitCommit | null {
   const match = commit.message.match(ConventionalCommitRegex)
@@ -89,7 +89,7 @@ export function parseGitCommit (commit: RawGitCommit, config: ChangelogConfig): 
   }
 
   // Remove references and normalize
-  description = description.replace(ReferencesRegex, '').replace(/\(\)/g, '').trim()
+  description = description.replace(ReferencesRegex, '').trim()
 
   // Find all authors
   const authors: GitCommitAuthor[] = [commit.author]
@@ -111,7 +111,7 @@ export function parseGitCommit (commit: RawGitCommit, config: ChangelogConfig): 
   }
 }
 
-async function execCommand (cmd, args) {
+async function execCommand (cmd: string, args: string[]) {
   const { execa } = await import('execa')
   const res = await execa(cmd, args)
   return res.stdout
