@@ -48,7 +48,7 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
     markdown.push(`See all changes: https://github.com/${config.github}/compare/${config.from}...${config.to}`)
   }
 
-  return convert(markdown.join('\n').trim(), true)
+  return convert(markdown.join('\n').trim(), "both")
 }
 
 function formatCommit (commit: GitCommit) {
