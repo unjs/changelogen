@@ -33,7 +33,7 @@
   "dependencies": {
     "c12": "^0.2.7",
     "consola": "^2.15.3",
-    "convert-gitmoji": "^0.1.0",
+    "convert-gitmoji": "^0.1.2",
     "execa": "^6.1.0",
     "mri": "^1.2.0",
     "scule": "^0.2.1"
