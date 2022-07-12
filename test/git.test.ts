@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { getGitDiff, loadChangelogConfig, parseCommits } from '../src'
+import { generateMarkDown, getGitDiff, loadChangelogConfig, parseCommits } from '../src'
 
 describe('git', () => {
   test('getGitDiff should work', async () => {
@@ -47,7 +47,10 @@ describe('git', () => {
         },
       ]
     `)
-    const config = await loadChangelogConfig(process.cwd())
+    const config = await loadChangelogConfig(process.cwd(), {
+      from: COMMIT_FROM,
+      to: COMMIT_TO
+    })
     const parsed = parseCommits(commits, config)
 
     expect(parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest)).toMatchInlineSnapshot(`
@@ -107,6 +110,34 @@ describe('git', () => {
           "type": "build",
         },
       ]
+    `)
+
+    const md = generateMarkDown(parsed, config)
+
+    expect(md).toMatchInlineSnapshot(`
+      "### 🩹 Fixes
+
+        - **scope:** ⚠️  Breaking change example, close #123 (#134, #123)
+        - Expose \`./config\` (#10)
+
+      ### 📦 Build
+
+        - Use dynamic import for execa for cjs support (a794cf1)
+
+      #### ⚠️  Breaking Changes
+
+        - **scope:** ⚠️  Breaking change example, close #123 (#134, #123)
+
+      ### ❤️  Contributors
+
+      - Anthony Fu
+      - Pooya Parsa
+
+
+      ----
+
+
+      Changes from **31a08615bb7da611dcaefe33b510d23aa7d2cc29...27440655a169c2f462d891d2f243db54c174f6b7**"
     `)
   })
 })
