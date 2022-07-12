@@ -12,11 +12,16 @@ export interface RawGitCommit {
   author: GitCommitAuthor
 }
 
+export interface Reference {
+  type: 'hash' | 'issue' | 'pull-request'
+  value: string
+}
+
 export interface GitCommit extends RawGitCommit {
   description: string
   type: string
   scope: string
-  references: string[]
+  references: Reference[]
   authors: GitCommitAuthor[]
   isBreaking: boolean
 }
@@ -62,7 +67,8 @@ export function parseCommits (commits: RawGitCommit[], config: ChangelogConfig):
 // https://regex101.com/r/FSfNvA/1
 const ConventionalCommitRegex = /(?<type>[a-z]+)(\((?<scope>.+)\))?(?<breaking>!)?: (?<description>.+)/i
 const CoAuthoredByRegex = /Co-authored-by:\s*(?<name>.+)(<(?<email>.+)>)/gmi
-const ReferencesRegex = /\([a-z ]*(#[0-9]+)\s*\)/gm
+const PullRequestRE = /\([a-z ]*(#[0-9]+)\s*\)/gm
+const IssueRE = /(#[0-9]+)/gm
 
 export function parseGitCommit (commit: RawGitCommit, config: ChangelogConfig): GitCommit | null {
   const match = commit.message.match(ConventionalCommitRegex)
@@ -79,17 +85,21 @@ export function parseGitCommit (commit: RawGitCommit, config: ChangelogConfig): 
   let description = match.groups.description
 
   // Extract references from message
-  const references = []
-  const matches = description.matchAll(ReferencesRegex)
-  for (const m of matches) {
-    references.push(m[1])
-  }
-  if (!references.length) {
-    references.push(commit.shortHash)
-  }
+  const references: Reference[] = []
+  Array.from(description.matchAll(PullRequestRE))
+    .forEach((m) => {
+      references.push({ type: 'pull-request', value: m[1] })
+    })
+  Array.from(description.matchAll(IssueRE))
+    .forEach((m) => {
+      if (!references.find(i => i.value === m[1])) {
+        references.push({ type: 'issue', value: m[1] })
+      }
+    })
+  references.push({ value: commit.shortHash, type: 'hash' })
 
   // Remove references and normalize
-  description = description.replace(ReferencesRegex, '').trim()
+  description = description.replace(PullRequestRE, '').trim()
 
   // Find all authors
   const authors: GitCommitAuthor[] = [commit.author]
