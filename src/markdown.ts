@@ -12,7 +12,10 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
   const version = JSON.parse(readFileSync('package.json', 'utf8')).version
 
   // Version Title
-  markdown.push('', '## ' + version)
+  const compareLink = config.github ? `https://github.com/${config.github}/compare/${config.from}...${config.to}` : ''
+  markdown.push('',
+    '### ' + (compareLink ? `[${version}](${compareLink})` : `${version} (${config.from}..${config.to})`)
+    , '')
 
   for (const type in config.types) {
     const group = typeGroups[type]
@@ -45,12 +48,6 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
       '', '### ' + '❤️  Contributors', '',
       ...authors.map(name => '- ' + name)
     )
-  }
-
-  markdown.push('\n\n----\n\n')
-  markdown.push(`Changes from **${config.from}...${config.to}**`, '')
-  if (config.github) {
-    markdown.push(`See all changes: https://github.com/${config.github}/compare/${config.from}...${config.to}`)
   }
 
   return markdown.join('\n').trim()
