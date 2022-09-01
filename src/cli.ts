@@ -32,8 +32,6 @@ async function main () {
   // Generate markdown
   const markdown = generateMarkDown(commits, config)
 
-  consola.log('\n\n' + markdown + '\n\n')
-
   // Update changelog file
   if (config.changelog) {
     let changelogMD: string
@@ -59,6 +57,8 @@ All notable changes to this project will be documented in this file. See [standa
     }
 
     await fsp.writeFile(config.changelog, changelogMD)
+  } else {
+    consola.log('\n\n' + markdown + '\n\n')
   }
 }
 
