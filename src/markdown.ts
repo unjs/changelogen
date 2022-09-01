@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs'
 import { upperFirst } from 'scule'
+import { convert } from 'convert-gitmoji'
 import type { ChangelogConfig } from './config'
 import type { GitCommit, Reference } from './git'
 
@@ -50,7 +51,7 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
     )
   }
 
-  return markdown.join('\n').trim()
+  return convert(markdown.join('\n').trim(), true)
 }
 
 function formatCommit (commit: GitCommit) {
