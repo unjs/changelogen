@@ -11,7 +11,7 @@ export function determineSemverChange (commits: GitCommit[], config: ChangelogCo
   let [hasMajor, hasMinor, hasPatch] = [false, false, false]
   for (const commit of commits) {
     const semverType = config.types[commit.type]?.semver
-    if (semverType === 'major') {
+    if (semverType === 'major' || commit.isBreaking) {
       hasMajor = true
     } else if (semverType === 'minor') {
       hasMinor = true
