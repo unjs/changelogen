@@ -18,16 +18,17 @@ npx changelogen@latest
 ## CLI Usage
 
 ```sh
-npx changelogen@latest [--from=...] [--to=...] [--output=...] [--bump] [<rootDir>]
+npx changelogen@latest [...args] [<rootDir>]
 ```
 
 **Arguments:**
 
-- `from`: Start commit reference. When not provided, **latest git tag** will be used as default.
-- `to`: End commit reference. When not provided, **latest commit in HEAD** will be used as default.
-- `rootDir`: Path to git repository. When not provided, **current working directory** will be used as as default.
-- `output`: Changelog file name to create or update. Defaults to `CHANGELOG.md` and resolved relative to rootDir. Use `--no-output` to write to console only.
-- `--bump`: Determine semver change and update version in `package.json`
+- `--from`: Start commit reference. When not provided, **latest git tag** will be used as default.
+- `--to`: End commit reference. When not provided, **latest commit in HEAD** will be used as default.
+- `--rootDir`: Path to git repository. When not provided, **current working directory** will be used as as default.
+- `--output`: Changelog file name to create or update. Defaults to `CHANGELOG.md` and resolved relative to rootDir. Use `--no-output` to write to console only.
+- `--bump`: Determine semver change and update version in `package.json`.
+- `--release`. Bumps version in `package.json` and creates commit and git tags using local `git`. You can disable commit using `--no-commit` and tag using `--no-tag`.
 
 ## Configuration
 

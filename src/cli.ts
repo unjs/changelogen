@@ -3,6 +3,7 @@ import { resolve } from 'path'
 import { existsSync, promises as fsp } from 'fs'
 import consola from 'consola'
 import mri from 'mri'
+import { execa } from 'execa'
 import { getGitDiff, parseCommits } from './git'
 import { loadChangelogConfig } from './config'
 import { generateMarkDown } from './markdown'
@@ -31,8 +32,16 @@ async function main () {
   )
 
   // Bump version optionally
-  if (args.bump) {
+  if (args.bump || args.release) {
     config.to = await bumpVersion(commits, config)
+  }
+  if (args.release) {
+    if (args.commit !== false) {
+      await execa('git', ['commit', '-am', `chore(release): ${config.to}`], { cwd })
+    }
+    if (args.tag !== false) {
+      await execa('git', ['tag', config.to], { cwd })
+    }
   }
 
   // Generate markdown
