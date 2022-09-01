@@ -15,7 +15,7 @@ async function main () {
   const config = await loadChangelogConfig(cwd, {
     from: args.from,
     to: args.to,
-    changelog: args.changelog
+    output: args.output
   })
 
   const logger = consola.create({ stdout: process.stderr })
