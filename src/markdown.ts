@@ -9,6 +9,12 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
   const markdown: string[] = []
   const breakingChanges = []
 
+  // Version Title
+  const compareLink = config.github ? `https://github.com/${config.github}/compare/${config.from}...${config.to}` : ''
+  markdown.push('',
+    '### ' + (compareLink ? `[${config.to}](${compareLink})` : `${config.to} (${config.from}..${config.to})`)
+    , '')
+
   for (const type in config.types) {
     const group = typeGroups[type]
     if (!group || !group.length) {
@@ -40,12 +46,6 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
       '', '### ' + '❤️  Contributors', '',
       ...authors.map(name => '- ' + name)
     )
-  }
-
-  markdown.push('\n\n----\n\n')
-  markdown.push(`Changes from **${config.from}...${config.to}**`, '')
-  if (config.github) {
-    markdown.push(`See all changes: https://github.com/${config.github}/compare/${config.from}...${config.to}`)
   }
 
   return convert(markdown.join('\n').trim(), true)

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { resolve } from 'path'
+import { existsSync, promises as fsp } from 'fs'
 import consola from 'consola'
 import mri from 'mri'
 import { getGitDiff, parseCommits } from './git'
@@ -13,7 +14,8 @@ async function main () {
 
   const config = await loadChangelogConfig(cwd, {
     from: args.from,
-    to: args.to
+    to: args.to,
+    output: args.output
   })
 
   const logger = consola.create({ stdout: process.stderr })
@@ -30,7 +32,32 @@ async function main () {
   // Generate markdown
   const markdown = generateMarkDown(commits, config)
 
-  consola.log('\n\n' + markdown + '\n\n')
+  // Update changelog file
+  if (config.output) {
+    let changelogMD: string
+    if (existsSync(config.output)) {
+      consola.info(`Updating ${config.output}`)
+      changelogMD = await fsp.readFile(config.output, 'utf8')
+    } else {
+      consola.info(`Creating  ${config.output}`)
+      changelogMD = '# Changelog\n\n'
+    }
+
+    const lastEntry = changelogMD.match(/^###?\s+.*$/m)
+
+    if (lastEntry) {
+      changelogMD =
+        changelogMD.slice(0, lastEntry.index) +
+        markdown + '\n\n' +
+        changelogMD.slice(lastEntry.index)
+    } else {
+      changelogMD += '\n' + markdown + '\n\n'
+    }
+
+    await fsp.writeFile(config.output, changelogMD)
+  } else {
+    consola.log('\n\n' + markdown + '\n\n')
+  }
 }
 
 main().catch(consola.error)
