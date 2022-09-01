@@ -56,7 +56,7 @@ All notable changes to this project will be documented in this file. See [standa
       changelogMD += '\n' + markdown + '\n\n'
     }
 
-    await fsp.writeFile(config.changelog, changelogMD)
+    await fsp.writeFile(config.output, changelogMD)
   } else {
     consola.log('\n\n' + markdown + '\n\n')
   }
