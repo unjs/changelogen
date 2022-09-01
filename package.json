@@ -27,7 +27,7 @@
     "dev": "vitest dev",
     "lint": "eslint --ext .ts,.js,.mjs,.cjs .",
     "prepack": "unbuild",
-    "release": "pnpm test && standard-version && git push --follow-tags && pnpm publish",
+    "release": "pnpm test && pnpm changelogen --release && git push --follow-tags && pnpm publish",
     "test": "pnpm lint && vitest run --coverage"
   },
   "dependencies": {
