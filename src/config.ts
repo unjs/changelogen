@@ -8,7 +8,7 @@ export interface ChangelogConfig {
   github: string
   from: string
   to: string
-  output: string | boolean
+  output: string | false
 }
 
 const ConfigDefaults: ChangelogConfig = {
@@ -52,9 +52,7 @@ export async function loadChangelogConfig (cwd: string, overrides?: Partial<Chan
   if (!config.output || config.output === '-') {
     config.output = false
   } else if (config.output) {
-    config.output = resolve(cwd,
-      typeof config.output === 'string' ? config.output : 'CHANGELOG.md'
-    )
+    config.output = resolve(cwd, config.output)
   }
 
   return config

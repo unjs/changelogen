@@ -33,7 +33,7 @@ async function main () {
   const markdown = generateMarkDown(commits, config)
 
   // Update changelog file
-  if (typeof config.output === 'string') {
+  if (config.output) {
     let changelogMD: string
     if (existsSync(config.output)) {
       consola.info(`Updating ${config.output}`)
