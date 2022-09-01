@@ -1,4 +1,3 @@
-import { readFileSync } from 'fs'
 import { upperFirst } from 'scule'
 import { convert } from 'convert-gitmoji'
 import type { ChangelogConfig } from './config'
@@ -10,12 +9,10 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
   const markdown: string[] = []
   const breakingChanges = []
 
-  const version = JSON.parse(readFileSync('package.json', 'utf8')).version
-
   // Version Title
   const compareLink = config.github ? `https://github.com/${config.github}/compare/${config.from}...${config.to}` : ''
   markdown.push('',
-    '### ' + (compareLink ? `[${version}](${compareLink})` : `${version} (${config.from}..${config.to})`)
+    '### ' + (compareLink ? `[${config.to}](${compareLink})` : `${config.to} (${config.from}..${config.to})`)
     , '')
 
   for (const type in config.types) {
