@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [main](https://github.com/unjs/changelogen/compare/v0.2.2...main)
+
+
+### 🩹 Fixes
+
+  - Import semver as default import ([3bd0b61](https://github.com/unjs/changelogen/commit/3bd0b61))
+
+### ❤️  Contributors
+
+- Pooya Parsa
+
 ## [main](https://github.com/unjs/changelogen/compare/v0.2.1...main)
 
 
