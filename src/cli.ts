@@ -34,8 +34,14 @@ async function main () {
   // Generate markdown
   const markdown = generateMarkDown(commits, config)
 
-  // Update changelog file
-  if (config.output) {
+  // Show changelog in CLI unless bumping or releasing
+  const displayOnly = !args.bump && !args.release
+  if (displayOnly) {
+    consola.log('\n\n' + markdown + '\n\n')
+  }
+
+  // Update changelog file (only when bumping or releasing or when --output is specified as a file)
+  if (config.output && (args.output || !displayOnly)) {
     let changelogMD: string
     if (existsSync(config.output)) {
       consola.info(`Updating ${config.output}`)
@@ -57,8 +63,6 @@ async function main () {
     }
 
     await fsp.writeFile(config.output, changelogMD)
-  } else {
-    consola.log('\n\n' + markdown + '\n\n')
   }
 
   // Bump version optionally

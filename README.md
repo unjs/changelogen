@@ -9,10 +9,22 @@
 
 ## Quick Start
 
-Generate changelog in markdown format and update (or create) `CHANGELOG.md`:
+Generate changelog in markdown format and show in console:
 
 ```sh
 npx changelogen@latest
+```
+
+Generate changelog, bump version in `package.json` automatically and update `CHANGELOG.md` (without commit)
+
+```sh
+npx changelogen@latest --bump
+```
+
+Bump version, update `CHANGELOG.md` and make a git commit and tag:
+
+```sh
+npx changelogen@latest --release
 ```
 
 ## CLI Usage
