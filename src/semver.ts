@@ -25,6 +25,7 @@ export function determineSemverChange (commits: GitCommit[], config: ChangelogCo
 
 export async function bumpVersion (commits: GitCommit[], config: ChangelogConfig) {
   let type = determineSemverChange(commits, config)
+  const originalType = type
 
   const pkgPath = resolve(config.cwd, 'package.json')
   const pkg = JSON.parse(await fsp.readFile(pkgPath, 'utf8').catch(() => '{}')) || {}
@@ -43,7 +44,7 @@ export async function bumpVersion (commits: GitCommit[], config: ChangelogConfig
   }
 
   if (pkg.version !== currentVersion) {
-    consola.info(`Bumping version from ${currentVersion} to ${pkg.version} (${type})`)
+    consola.info(`Bumping version from ${currentVersion} to ${pkg.version} (${originalType})`)
     await fsp.writeFile(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf8')
   }
 
