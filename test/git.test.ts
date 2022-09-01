@@ -120,16 +120,16 @@ describe('git', () => {
 
       ### 🩹 Fixes
 
-        - **scope:** ⚠️  Breaking change example, close #123 (#134, #123)
-        - Expose \`./config\` (#10)
+        - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/ssue/123))
+        - Expose \`./config\` ([#10](https://github.com/unjs/changelogen/pull/10))
 
       ### 📦 Build
 
-        - Use dynamic import for execa for cjs support (a794cf1)
+        - Use dynamic import for execa for cjs support ([a794cf1](https://github.com/unjs/changelogen/commit/a794cf1))
 
       #### ⚠️  Breaking Changes
 
-        - **scope:** ⚠️  Breaking change example, close #123 (#134, #123)
+        - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/ssue/123))
 
       ### ❤️  Contributors
 
