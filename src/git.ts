@@ -86,16 +86,14 @@ export function parseGitCommit (commit: RawGitCommit, config: ChangelogConfig): 
 
   // Extract references from message
   const references: Reference[] = []
-  Array.from(description.matchAll(PullRequestRE))
-    .forEach((m) => {
-      references.push({ type: 'pull-request', value: m[1] })
-    })
-  Array.from(description.matchAll(IssueRE))
-    .forEach((m) => {
-      if (!references.find(i => i.value === m[1])) {
-        references.push({ type: 'issue', value: m[1] })
-      }
-    })
+  for (const m of description.matchAll(PullRequestRE)) {
+    references.push({ type: 'pull-request', value: m[1] })
+  }
+  for (const m of description.matchAll(IssueRE)) {
+    if (!references.find(i => i.value === m[1])) {
+      references.push({ type: 'issue', value: m[1] })
+    }
+  }
   references.push({ value: commit.shortHash, type: 'hash' })
 
   // Remove references and normalize
