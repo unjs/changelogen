@@ -1,9 +1,11 @@
 import { resolve } from 'path'
 import { loadConfig } from 'c12'
 import { getLastGitTag, getCurrentGitRef } from './git'
+import type { SemverBumpType } from './semver'
 
 export interface ChangelogConfig {
-  types: Record<string, { title: string}>
+  cwd: string
+  types: Record<string, { title: string, semver?: SemverBumpType }>
   scopeMap: Record<string, string>
   github: string
   from: string
@@ -13,19 +15,20 @@ export interface ChangelogConfig {
 
 const ConfigDefaults: ChangelogConfig = {
   types: {
-    feat: { title: '🚀 Enhancements' },
-    perf: { title: '🔥 Performance' },
-    fix: { title: '🩹 Fixes' },
+    feat: { title: '🚀 Enhancements', semver: 'minor' },
+    perf: { title: '🔥 Performance', semver: 'patch' },
+    fix: { title: '🩹 Fixes', semver: 'patch' },
     refactor: { title: '💅 Refactors' },
     examples: { title: '🏀 Examples' },
     docs: { title: '📖 Documentation' },
     chore: { title: '🏡 Chore' },
-    build: { title: '📦 Build' },
+    build: { title: '📦 Build', semver: 'patch' },
     test: { title: '✅ Tests' },
-    types: { title: '🌊 Types' },
+    types: { title: '🌊 Types', semver: 'patch' },
     style: { title: '🎨 Styles' },
     ci: { title: '🤖 CI' }
   },
+  cwd: null,
   github: '',
   from: '',
   to: '',
@@ -38,7 +41,10 @@ export async function loadChangelogConfig (cwd: string, overrides?: Partial<Chan
     cwd,
     name: 'changelog',
     defaults: ConfigDefaults,
-    overrides: overrides as ChangelogConfig
+    overrides: {
+      cwd,
+      ...overrides as ChangelogConfig
+    }
   })
 
   if (!config.from) {

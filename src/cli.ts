@@ -6,6 +6,7 @@ import mri from 'mri'
 import { getGitDiff, parseCommits } from './git'
 import { loadChangelogConfig } from './config'
 import { generateMarkDown } from './markdown'
+import { bumpVersion } from './semver'
 
 async function main () {
   const args = mri(process.argv.splice(2))
@@ -28,6 +29,11 @@ async function main () {
     config.types[c.type] &&
     c.scope !== 'deps'
   )
+
+  // Bump version optionally
+  if (args.bump) {
+    config.to = await bumpVersion(commits, config)
+  }
 
   // Generate markdown
   const markdown = generateMarkDown(commits, config)

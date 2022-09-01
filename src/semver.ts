@@ -1,0 +1,47 @@
+import { promises as fsp } from 'fs'
+import { resolve } from 'path'
+import * as semver from 'semver'
+import consola from 'consola'
+import type { ChangelogConfig } from './config'
+import type { GitCommit } from './git'
+
+export type SemverBumpType = 'major' | 'minor' | 'patch'
+
+export function determineSemverChange (commits: GitCommit[], config: ChangelogConfig): SemverBumpType | null {
+  let [hasMajor, hasMinor, hasPatch] = [false, false, false]
+  for (const commit of commits) {
+    const semverType = config.types[commit.type]?.semver
+    if (semverType === 'major') {
+      hasMajor = true
+    } else if (semverType === 'minor') {
+      hasMinor = true
+    } else if (semverType === 'patch') {
+      hasPatch = true
+    }
+  }
+
+  return hasMajor ? 'major' : (hasMinor ? 'minor' : (hasPatch ? 'patch' : null))
+}
+
+export async function bumpVersion (commits: GitCommit[], config: ChangelogConfig) {
+  let type = determineSemverChange(commits, config)
+
+  const pkgPath = resolve(config.cwd, 'package.json')
+  const pkg = JSON.parse(await fsp.readFile(pkgPath, 'utf8').catch(() => '{}')) || {}
+  const currentVersion = pkg.version || '0.0.0'
+
+  if (type === 'major' && currentVersion.startsWith('0.')) {
+    type = 'minor'
+  }
+
+  if (type) {
+    pkg.version = semver.inc(currentVersion, type)
+  }
+
+  if (pkg.version !== currentVersion) {
+    consola.info(`Bumping version from ${currentVersion} to ${pkg.version} (${type})`)
+    await fsp.writeFile(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf8')
+  }
+
+  return pkg.version
+}

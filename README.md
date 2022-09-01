@@ -18,7 +18,7 @@ npx changelogen@latest
 ## CLI Usage
 
 ```sh
-npx changelogen@latest [--from=...] [--to=...] [--output=...] [--stdout] [<rootDir>]
+npx changelogen@latest [--from=...] [--to=...] [--output=...] [--bump] [<rootDir>]
 ```
 
 **Arguments:**
@@ -27,6 +27,7 @@ npx changelogen@latest [--from=...] [--to=...] [--output=...] [--stdout] [<rootD
 - `to`: End commit reference. When not provided, **latest commit in HEAD** will be used as default.
 - `rootDir`: Path to git repository. When not provided, **current working directory** will be used as as default.
 - `output`: Changelog file name to create or update. Defaults to `CHANGELOG.md` and resolved relative to rootDir. Use `--no-output` to write to console only.
+- `--bump`: Determine semver change and update version in `package.json`
 
 ## Configuration
 
