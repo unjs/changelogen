@@ -35,14 +35,6 @@ async function main () {
   if (args.bump || args.release) {
     config.to = await bumpVersion(commits, config)
   }
-  if (args.release) {
-    if (args.commit !== false) {
-      await execa('git', ['commit', '-am', `chore(release): ${config.to}`], { cwd })
-    }
-    if (args.tag !== false) {
-      await execa('git', ['tag', config.to], { cwd })
-    }
-  }
 
   // Generate markdown
   const markdown = generateMarkDown(commits, config)
@@ -72,6 +64,16 @@ async function main () {
     await fsp.writeFile(config.output, changelogMD)
   } else {
     consola.log('\n\n' + markdown + '\n\n')
+  }
+
+  // Commit and tag changes for release mode
+  if (args.release) {
+    if (args.commit !== false) {
+      await execa('git', ['commit', '-am', `chore(release): ${config.to}`], { cwd })
+    }
+    if (args.tag !== false) {
+      await execa('git', ['tag', config.to], { cwd })
+    }
   }
 }
 
