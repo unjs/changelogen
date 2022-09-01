@@ -12,11 +12,16 @@ export interface RawGitCommit {
   author: GitCommitAuthor
 }
 
+export interface Reference {
+  type: 'hash' | 'issue' | 'pull-request'
+  value: string
+}
+
 export interface GitCommit extends RawGitCommit {
   description: string
   type: string
   scope: string
-  references: string[]
+  references: Reference[]
   authors: GitCommitAuthor[]
   isBreaking: boolean
 }
@@ -27,13 +32,20 @@ export async function getLastGitTag () {
 }
 
 export async function getCurrentGitBranch () {
-  const r = await execCommand('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
-  return r
+  return await execCommand('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
 }
 
-export async function getGitDiff (from, to): Promise<RawGitCommit[]> {
+export async function getCurrentGitTag () {
+  return await execCommand('git', ['tag', '--points-at', 'HEAD'])
+}
+
+export async function getCurrentGitRef () {
+  return await getCurrentGitTag() || await getCurrentGitBranch()
+}
+
+export async function getGitDiff (from: string | undefined, to: string = 'HEAD'): Promise<RawGitCommit[]> {
   // https://git-scm.com/docs/pretty-formats
-  const r = await execCommand('git', ['--no-pager', 'log', `${from}...${to}`, '--pretty="----%n%s|%h|%an|%ae%n%b"', '--name-status'])
+  const r = await execCommand('git', ['--no-pager', 'log', `${from ? `${from}...` : ''}${to}`, '--pretty="----%n%s|%h|%an|%ae%n%b"', '--name-status'])
   return r.split('----\n').splice(1).map((line) => {
     const [firstLine, ..._body] = line.split('\n')
     const [message, shortHash, authorName, authorEmail] = firstLine.split('|')
@@ -55,7 +67,8 @@ export function parseCommits (commits: RawGitCommit[], config: ChangelogConfig):
 // https://regex101.com/r/FSfNvA/1
 const ConventionalCommitRegex = /(?<type>[a-z]+)(\((?<scope>.+)\))?(?<breaking>!)?: (?<description>.+)/i
 const CoAuthoredByRegex = /Co-authored-by:\s*(?<name>.+)(<(?<email>.+)>)/gmi
-const ReferencesRegex = /#[0-9]+/gm
+const PullRequestRE = /\([a-z ]*(#[0-9]+)\s*\)/gm
+const IssueRE = /(#[0-9]+)/gm
 
 export function parseGitCommit (commit: RawGitCommit, config: ChangelogConfig): GitCommit | null {
   const match = commit.message.match(ConventionalCommitRegex)
@@ -72,17 +85,19 @@ export function parseGitCommit (commit: RawGitCommit, config: ChangelogConfig): 
   let description = match.groups.description
 
   // Extract references from message
-  const references = []
-  const matches = description.matchAll(ReferencesRegex)
-  for (const m of matches) {
-    references.push(m[0])
+  const references: Reference[] = []
+  for (const m of description.matchAll(PullRequestRE)) {
+    references.push({ type: 'pull-request', value: m[1] })
   }
-  if (!references.length) {
-    references.push(commit.shortHash)
+  for (const m of description.matchAll(IssueRE)) {
+    if (!references.find(i => i.value === m[1])) {
+      references.push({ type: 'issue', value: m[1] })
+    }
   }
+  references.push({ value: commit.shortHash, type: 'hash' })
 
   // Remove references and normalize
-  description = description.replace(ReferencesRegex, '').replace(/\(\)/g, '').trim()
+  description = description.replace(PullRequestRE, '').trim()
 
   // Find all authors
   const authors: GitCommitAuthor[] = [commit.author]
@@ -104,7 +119,7 @@ export function parseGitCommit (commit: RawGitCommit, config: ChangelogConfig): 
   }
 }
 
-async function execCommand (cmd, args) {
+async function execCommand (cmd: string, args: string[]) {
   const { execa } = await import('execa')
   const res = await execa(cmd, args)
   return res.stdout

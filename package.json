@@ -28,25 +28,26 @@
     "lint": "eslint --ext .ts,.js,.mjs,.cjs .",
     "prepack": "unbuild",
     "release": "pnpm test && standard-version && git push --follow-tags && pnpm publish",
-    "test": "pnpm lint && vitest run"
+    "test": "pnpm lint && vitest run --coverage"
   },
   "dependencies": {
-    "c12": "^0.2.7",
+    "c12": "^0.2.10",
     "consola": "^2.15.3",
+    "convert-gitmoji": "^0.1.2",
     "execa": "^6.1.0",
     "mri": "^1.2.0",
-    "scule": "^0.2.1"
+    "scule": "^0.3.2"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "latest",
     "@types/node": "^17.0.31",
-    "c8": "latest",
+    "@vitest/coverage-c8": "^0.22.1",
     "eslint": "latest",
-    "jiti": "^1.13.0",
+    "jiti": "^1.14.0",
     "standard-version": "latest",
     "typescript": "latest",
     "unbuild": "latest",
     "vitest": "latest"
   },
-  "packageManager": "pnpm@7.2.1"
+  "packageManager": "pnpm@7.9.5"
 }

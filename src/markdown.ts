@@ -1,8 +1,7 @@
-import { readFileSync, writeFileSync } from 'fs'
+import { readFileSync } from 'fs'
 import { upperFirst } from 'scule'
-import consola from 'consola'
 import type { ChangelogConfig } from './config'
-import type { GitCommit } from './git'
+import type { GitCommit, Reference } from './git'
 
 export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig) {
   const typeGroups = groupBy(commits, 'type')
@@ -57,22 +56,24 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
   return markdown.join('\n').trim()
 }
 
-export function appendFile (markdown: string, fileName: string) {
-  try {
-    const currentChangelog = readFileSync(`${fileName}.md`)
-    const newChangelog = markdown + '\n\n' + currentChangelog
-    writeFileSync(`${fileName}.md`, newChangelog)
-  } catch (err) {
-    consola.error(err)
-  }
-}
-
 function formatCommit (commit: GitCommit) {
   return '  - ' +
   (commit.scope ? `**${commit.scope.trim()}:** ` : '') +
   (commit.isBreaking ? '⚠️  ' : '') +
-   upperFirst(commit.description) +
-   ` (${commit.references.join(', ')})`
+  upperFirst(commit.description) +
+  formatReference(commit.references)
+}
+
+function formatReference (references: Reference[]) {
+  const pr = references.filter(ref => ref.type === 'pull-request')
+  const issue = references.filter(ref => ref.type === 'issue')
+  if (pr.length || issue.length) {
+    return ' (' + [...pr, ...issue].map(ref => ref.value).join(', ') + ')'
+  }
+  if (references.length) {
+    return ' (' + references[0].value + ')'
+  }
+  return ''
 }
 
 // function formatTitle (title: string = '') {
