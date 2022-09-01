@@ -115,7 +115,10 @@ describe('git', () => {
     const md = generateMarkDown(parsed, config)
 
     expect(md).toMatchInlineSnapshot(`
-      "### 🩹 Fixes
+      "### [27440655a169c2f462d891d2f243db54c174f6b7](https://github.com/unjs/changelogen/compare/31a08615bb7da611dcaefe33b510d23aa7d2cc29...27440655a169c2f462d891d2f243db54c174f6b7)
+
+
+      ### 🩹 Fixes
 
         - **scope:** ⚠️  Breaking change example, close #123 (#134, #123)
         - Expose \`./config\` (#10)
@@ -131,13 +134,7 @@ describe('git', () => {
       ### ❤️  Contributors
 
       - Anthony Fu
-      - Pooya Parsa
-
-
-      ----
-
-
-      Changes from **31a08615bb7da611dcaefe33b510d23aa7d2cc29...27440655a169c2f462d891d2f243db54c174f6b7**"
+      - Pooya Parsa"
     `)
   })
 })
