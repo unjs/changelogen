@@ -31,11 +31,6 @@ async function main () {
     c.scope !== 'deps'
   )
 
-  // Bump version optionally
-  if (args.bump || args.release) {
-    config.to = await bumpVersion(commits, config)
-  }
-
   // Generate markdown
   const markdown = generateMarkDown(commits, config)
 
@@ -66,13 +61,18 @@ async function main () {
     consola.log('\n\n' + markdown + '\n\n')
   }
 
+  // Bump version optionally
+  let newVersion
+  if (args.bump || args.release) {
+    newVersion = await bumpVersion(commits, config)
+  }
   // Commit and tag changes for release mode
   if (args.release) {
     if (args.commit !== false) {
-      await execa('git', ['commit', '-am', `chore(release): ${config.to}`], { cwd })
+      await execa('git', ['commit', '-am', `chore(release): ${newVersion}`], { cwd })
     }
     if (args.tag !== false) {
-      await execa('git', ['tag', '-am', 'v' + config.to, 'v' + config.to], { cwd })
+      await execa('git', ['tag', '-am', 'v' + newVersion, 'v' + newVersion], { cwd })
     }
   }
 }
