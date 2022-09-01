@@ -40,9 +40,7 @@ async function main () {
       changelogMD = await fsp.readFile(config.output, 'utf8')
     } else {
       consola.info(`Creating  ${config.output}`)
-      changelogMD = `# Changelog
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
-\n`
+      changelogMD = '# Changelog\n\n'
     }
 
     const lastEntry = changelogMD.match(/^###?\s+.*$/m)
