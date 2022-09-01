@@ -1,6 +1,6 @@
 import { promises as fsp } from 'fs'
 import { resolve } from 'path'
-import * as semver from 'semver'
+import semver from 'semver'
 import consola from 'consola'
 import type { ChangelogConfig } from './config'
 import type { GitCommit } from './git'
@@ -40,6 +40,7 @@ export async function bumpVersion (commits: GitCommit[], config: ChangelogConfig
   }
 
   if (type) {
+    // eslint-disable-next-line import/no-named-as-default-member
     pkg.version = semver.inc(currentVersion, type)
   }
 
