@@ -1,7 +1,7 @@
 import { upperFirst } from 'scule'
 import { convert } from 'convert-gitmoji'
 import type { ChangelogConfig } from './config'
-import type { GitCommit } from './git'
+import type { GitCommit, Reference } from './git'
 
 export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig) {
   const typeGroups = groupBy(commits, 'type')
@@ -55,8 +55,20 @@ function formatCommit (commit: GitCommit) {
   return '  - ' +
   (commit.scope ? `**${commit.scope.trim()}:** ` : '') +
   (commit.isBreaking ? '⚠️  ' : '') +
-   upperFirst(commit.description) +
-   ` (${commit.references.join(', ')})`
+  upperFirst(commit.description) +
+  formatReference(commit.references)
+}
+
+function formatReference (references: Reference[]) {
+  const pr = references.filter(ref => ref.type === 'pull-request')
+  const issue = references.filter(ref => ref.type === 'issue')
+  if (pr.length || issue.length) {
+    return ' (' + [...pr, ...issue].map(ref => ref.value).join(', ') + ')'
+  }
+  if (references.length) {
+    return ' (' + references[0].value + ')'
+  }
+  return ''
 }
 
 // function formatTitle (title: string = '') {
