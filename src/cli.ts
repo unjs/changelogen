@@ -33,13 +33,13 @@ async function main () {
   const markdown = generateMarkDown(commits, config)
 
   // Update changelog file
-  if (config.changelog) {
+  if (typeof config.output === 'string') {
     let changelogMD: string
-    if (existsSync(config.changelog)) {
-      consola.info(`Updating ${config.changelog}`)
-      changelogMD = await fsp.readFile(config.changelog, 'utf8')
+    if (existsSync(config.output)) {
+      consola.info(`Updating ${config.output}`)
+      changelogMD = await fsp.readFile(config.output, 'utf8')
     } else {
-      consola.info(`Creating  ${config.changelog}`)
+      consola.info(`Creating  ${config.output}`)
       changelogMD = `# Changelog
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 \n`
