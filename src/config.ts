@@ -49,7 +49,7 @@ export async function loadChangelogConfig (cwd: string, overrides?: Partial<Chan
     config.to = await getCurrentGitRef()
   }
 
-  if (!config.output || config.output === '-') {
+  if (!config.output) {
     config.output = false
   } else if (config.output) {
     config.output = resolve(cwd, config.output)
