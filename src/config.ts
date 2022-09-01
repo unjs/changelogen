@@ -1,3 +1,4 @@
+import { resolve } from 'path'
 import { loadConfig } from 'c12'
 import { getLastGitTag, getCurrentGitRef } from './git'
 
@@ -7,8 +8,7 @@ export interface ChangelogConfig {
   github: string
   from: string
   to: string
-  appendFile: boolean
-  filename: string
+  changelog?: string
 }
 
 const ConfigDefaults: ChangelogConfig = {
@@ -29,8 +29,6 @@ const ConfigDefaults: ChangelogConfig = {
   github: '',
   from: '',
   to: '',
-  appendFile: false,
-  filename: 'CHANGELOG',
   scopeMap: {}
 }
 
@@ -48,6 +46,12 @@ export async function loadChangelogConfig (cwd: string, overrides?: Partial<Chan
 
   if (!config.to) {
     config.to = await getCurrentGitRef()
+  }
+
+  if (config.changelog) {
+    config.changelog = resolve(cwd,
+      typeof config.changelog === 'string' ? config.changelog : 'CHANGELOG.md'
+    )
   }
 
   return config

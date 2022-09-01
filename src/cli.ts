@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 import { resolve } from 'path'
+import { existsSync, promises as fsp } from 'fs'
 import consola from 'consola'
 import mri from 'mri'
 import { getGitDiff, parseCommits } from './git'
 import { loadChangelogConfig } from './config'
-import { appendFile, generateMarkDown } from './markdown'
+import { generateMarkDown } from './markdown'
 
 async function main () {
   const args = mri(process.argv.splice(2))
@@ -14,7 +15,7 @@ async function main () {
   const config = await loadChangelogConfig(cwd, {
     from: args.from,
     to: args.to,
-    filename: args.filename
+    changelog: args.changelog
   })
 
   const logger = consola.create({ stdout: process.stderr })
@@ -31,13 +32,31 @@ async function main () {
   // Generate markdown
   const markdown = generateMarkDown(commits, config)
 
-  // Update changelog file
-  if (config.appendFile) {
-    consola.info(`Updating ${config.filename}.md`)
-    appendFile(markdown, config.filename)
-  }
-
   consola.log('\n\n' + markdown + '\n\n')
+
+  // Update changelog file
+  if (config.changelog) {
+    let changelogMD: string
+    if (existsSync(config.changelog)) {
+      consola.info(`Updating ${config.changelog}`)
+      changelogMD = await fsp.readFile(config.changelog, 'utf8')
+    } else {
+      consola.info(`Creating  ${config.changelog}`)
+      changelogMD = `# Changelog
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+\n`
+    }
+
+    const lastEntry = changelogMD.match(/^###?\s+(.*)$/m)
+
+    if (lastEntry) {
+      changelogMD = changelogMD.slice(0, lastEntry.index) + markdown + changelogMD.slice(lastEntry.index)
+    } else {
+      changelogMD += markdown
+    }
+
+    await fsp.writeFile(config.changelog, changelogMD)
+  }
 }
 
 main().catch(consola.error)
