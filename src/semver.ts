@@ -30,8 +30,12 @@ export async function bumpVersion (commits: GitCommit[], config: ChangelogConfig
   const pkg = JSON.parse(await fsp.readFile(pkgPath, 'utf8').catch(() => '{}')) || {}
   const currentVersion = pkg.version || '0.0.0'
 
-  if (type === 'major' && currentVersion.startsWith('0.')) {
-    type = 'minor'
+  if (currentVersion.startsWith('0.')) {
+    if (type === 'major') {
+      type = 'minor'
+    } else if (type === 'minor') {
+      type = 'patch'
+    }
   }
 
   if (type) {
