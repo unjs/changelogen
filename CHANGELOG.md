@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [main](https://github.com/unjs/changelogen/compare/v0.2.3...main)
+
+
+### 🚀 Enhancements
+
+  - **cli:** ⚠️  Show changelog in CLI unless bumping or releasing ([d348943](https://github.com/unjs/changelogen/commit/d348943))
+
+#### ⚠️  Breaking Changes
+
+  - **cli:** ⚠️  Show changelog in CLI unless bumping or releasing ([d348943](https://github.com/unjs/changelogen/commit/d348943))
+
+### ❤️  Contributors
+
+- Pooya Parsa
+
 ## [main](https://github.com/unjs/changelogen/compare/v0.2.2...main)
 
 
