@@ -47,12 +47,15 @@ All notable changes to this project will be documented in this file. See [standa
 \n`
     }
 
-    const lastEntry = changelogMD.match(/^###?\s+(.*)$/m)
+    const lastEntry = changelogMD.match(/^###?\s+.*$/m)
 
     if (lastEntry) {
-      changelogMD = changelogMD.slice(0, lastEntry.index) + markdown + changelogMD.slice(lastEntry.index)
+      changelogMD =
+        changelogMD.slice(0, lastEntry.index) +
+        markdown + '\n\n' +
+        changelogMD.slice(lastEntry.index)
     } else {
-      changelogMD += markdown
+      changelogMD += '\n' + markdown + '\n\n'
     }
 
     await fsp.writeFile(config.changelog, changelogMD)
