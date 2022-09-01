@@ -28,7 +28,7 @@
     "lint": "eslint --ext .ts,.js,.mjs,.cjs .",
     "prepack": "unbuild",
     "release": "pnpm test && standard-version && git push --follow-tags && pnpm publish",
-    "test": "pnpm lint && vitest run"
+    "test": "pnpm lint && vitest run --coverage"
   },
   "dependencies": {
     "c12": "^0.2.10",
@@ -41,7 +41,7 @@
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "latest",
     "@types/node": "^17.0.31",
-    "c8": "latest",
+    "@vitest/coverage-c8": "^0.22.1",
     "eslint": "latest",
     "jiti": "^1.14.0",
     "standard-version": "latest",
