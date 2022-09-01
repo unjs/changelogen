@@ -23,7 +23,7 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
 
     markdown.push('', '### ' + config.types[type].title, '')
     for (const commit of group.reverse()) {
-      const line = formatCommit(commit)
+      const line = formatCommit(commit, config)
       markdown.push(line)
       if (commit.isBreaking) {
         breakingChanges.push(line)
@@ -51,22 +51,35 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
   return convert(markdown.join('\n').trim(), true)
 }
 
-function formatCommit (commit: GitCommit) {
+function formatCommit (commit: GitCommit, config: ChangelogConfig) {
   return '  - ' +
   (commit.scope ? `**${commit.scope.trim()}:** ` : '') +
   (commit.isBreaking ? '⚠️  ' : '') +
   upperFirst(commit.description) +
-  formatReference(commit.references)
+  formatReferences(commit.references, config)
 }
 
-function formatReference (references: Reference[]) {
+const refTypeMap: Record<Reference['type'], string> = {
+  'pull-request': 'pull',
+  hash: 'commit',
+  issue: 'ssue'
+}
+
+function formatReference (ref: Reference, config: ChangelogConfig) {
+  if (!config.github) {
+    return ref.value
+  }
+  return `[${ref.value}](https://github.com/${config.github}/${refTypeMap[ref.type]}/${ref.value.replace(/^#/, '')})`
+}
+
+function formatReferences (references: Reference[], config: ChangelogConfig) {
   const pr = references.filter(ref => ref.type === 'pull-request')
   const issue = references.filter(ref => ref.type === 'issue')
   if (pr.length || issue.length) {
-    return ' (' + [...pr, ...issue].map(ref => ref.value).join(', ') + ')'
+    return ' (' + [...pr, ...issue].map(ref => formatReference(ref, config)).join(', ') + ')'
   }
   if (references.length) {
-    return ' (' + references[0].value + ')'
+    return ' (' + formatReference(references[0], config) + ')'
   }
   return ''
 }
