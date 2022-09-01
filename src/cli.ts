@@ -72,7 +72,7 @@ async function main () {
       await execa('git', ['commit', '-am', `chore(release): ${config.to}`], { cwd })
     }
     if (args.tag !== false) {
-      await execa('git', ['tag', '-a', 'v' + config.to], { cwd })
+      await execa('git', ['tag', '-am', 'v' + config.to, 'v' + config.to], { cwd })
     }
   }
 }
