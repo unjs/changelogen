@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [main](https://github.com/unjs/changelogen/compare/v0.2.0...main)
+
+
+### 🩹 Fixes
+
+  - Use last commit for changelog diff (6ac4b4b)
+  - Use h2 for title (fc0967c)
+
+### ✅ Tests
+
+  - Update snapshot (102aa98)
+
+### ❤️  Contributors
+
+- Pooya Parsa
+
 ## [0.2.0](https://github.com/unjs/changelogen/compare/v0.1.1...0.2.0)
 
 
