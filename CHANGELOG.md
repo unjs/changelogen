@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 - Pooya Parsa
 
-## [0.3.1](https://github.com/unjs/changelogen/compare/v0.3.0...v0.3.1)
+## 0.3.1
 
 
 ### 🚀 Enhancements
@@ -31,7 +31,7 @@ All notable changes to this project will be documented in this file. See [standa
 - Ahad Birang
 - Pooya Parsa
 
-## [0.3.0](https://github.com/unjs/changelogen/compare/v0.2.3...v0.3.0)
+## 0.3.0
 
 
 ### 🚀 Enhancements
@@ -46,7 +46,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 - Pooya Parsa
 
-## [0.2.3](https://github.com/unjs/changelogen/compare/v0.2.2...v0.2.3)
+## 0.2.3
 
 
 ### 🩹 Fixes
@@ -57,7 +57,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 - Pooya Parsa
 
-## [0.2.2](https://github.com/unjs/changelogen/compare/v0.2.1...v0.2.2)
+## 0.2.2
 
 
 ### 🚀 Enhancements
@@ -72,7 +72,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 - Pooya Parsa
 
-## [0.2.1](https://github.com/unjs/changelogen/compare/v0.2.0...v0.2.1)
+## 0.2.1
 
 
 ### 🩹 Fixes
@@ -88,7 +88,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 - Pooya Parsa
 
-## [0.2.0](https://github.com/unjs/changelogen/compare/v0.1.1...0.2.0)
+## 0.2.0
 
 
 ### 🚀 Enhancements
@@ -131,14 +131,14 @@ All notable changes to this project will be documented in this file. See [standa
 - Pooya Parsa
 - 三咲智子
 
-### [0.1.1](https://github.com/unjs/changelogen/compare/v0.1.0...v0.1.1) (2022-06-12)
+### 0.1.1
 
 
 ### Bug Fixes
 
 * remove `general` in entries without scope ([31a0861](https://github.com/unjs/changelogen/commit/31a08615bb7da611dcaefe33b510d23aa7d2cc29))
 
-## [0.1.0](https://github.com/unjs/changelogen/compare/v0.0.6...v0.1.0) (2022-06-12)
+## 0.1.0
 
 
 ### ⚠ BREAKING CHANGES
@@ -147,23 +147,23 @@ All notable changes to this project will be documented in this file. See [standa
 
 * use flat scopes ([8e33e93](https://github.com/unjs/changelogen/commit/8e33e93e6c4aa4b0b727d351fd73590626d1d6ce))
 
-### [0.0.6](https://github.com/unjs/changelogen/compare/v0.0.5...v0.0.6) (2022-05-10)
+### 0.0.6
 
-### [0.0.5](https://github.com/unjs/changelogen/compare/v0.0.4...v0.0.5) (2022-05-05)
+### 0.0.5
 
 
 ### Features
 
 * add missing commitlint types ([#6](https://github.com/unjs/changelogen/issues/6)) ([0a6deef](https://github.com/unjs/changelogen/commit/0a6deefae9a433bbb2136ac8675976ac455dd159))
 
-### [0.0.4](https://github.com/unjs/changelogen/compare/v0.0.3...v0.0.4) (2022-05-05)
+### 0.0.4
 
 
 ### Bug Fixes
 
 * **cli:** use `/usr/bin/env` (resolves [#5](https://github.com/unjs/changelogen/issues/5)) ([e4218cc](https://github.com/unjs/changelogen/commit/e4218cc08d07b597137469396ba83ec709d7f174))
 
-### [0.0.3](https://github.com/unjs/changelogen/compare/v0.0.2...v0.0.3) (2022-05-02)
+### 0.0.3
 
 
 ### Features
