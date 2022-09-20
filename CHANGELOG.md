@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.1](https://github.com/unjs/changelogen/compare/v0.3.0...main)
+
+
+### 🚀 Enhancements
+
+  - Handle new version before generating changelog ([fd56f6b](https://github.com/unjs/changelogen/commit/fd56f6b))
+
+### 🩹 Fixes
+
+  - Use `creatordate` to find last tag ([#39](https://github.com/unjs/changelogen/pull/39))
+
+### ❤️  Contributors
+
+- Ahad Birang
+- Pooya Parsa
+
 ## [main](https://github.com/unjs/changelogen/compare/v0.2.3...main)
 
 
