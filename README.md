@@ -41,6 +41,7 @@ npx changelogen@latest [...args] [<rootDir>]
 - `--output`: Changelog file name to create or update. Defaults to `CHANGELOG.md` and resolved relative to rootDir. Use `--no-output` to write to console only.
 - `--bump`: Determine semver change and update version in `package.json`.
 - `--release`. Bumps version in `package.json` and creates commit and git tags using local `git`. You can disable commit using `--no-commit` and tag using `--no-tag`.
+- `-r`: Release as specific version.
 
 ## Configuration
 

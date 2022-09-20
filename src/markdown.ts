@@ -10,10 +10,14 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
   const breakingChanges = []
 
   // Version Title
-  const compareLink = config.github ? `https://github.com/${config.github}/compare/${config.from}...${config.to}` : ''
+  const v = config.newVersion && `v${config.newVersion}`
   markdown.push('',
-    '## ' + (compareLink ? `[${config.newVersion || config.to}](${compareLink})` : `${config.to} (${config.from}..${config.to})`)
+    '## ' + (v || `${config.from}...${config.to}`)
     , '')
+
+  if (config.github) {
+    markdown.push(`[compare changes](https://github.com/${config.github}/compare/${config.from}...${v || config.to})`, '')
+  }
 
   for (const type in config.types) {
     const group = typeGroups[type]

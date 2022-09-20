@@ -36,7 +36,8 @@ async function main () {
   if (args.bump || args.release) {
     const newVersion = await bumpVersion(commits, config)
     if (!newVersion) {
-      throw new Error('Unable to bump version based on changes.')
+      consola.error('Unable to bump version based on changes.')
+      process.exit(1)
     }
     config.newVersion = newVersion
   }

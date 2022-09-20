@@ -115,7 +115,9 @@ describe('git', () => {
     const md = generateMarkDown(parsed, config)
 
     expect(md).toMatchInlineSnapshot(`
-      "## [27440655a169c2f462d891d2f243db54c174f6b7](https://github.com/unjs/changelogen/compare/31a08615bb7da611dcaefe33b510d23aa7d2cc29...27440655a169c2f462d891d2f243db54c174f6b7)
+      "## 31a08615bb7da611dcaefe33b510d23aa7d2cc29...27440655a169c2f462d891d2f243db54c174f6b7
+
+      [compare changes](https://github.com/unjs/changelogen/compare/31a08615bb7da611dcaefe33b510d23aa7d2cc29...27440655a169c2f462d891d2f243db54c174f6b7)
 
 
       ### 🩹 Fixes
