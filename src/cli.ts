@@ -17,7 +17,8 @@ async function main () {
   const config = await loadChangelogConfig(cwd, {
     from: args.from,
     to: args.to,
-    output: args.output
+    output: args.output,
+    newVersion: args.r
   })
 
   const logger = consola.create({ stdout: process.stderr })
@@ -30,6 +31,15 @@ async function main () {
     config.types[c.type] &&
     c.scope !== 'deps'
   )
+
+  // Bump version optionally
+  if (args.bump || args.release) {
+    const newVersion = await bumpVersion(commits, config)
+    if (!newVersion) {
+      throw new Error('Unable to bump version based on changes.')
+    }
+    config.newVersion = newVersion
+  }
 
   // Generate markdown
   const markdown = generateMarkDown(commits, config)
@@ -65,18 +75,13 @@ async function main () {
     await fsp.writeFile(config.output, changelogMD)
   }
 
-  // Bump version optionally
-  let newVersion
-  if (args.bump || args.release) {
-    newVersion = await bumpVersion(commits, config)
-  }
   // Commit and tag changes for release mode
   if (args.release) {
     if (args.commit !== false) {
-      await execa('git', ['commit', '-am', `chore(release): ${newVersion}`], { cwd })
+      await execa('git', ['commit', '-am', `chore(release): v${config.newVersion}`], { cwd })
     }
     if (args.tag !== false) {
-      await execa('git', ['tag', '-am', 'v' + newVersion, 'v' + newVersion], { cwd })
+      await execa('git', ['tag', '-am', 'v' + config.newVersion, 'v' + config.newVersion], { cwd })
     }
   }
 }

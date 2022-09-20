@@ -12,7 +12,7 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
   // Version Title
   const compareLink = config.github ? `https://github.com/${config.github}/compare/${config.from}...${config.to}` : ''
   markdown.push('',
-    '## ' + (compareLink ? `[${config.to}](${compareLink})` : `${config.to} (${config.from}..${config.to})`)
+    '## ' + (compareLink ? `[${config.newVersion || config.to}](${compareLink})` : `${config.to} (${config.from}..${config.to})`)
     , '')
 
   for (const type in config.types) {

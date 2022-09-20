@@ -10,6 +10,7 @@ export interface ChangelogConfig {
   github: string
   from: string
   to: string
+  newVersion?: string
   output: string | false
 }
 

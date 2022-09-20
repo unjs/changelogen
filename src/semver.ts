@@ -23,7 +23,7 @@ export function determineSemverChange (commits: GitCommit[], config: ChangelogCo
   return hasMajor ? 'major' : (hasMinor ? 'minor' : (hasPatch ? 'patch' : null))
 }
 
-export async function bumpVersion (commits: GitCommit[], config: ChangelogConfig) {
+export async function bumpVersion (commits: GitCommit[], config: ChangelogConfig): Promise<string | false> {
   let type = determineSemverChange(commits, config)
   const originalType = type
 
@@ -39,15 +39,20 @@ export async function bumpVersion (commits: GitCommit[], config: ChangelogConfig
     }
   }
 
-  if (type) {
+  if (config.newVersion) {
+    pkg.version = config.newVersion
+  } else if (type) {
     // eslint-disable-next-line import/no-named-as-default-member
     pkg.version = semver.inc(currentVersion, type)
+    config.newVersion = pkg.version
   }
 
-  if (pkg.version !== currentVersion) {
-    consola.info(`Bumping version from ${currentVersion} to ${pkg.version} (${originalType})`)
-    await fsp.writeFile(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf8')
+  if (pkg.version === currentVersion) {
+    return false
   }
+
+  consola.info(`Bumping version from ${currentVersion} to ${pkg.version} (${originalType})`)
+  await fsp.writeFile(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf8')
 
   return pkg.version
 }
