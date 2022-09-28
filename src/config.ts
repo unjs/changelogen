@@ -11,7 +11,7 @@ export interface ChangelogConfig {
   from: string
   to: string
   newVersion?: string
-  output: string | false
+  output: string | boolean
 }
 
 const ConfigDefaults: ChangelogConfig = {
@@ -59,7 +59,7 @@ export async function loadChangelogConfig (cwd: string, overrides?: Partial<Chan
   if (!config.output) {
     config.output = false
   } else if (config.output) {
-    config.output = resolve(cwd, config.output)
+    config.output = config.output === true ? ConfigDefaults.output : resolve(cwd, config.output)
   }
 
   return config
