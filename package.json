@@ -40,16 +40,16 @@
     "semver": "^7.3.8"
   },
   "devDependencies": {
-    "@nuxtjs/eslint-config-typescript": "latest",
-    "@types/node": "^17.0.31",
+    "@nuxtjs/eslint-config-typescript": "^11.0.0",
+    "@types/node": "^18.11.0",
     "@types/semver": "^7.3.12",
     "@vitest/coverage-c8": "^0.24.3",
-    "eslint": "latest",
+    "eslint": "^8.25.0",
     "jiti": "^1.16.0",
-    "standard-version": "latest",
-    "typescript": "latest",
-    "unbuild": "latest",
-    "vitest": "latest"
+    "standard-version": "^9.5.0",
+    "typescript": "^4.8.4",
+    "unbuild": "^0.9.4",
+    "vitest": "^0.24.3"
   },
   "packageManager": "pnpm@7.13.4"
 }
