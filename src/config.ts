@@ -1,5 +1,6 @@
 import { resolve } from 'path'
 import { loadConfig } from 'c12'
+import { readPackageJSON } from 'pkg-types'
 import { getLastGitTag, getCurrentGitRef } from './git'
 import type { SemverBumpType } from './semver'
 
@@ -60,6 +61,16 @@ export async function loadChangelogConfig (cwd: string, overrides?: Partial<Chan
     config.output = false
   } else if (config.output) {
     config.output = config.output === true ? ConfigDefaults.output : resolve(cwd, config.output)
+  }
+
+  if (!config.github) {
+    const pkg = await readPackageJSON(cwd).catch(() => {})
+    if (pkg && pkg.repository) {
+      const repo = typeof pkg.repository === 'string' ? pkg.repository : pkg.repository.url
+      if (/^[\w]+\/[\w]+$/.test(repo)) {
+        config.github = repo
+      }
+    }
   }
 
   return config
