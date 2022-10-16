@@ -29,7 +29,7 @@ async function main () {
   // Parse commits as conventional commits
   const commits = parseCommits(rawCommits, config).filter(c =>
     config.types[c.type] &&
-    c.scope !== 'deps'
+    !(c.type === 'chore' && c.scope === 'deps' && !c.isBreaking)
   )
 
   // Bump version optionally
