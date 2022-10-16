@@ -52,7 +52,7 @@ async function main () {
   }
 
   // Update changelog file (only when bumping or releasing or when --output is specified as a file)
-  if (config.output && (args.output || !displayOnly)) {
+  if (typeof config.output === 'string' && (args.output || !displayOnly)) {
     let changelogMD: string
     if (existsSync(config.output)) {
       consola.info(`Updating ${config.output}`)
