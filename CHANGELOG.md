@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v0.3.5
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.3.4...v0.3.5)
+
+
+### 🩹 Fixes
+
+  - Only skip non breaking `chre(deps)` ([20e622e](https://github.com/unjs/changelogen/commit/20e622e))
+
+### ❤️  Contributors
+
+- Pooya Parsa
+
 ## v0.3.4
 
 [compare changes](https://github.com/unjs/changelogen/compare/v0.3.3...v0.3.4)
