@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v0.3.3
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.3.2...v0.3.3)
+
+
+### 🚀 Enhancements
+
+  - Expose `determineSemverChange` and `bumpVersion` ([5451f18](https://github.com/unjs/changelogen/commit/5451f18))
+
+### 🩹 Fixes
+
+  - Let `--output` work without value ([#43](https://github.com/unjs/changelogen/pull/43))
+  - Consider docs and refactor as semver patch for bump ([648ccf1](https://github.com/unjs/changelogen/commit/648ccf1))
+
+### 🏡 Chore
+
+  - Manually update old changelog entries ([c3ff561](https://github.com/unjs/changelogen/commit/c3ff561))
+  - Update dependencies ([c210976](https://github.com/unjs/changelogen/commit/c210976))
+  - Fix typecheck ([8796cf1](https://github.com/unjs/changelogen/commit/8796cf1))
+
+### ❤️  Contributors
+
+- Lvjiaxuan
+- Pooya Parsa
+
 ## v0.3.2
 
 [compare changes](https://github.com/unjs/changelogen/compare/v0.3.1...v0.3.2)
