@@ -42,6 +42,7 @@ npx changelogen@latest [...args] [<rootDir>]
 - `--bump`: Determine semver change and update version in `package.json`.
 - `--release`. Bumps version in `package.json` and creates commit and git tags using local `git`. You can disable commit using `--no-commit` and tag using `--no-tag`.
 - `-r`: Release as specific version.
+- `--recursive`: Generate a CHANGELOG in every dir that have a package.json file. You can optionnaly specify a glob pattern to packages.json files (e.g: `changelogen --recursive packages/**/package.json`)
 
 ## Configuration
 

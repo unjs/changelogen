@@ -1,4 +1,3 @@
-import { resolve } from 'path'
 import { loadConfig } from 'c12'
 import { readPackageJSON } from 'pkg-types'
 import { getLastGitTag, getCurrentGitRef } from './git'
@@ -13,6 +12,7 @@ export interface ChangelogConfig {
   to: string
   newVersion?: string
   output: string | boolean
+  recursive?: string | boolean
 }
 
 const ConfigDefaults: ChangelogConfig = {
@@ -60,7 +60,7 @@ export async function loadChangelogConfig (cwd: string, overrides?: Partial<Chan
   if (!config.output) {
     config.output = false
   } else if (config.output) {
-    config.output = config.output === true ? ConfigDefaults.output : resolve(cwd, config.output)
+    config.output = config.output === true ? ConfigDefaults.output : config.output
   }
 
   if (!config.github) {
