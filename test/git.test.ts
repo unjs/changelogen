@@ -303,8 +303,7 @@ describe('git', () => {
 
       ### ❤️  Contributors
 
-      - Pooya Parsa ([@pi0](http://github.com/pi0))
-      - Renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>"
+      - Pooya Parsa ([@pi0](http://github.com/pi0))"
     `)
   })
 })

@@ -45,13 +45,14 @@ export async function generateMarkDown (commits: GitCommit[], config: ChangelogC
 
   const _authors = new Map<string, { email: Set<string>, github?: string }>()
   for (const commit of commits) {
-    if (commit.author) {
-      if (!_authors.has(commit.author.name)) {
-        _authors.set(commit.author.name, { email: new Set([commit.author.email]) })
-      } else {
-        const entry = _authors.get(commit.author.name)
-        entry.email.add(commit.author.email)
-      }
+    if (!commit.author || commit.author.name.includes('[bot]')) {
+      continue
+    }
+    if (!_authors.has(commit.author.name)) {
+      _authors.set(commit.author.name, { email: new Set([commit.author.email]) })
+    } else {
+      const entry = _authors.get(commit.author.name)
+      entry.email.add(commit.author.email)
     }
   }
 
