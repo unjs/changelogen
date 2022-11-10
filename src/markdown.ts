@@ -76,7 +76,8 @@ export async function generateMarkDown (commits: GitCommit[], config: ChangelogC
       '', '### ' + '❤️  Contributors', '',
       ...authors.map((i) => {
         const name = formatName(i.name)
-        const email = i.email.size ? `<${Array.from(i.email)[0]}>` : ''
+        const _email = Array.from(i.email).filter(e => !e.includes('noreply.github.com'))[0]
+        const email = _email ? `<${_email}>` : ''
         const github = i.github ? `([@${i.github}](http://github.com/${i.github}))` : ''
         return `- ${name} ${github || email}`
       })
