@@ -14,8 +14,8 @@ describe('git', () => {
   })
 
   test('parse', async () => {
-    const COMMIT_FROM = '31a08615bb7da611dcaefe33b510d23aa7d2cc29'
-    const COMMIT_TO = '27440655a169c2f462d891d2f243db54c174f6b7'
+    const COMMIT_FROM = '1cb15d5dd93302ebd5ff912079ed584efcc6703b'
+    const COMMIT_TO = '3828bda8c45933396ddfa869d671473231ce3c95'
 
     const commits = await getGitDiff(COMMIT_FROM, COMMIT_TO)
     commits[1].message = 'fix(scope)!: breaking change example, close #123 (#134)'
@@ -23,27 +23,83 @@ describe('git', () => {
       [
         {
           "author": {
-            "email": "anthonyfu117@hotmail.com",
-            "name": "Anthony Fu",
+            "email": "pooya@pi0.io",
+            "name": "Pooya Parsa",
           },
-          "message": "fix: expose \`./config\` (#10)",
-          "shortHash": "2744065",
+          "message": "chore(release): v0.3.5",
+          "shortHash": "3828bda",
         },
         {
           "author": {
-            "email": "pyapar@gmail.com",
+            "email": "pooya@pi0.io",
             "name": "Pooya Parsa",
           },
           "message": "fix(scope)!: breaking change example, close #123 (#134)",
-          "shortHash": "37c407c",
+          "shortHash": "20e622e",
         },
         {
           "author": {
-            "email": "pyapar@gmail.com",
+            "email": "pooya@pi0.io",
             "name": "Pooya Parsa",
           },
-          "message": "build: use dynamic import for execa for cjs support",
-          "shortHash": "a794cf1",
+          "message": "chore(release): v0.3.4",
+          "shortHash": "6fc5087",
+        },
+        {
+          "author": {
+            "email": "pooya@pi0.io",
+            "name": "Pooya Parsa",
+          },
+          "message": "feat: infer github config from package.json (resolves #37)",
+          "shortHash": "c0febf1",
+        },
+        {
+          "author": {
+            "email": "pooya@pi0.io",
+            "name": "Pooya Parsa",
+          },
+          "message": "chore(release): v0.3.3",
+          "shortHash": "f4f42a3",
+        },
+        {
+          "author": {
+            "email": "pooya@pi0.io",
+            "name": "Pooya Parsa",
+          },
+          "message": "fix: consider docs and refactor as semver patch for bump",
+          "shortHash": "648ccf1",
+        },
+        {
+          "author": {
+            "email": "pooya@pi0.io",
+            "name": "Pooya Parsa",
+          },
+          "message": "feat: expose \`determineSemverChange\` and \`bumpVersion\`",
+          "shortHash": "5451f18",
+        },
+        {
+          "author": {
+            "email": "pooya@pi0.io",
+            "name": "Pooya Parsa",
+          },
+          "message": "chore: fix typecheck",
+          "shortHash": "8796cf1",
+        },
+        {
+          "author": {
+            "email": "pooya@pi0.io",
+            "name": "Pooya Parsa",
+          },
+          "message": "chore: update dependencies",
+          "shortHash": "c210976",
+        },
+        {
+          "author": {
+            "email": "29139614+renovate[bot]@users.noreply.github.com",
+            "name": "renovate[bot]",
+          },
+          "message": "chore(deps): update all non-major dependencies (#42)",
+          "shortHash": "a80e372",
         },
       ]
     `)
@@ -56,22 +112,18 @@ describe('git', () => {
     expect(parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest)).toMatchInlineSnapshot(`
       [
         {
-          "description": "expose \`./config\`",
+          "description": "v0.3.5",
           "isBreaking": false,
-          "message": "fix: expose \`./config\` (#10)",
+          "message": "chore(release): v0.3.5",
           "references": [
             {
-              "type": "pull-request",
-              "value": "#10",
-            },
-            {
               "type": "hash",
-              "value": "2744065",
+              "value": "3828bda",
             },
           ],
-          "scope": "",
-          "shortHash": "2744065",
-          "type": "fix",
+          "scope": "release",
+          "shortHash": "3828bda",
+          "type": "chore",
         },
         {
           "description": "breaking change example, close #123",
@@ -88,26 +140,132 @@ describe('git', () => {
             },
             {
               "type": "hash",
-              "value": "37c407c",
+              "value": "20e622e",
             },
           ],
           "scope": "scope",
-          "shortHash": "37c407c",
+          "shortHash": "20e622e",
           "type": "fix",
         },
         {
-          "description": "use dynamic import for execa for cjs support",
+          "description": "v0.3.4",
           "isBreaking": false,
-          "message": "build: use dynamic import for execa for cjs support",
+          "message": "chore(release): v0.3.4",
           "references": [
             {
               "type": "hash",
-              "value": "a794cf1",
+              "value": "6fc5087",
+            },
+          ],
+          "scope": "release",
+          "shortHash": "6fc5087",
+          "type": "chore",
+        },
+        {
+          "description": "infer github config from package.json",
+          "isBreaking": false,
+          "message": "feat: infer github config from package.json (resolves #37)",
+          "references": [
+            {
+              "type": "pull-request",
+              "value": "#37",
+            },
+            {
+              "type": "hash",
+              "value": "c0febf1",
             },
           ],
           "scope": "",
-          "shortHash": "a794cf1",
-          "type": "build",
+          "shortHash": "c0febf1",
+          "type": "feat",
+        },
+        {
+          "description": "v0.3.3",
+          "isBreaking": false,
+          "message": "chore(release): v0.3.3",
+          "references": [
+            {
+              "type": "hash",
+              "value": "f4f42a3",
+            },
+          ],
+          "scope": "release",
+          "shortHash": "f4f42a3",
+          "type": "chore",
+        },
+        {
+          "description": "consider docs and refactor as semver patch for bump",
+          "isBreaking": false,
+          "message": "fix: consider docs and refactor as semver patch for bump",
+          "references": [
+            {
+              "type": "hash",
+              "value": "648ccf1",
+            },
+          ],
+          "scope": "",
+          "shortHash": "648ccf1",
+          "type": "fix",
+        },
+        {
+          "description": "expose \`determineSemverChange\` and \`bumpVersion\`",
+          "isBreaking": false,
+          "message": "feat: expose \`determineSemverChange\` and \`bumpVersion\`",
+          "references": [
+            {
+              "type": "hash",
+              "value": "5451f18",
+            },
+          ],
+          "scope": "",
+          "shortHash": "5451f18",
+          "type": "feat",
+        },
+        {
+          "description": "fix typecheck",
+          "isBreaking": false,
+          "message": "chore: fix typecheck",
+          "references": [
+            {
+              "type": "hash",
+              "value": "8796cf1",
+            },
+          ],
+          "scope": "",
+          "shortHash": "8796cf1",
+          "type": "chore",
+        },
+        {
+          "description": "update dependencies",
+          "isBreaking": false,
+          "message": "chore: update dependencies",
+          "references": [
+            {
+              "type": "hash",
+              "value": "c210976",
+            },
+          ],
+          "scope": "",
+          "shortHash": "c210976",
+          "type": "chore",
+        },
+        {
+          "description": "update all non-major dependencies",
+          "isBreaking": false,
+          "message": "chore(deps): update all non-major dependencies (#42)",
+          "references": [
+            {
+              "type": "pull-request",
+              "value": "#42",
+            },
+            {
+              "type": "hash",
+              "value": "a80e372",
+            },
+          ],
+          "scope": "deps",
+          "shortHash": "a80e372",
+          "type": "chore",
         },
       ]
     `)
@@ -115,19 +273,29 @@ describe('git', () => {
     const md = await generateMarkDown(parsed, config)
 
     expect(md).toMatchInlineSnapshot(`
-      "## 31a08615bb7da611dcaefe33b510d23aa7d2cc29...27440655a169c2f462d891d2f243db54c174f6b7
+      "## 1cb15d5dd93302ebd5ff912079ed584efcc6703b...3828bda8c45933396ddfa869d671473231ce3c95
 
-      [compare changes](https://github.com/unjs/changelogen/compare/31a08615bb7da611dcaefe33b510d23aa7d2cc29...27440655a169c2f462d891d2f243db54c174f6b7)
+      [compare changes](https://github.com/unjs/changelogen/compare/1cb15d5dd93302ebd5ff912079ed584efcc6703b...3828bda8c45933396ddfa869d671473231ce3c95)
 
+
+      ### 🚀 Enhancements
+
+        - Expose \`determineSemverChange\` and \`bumpVersion\` ([5451f18](https://github.com/unjs/changelogen/commit/5451f18))
+        - Infer github config from package.json ([#37](https://github.com/unjs/changelogen/pull/37))
 
       ### 🩹 Fixes
 
+        - Consider docs and refactor as semver patch for bump ([648ccf1](https://github.com/unjs/changelogen/commit/648ccf1))
         - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/ssue/123))
-        - Expose \`./config\` ([#10](https://github.com/unjs/changelogen/pull/10))
 
-      ### 📦 Build
+      ### 🏡 Chore
 
-        - Use dynamic import for execa for cjs support ([a794cf1](https://github.com/unjs/changelogen/commit/a794cf1))
+        - **deps:** Update all non-major dependencies ([#42](https://github.com/unjs/changelogen/pull/42))
+        - Update dependencies ([c210976](https://github.com/unjs/changelogen/commit/c210976))
+        - Fix typecheck ([8796cf1](https://github.com/unjs/changelogen/commit/8796cf1))
+        - **release:** V0.3.3 ([f4f42a3](https://github.com/unjs/changelogen/commit/f4f42a3))
+        - **release:** V0.3.4 ([6fc5087](https://github.com/unjs/changelogen/commit/6fc5087))
+        - **release:** V0.3.5 ([3828bda](https://github.com/unjs/changelogen/commit/3828bda))
 
       #### ⚠️  Breaking Changes
 
@@ -135,8 +303,8 @@ describe('git', () => {
 
       ### ❤️  Contributors
 
-      - Anthony Fu
-      - Pooya Parsa"
+      - Pooya Parsa ([@pi0](http://github.com/pi0))
+      - Renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>"
     `)
   })
 })
