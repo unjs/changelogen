@@ -45,13 +45,15 @@ export async function generateMarkDown (commits: GitCommit[], config: ChangelogC
 
   const _authors = new Map<string, { email: Set<string>, github?: string }>()
   for (const commit of commits) {
-    if (!commit.author || commit.author.name.includes('[bot]')) {
+    if (!commit.author) { continue }
+    const name = formatName(commit.author.name)
+    if (!name || name.includes('[bot]')) {
       continue
     }
-    if (!_authors.has(commit.author.name)) {
-      _authors.set(commit.author.name, { email: new Set([commit.author.email]) })
+    if (!_authors.has(name)) {
+      _authors.set(name, { email: new Set([commit.author.email]) })
     } else {
-      const entry = _authors.get(commit.author.name)
+      const entry = _authors.get(name)
       entry.email.add(commit.author.email)
     }
   }
@@ -76,11 +78,10 @@ export async function generateMarkDown (commits: GitCommit[], config: ChangelogC
     markdown.push(
       '', '### ' + '❤️  Contributors', '',
       ...authors.map((i) => {
-        const name = formatName(i.name)
         const _email = Array.from(i.email).filter(e => !e.includes('noreply.github.com'))[0]
         const email = _email ? `<${_email}>` : ''
         const github = i.github ? `([@${i.github}](http://github.com/${i.github}))` : ''
-        return `- ${name} ${github || email}`
+        return `- ${i.name} ${github || email}`
       })
     )
   }
