@@ -135,7 +135,3 @@ function groupBy (items: any[], key: string) {
   }
   return groups
 }
-
-function uniq (items: any[]) {
-  return Array.from(new Set(items))
-}
