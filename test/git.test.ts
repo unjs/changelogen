@@ -112,7 +112,7 @@ describe('git', () => {
       ]
     `)
 
-    const md = generateMarkDown(parsed, config)
+    const md = await generateMarkDown(parsed, config)
 
     expect(md).toMatchInlineSnapshot(`
       "## 31a08615bb7da611dcaefe33b510d23aa7d2cc29...27440655a169c2f462d891d2f243db54c174f6b7
