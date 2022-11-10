@@ -36,6 +36,7 @@
     "convert-gitmoji": "^0.1.2",
     "execa": "^6.1.0",
     "mri": "^1.2.0",
+    "node-fetch-native": "^0.1.8",
     "pkg-types": "^0.3.5",
     "scule": "^0.3.2",
     "semver": "^7.3.8"

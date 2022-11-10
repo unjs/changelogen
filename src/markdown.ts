@@ -1,9 +1,10 @@
 import { upperFirst } from 'scule'
 import { convert } from 'convert-gitmoji'
+import { fetch } from 'node-fetch-native'
 import type { ChangelogConfig } from './config'
 import type { GitCommit, Reference } from './git'
 
-export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig) {
+export async function generateMarkDown (commits: GitCommit[], config: ChangelogConfig) {
   const typeGroups = groupBy(commits, 'type')
 
   const markdown: string[] = []
@@ -42,13 +43,43 @@ export function generateMarkDown (commits: GitCommit[], config: ChangelogConfig)
     )
   }
 
-  let authors = commits.flatMap(commit => commit.authors.map(author => formatName(author.name)))
-  authors = uniq(authors).sort()
+  const _authors = new Map<string, { email: Set<string>, github?: string }>()
+  for (const commit of commits) {
+    if (commit.author) {
+      if (!_authors.has(commit.author.name)) {
+        _authors.set(commit.author.name, { email: new Set([commit.author.email]) })
+      } else {
+        const entry = _authors.get(commit.author.name)
+        entry.email.add(commit.author.email)
+      }
+    }
+  }
+
+  // Try to map authors to github usernames
+  await Promise.all(Array.from(_authors.keys()).map(async (authorName) => {
+    const meta = _authors.get(authorName)
+    for (const email of meta.email) {
+      const { user } = await fetch(`https://ungh.unjs.io/user/find/${email}`)
+        .then(r => r.json())
+        .catch(() => ({ user: null }))
+      if (user) {
+        meta.github = user.username
+        break
+      }
+    }
+  }))
+
+  const authors = Array.from(_authors.entries()).map(e => ({ name: e[0], ...e[1] }))
 
   if (authors.length) {
     markdown.push(
       '', '### ' + '❤️  Contributors', '',
-      ...authors.map(name => '- ' + name)
+      ...authors.map((i) => {
+        const name = formatName(i.name)
+        const email = i.email.size ? `<${Array.from(i.email)[0]}>` : ''
+        const github = i.github ? `([@${i.github}](http://github.com/${i.github}))` : ''
+        return `- ${name} ${github || email}`
+      })
     )
   }
 
@@ -103,8 +134,4 @@ function groupBy (items: any[], key: string) {
     groups[item[key]].push(item)
   }
   return groups
-}
-
-function uniq (items: any[]) {
-  return Array.from(new Set(items))
 }

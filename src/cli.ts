@@ -43,7 +43,7 @@ async function main () {
   }
 
   // Generate markdown
-  const markdown = generateMarkDown(commits, config)
+  const markdown = await generateMarkDown(commits, config)
 
   // Show changelog in CLI unless bumping or releasing
   const displayOnly = !args.bump && !args.release
