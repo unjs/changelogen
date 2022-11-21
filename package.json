@@ -38,7 +38,7 @@
     "mri": "^1.2.0",
     "node-fetch-native": "^0.1.8",
     "pkg-types": "^0.3.6",
-    "scule": "^0.3.2",
+    "scule": "^1.0.0",
     "semver": "^7.3.8"
   },
   "devDependencies": {

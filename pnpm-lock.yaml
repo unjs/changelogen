@@ -14,7 +14,7 @@ specifiers:
   mri: ^1.2.0
   node-fetch-native: ^0.1.8
   pkg-types: ^0.3.6
-  scule: ^0.3.2
+  scule: ^1.0.0
   semver: ^7.3.8
   standard-version: ^9.5.0
   typescript: ^4.8.4
@@ -29,7 +29,7 @@ dependencies:
   mri: 1.2.0
   node-fetch-native: 0.1.8
   pkg-types: 0.3.6
-  scule: 0.3.2
+  scule: 1.0.0
   semver: 7.3.8
 
 devDependencies:
@@ -3723,6 +3723,11 @@ packages:
 
   /scule/0.3.2:
     resolution: {integrity: sha512-zIvPdjOH8fv8CgrPT5eqtxHQXmPNnV/vHJYffZhE43KZkvULvpCTvOt1HPlFaCZx287INL9qaqrZg34e8NgI4g==}
+    dev: true
+
+  /scule/1.0.0:
+    resolution: {integrity: sha512-4AsO/FrViE/iDNEPaAQlb77tf0csuq27EsVpy6ett584EcRTp6pTDLoGWVxCD77y5iU5FauOvhsI4o1APwPoSQ==}
+    dev: false
 
   /semver/5.7.1:
     resolution: {integrity: sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==}
