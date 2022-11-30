@@ -2,13 +2,15 @@ import { resolve } from 'path'
 import { loadConfig } from 'c12'
 import { readPackageJSON } from 'pkg-types'
 import { getLastGitTag, getCurrentGitRef } from './git'
+import { getHostConfig } from './host'
 import type { SemverBumpType } from './semver'
+import type { HostConfig } from './host'
 
 export interface ChangelogConfig {
   cwd: string
   types: Record<string, { title: string, semver?: SemverBumpType }>
   scopeMap: Record<string, string>
-  github: string
+  host?: HostConfig
   from: string
   to: string
   newVersion?: string
@@ -31,7 +33,6 @@ const ConfigDefaults: ChangelogConfig = {
     ci: { title: '🤖 CI' }
   },
   cwd: null,
-  github: '',
   from: '',
   to: '',
   output: 'CHANGELOG.md',
@@ -63,13 +64,11 @@ export async function loadChangelogConfig (cwd: string, overrides?: Partial<Chan
     config.output = config.output === true ? ConfigDefaults.output : resolve(cwd, config.output)
   }
 
-  if (!config.github) {
+  if (!config.host) {
     const pkg = await readPackageJSON(cwd).catch(() => {})
     if (pkg && pkg.repository) {
       const repo = typeof pkg.repository === 'string' ? pkg.repository : pkg.repository.url
-      if (/^[\w]+\/[\w]+$/.test(repo)) {
-        config.github = repo
-      }
+      config.host = getHostConfig(repo)
     }
   }
 

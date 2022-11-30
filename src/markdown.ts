@@ -3,6 +3,7 @@ import { convert } from 'convert-gitmoji'
 import { fetch } from 'node-fetch-native'
 import type { ChangelogConfig } from './config'
 import type { GitCommit, Reference } from './git'
+import { formatReference, formatCompareChanges } from './host'
 
 export async function generateMarkDown (commits: GitCommit[], config: ChangelogConfig) {
   const typeGroups = groupBy(commits, 'type')
@@ -16,8 +17,8 @@ export async function generateMarkDown (commits: GitCommit[], config: ChangelogC
     '## ' + (v || `${config.from}...${config.to}`)
     , '')
 
-  if (config.github) {
-    markdown.push(`[compare changes](https://github.com/${config.github}/compare/${config.from}...${v || config.to})`, '')
+  if (config.host) {
+    markdown.push(formatCompareChanges(v, config), '')
   }
 
   for (const type in config.types) {
@@ -97,27 +98,14 @@ function formatCommit (commit: GitCommit, config: ChangelogConfig) {
   formatReferences(commit.references, config)
 }
 
-const refTypeMap: Record<Reference['type'], string> = {
-  'pull-request': 'pull',
-  hash: 'commit',
-  issue: 'ssue'
-}
-
-function formatReference (ref: Reference, config: ChangelogConfig) {
-  if (!config.github) {
-    return ref.value
-  }
-  return `[${ref.value}](https://github.com/${config.github}/${refTypeMap[ref.type]}/${ref.value.replace(/^#/, '')})`
-}
-
 function formatReferences (references: Reference[], config: ChangelogConfig) {
   const pr = references.filter(ref => ref.type === 'pull-request')
   const issue = references.filter(ref => ref.type === 'issue')
   if (pr.length || issue.length) {
-    return ' (' + [...pr, ...issue].map(ref => formatReference(ref, config)).join(', ') + ')'
+    return ' (' + [...pr, ...issue].map(ref => formatReference(ref, config.host)).join(', ') + ')'
   }
   if (references.length) {
-    return ' (' + formatReference(references[0], config) + ')'
+    return ' (' + formatReference(references[0], config.host) + ')'
   }
   return ''
 }
