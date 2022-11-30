@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import { generateMarkDown, getGitDiff, loadChangelogConfig, parseCommits } from '../src'
+import { generateMarkDown, getGitDiff, loadChangelogConfig, parseCommits, getHostConfig, formatReference } from '../src'
+import { HostConfig } from './../src/host'
 
 describe('git', () => {
   test('getGitDiff should work', async () => {
@@ -286,7 +287,7 @@ describe('git', () => {
       ### 🩹 Fixes
 
         - Consider docs and refactor as semver patch for bump ([648ccf1](https://github.com/unjs/changelogen/commit/648ccf1))
-        - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/ssue/123))
+        - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
 
       ### 🏡 Chore
 
@@ -299,11 +300,109 @@ describe('git', () => {
 
       #### ⚠️  Breaking Changes
 
-        - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/ssue/123))
+        - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
 
       ### ❤️  Contributors
 
       - Pooya Parsa ([@pi0](http://github.com/pi0))"
     `)
+  })
+
+  test('parse host config', () => {
+    expect(getHostConfig(undefined)).toBeUndefined()
+    expect(getHostConfig('')).toBeUndefined()
+    expect(getHostConfig('unjs')).toBeUndefined()
+
+    const github = {
+      type: 'github',
+      repo: 'unjs/changelogen',
+      domain: 'github.com'
+    }
+    expect(getHostConfig('unjs/changelogen')).toStrictEqual(github)
+    expect(getHostConfig('github:unjs/changelogen')).toStrictEqual(github)
+    expect(getHostConfig('https://github.com/unjs/changelogen')).toStrictEqual(github)
+    expect(getHostConfig('https://github.com/unjs/changelogen.git')).toStrictEqual(github)
+    expect(getHostConfig('git@github.com:unjs/changelogen.git')).toStrictEqual(github)
+
+    const gitlab = {
+      type: 'gitlab',
+      repo: 'unjs/changelogen',
+      domain: 'gitlab.com'
+    }
+
+    expect(getHostConfig('gitlab:unjs/changelogen')).toStrictEqual(gitlab)
+    expect(getHostConfig('https://gitlab.com/unjs/changelogen')).toStrictEqual(gitlab)
+    expect(getHostConfig('https://gitlab.com/unjs/changelogen.git')).toStrictEqual(gitlab)
+    expect(getHostConfig('git@gitlab.com:unjs/changelogen.git')).toStrictEqual(gitlab)
+
+    const bitbucket = {
+      type: 'bitbucket',
+      repo: 'unjs/changelogen',
+      domain: 'bitbucket.org'
+    }
+
+    expect(getHostConfig('bitbucket:unjs/changelogen')).toStrictEqual(bitbucket)
+    expect(getHostConfig('https://bitbucket.org/unjs/changelogen')).toStrictEqual(bitbucket)
+    expect(getHostConfig('https://bitbucket.org/unjs/changelogen.git')).toStrictEqual(bitbucket)
+    expect(getHostConfig('https://donaldsh@bitbucket.org/unjs/changelogen.git')).toStrictEqual(bitbucket)
+    expect(getHostConfig('git@bitbucket.org:unjs/changelogen.git')).toStrictEqual(bitbucket)
+
+    const selfhosted = {
+      type: 'self-hosted',
+      repo: 'unjs/changelogen',
+      domain: 'git.unjs.io'
+    }
+
+    expect(getHostConfig('selfhosted:unjs/changelogen')).toBeUndefined()
+    expect(getHostConfig('https://git.unjs.io/unjs/changelogen')).toStrictEqual(selfhosted)
+    expect(getHostConfig('https://git.unjs.io/unjs/changelogen.git')).toStrictEqual(selfhosted)
+    expect(getHostConfig('https://donaldsh@git.unjs.io/unjs/changelogen.git')).toStrictEqual(selfhosted)
+    expect(getHostConfig('git@git.unjs.io:unjs/changelogen.git')).toStrictEqual(selfhosted)
+  })
+
+  test('format reference', () => {
+    expect(formatReference({ type: 'hash', value: '3828bda' })).toBe('3828bda')
+    expect(formatReference({ type: 'pull-request', value: '#123' })).toBe('#123')
+    expect(formatReference({ type: 'issue', value: '#14' })).toBe('#14')
+
+    const github: HostConfig = {
+      type: 'github',
+      repo: 'unjs/changelogen',
+      domain: 'github.com'
+    }
+
+    expect(formatReference({ type: 'hash', value: '3828bda' }, github)).toBe('[3828bda](https://github.com/unjs/changelogen/commit/3828bda)')
+    expect(formatReference({ type: 'pull-request', value: '#123' }, github)).toBe('[#123](https://github.com/unjs/changelogen/pull/123)')
+    expect(formatReference({ type: 'issue', value: '#14' }, github)).toBe('[#14](https://github.com/unjs/changelogen/issues/14)')
+
+    const gitlab: HostConfig = {
+      type: 'gitlab',
+      repo: 'unjs/changelogen',
+      domain: 'gitlab.com'
+    }
+
+    expect(formatReference({ type: 'hash', value: '3828bda' }, gitlab)).toBe('[3828bda](https://gitlab.com/unjs/changelogen/commit/3828bda)')
+    expect(formatReference({ type: 'pull-request', value: '#123' }, gitlab)).toBe('[#123](https://gitlab.com/unjs/changelogen/merge_requests/123)')
+    expect(formatReference({ type: 'issue', value: '#14' }, gitlab)).toBe('[#14](https://gitlab.com/unjs/changelogen/issues/14)')
+
+    const bitbucket: HostConfig = {
+      type: 'bitbucket',
+      repo: 'unjs/changelogen',
+      domain: 'bitbucket.org'
+    }
+
+    expect(formatReference({ type: 'hash', value: '3828bda' }, bitbucket)).toBe('[3828bda](https://bitbucket.org/unjs/changelogen/commit/3828bda)')
+    expect(formatReference({ type: 'pull-request', value: '#123' }, bitbucket)).toBe('[#123](https://bitbucket.org/unjs/changelogen/pull-requests/123)')
+    expect(formatReference({ type: 'issue', value: '#14' }, bitbucket)).toBe('[#14](https://bitbucket.org/unjs/changelogen/issues/14)')
+
+    const selfhosted: HostConfig = {
+      type: 'selfhosted',
+      repo: 'unjs/changelogen',
+      domain: 'git.unjs.io'
+    }
+
+    expect(formatReference({ type: 'hash', value: '3828bda' }, selfhosted)).toBe('[3828bda](https://git.unjs.io/unjs/changelogen/commit/3828bda)')
+    expect(formatReference({ type: 'pull-request', value: '#123' }, selfhosted)).toBe('[#123](https://git.unjs.io/unjs/changelogen/pull/123)')
+    expect(formatReference({ type: 'issue', value: '#14' }, selfhosted)).toBe('[#14](https://git.unjs.io/unjs/changelogen/issues/14)')
   })
 })
