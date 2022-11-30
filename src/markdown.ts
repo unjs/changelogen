@@ -62,7 +62,7 @@ export async function generateMarkDown (commits: GitCommit[], config: ChangelogC
   await Promise.all(Array.from(_authors.keys()).map(async (authorName) => {
     const meta = _authors.get(authorName)
     for (const email of meta.email) {
-      const { user } = await fetch(`https://ungh.unjs.io/user/find/${email}`)
+      const { user } = await fetch(`https://ungh.cc/users/find/${email}`)
         .then(r => r.json())
         .catch(() => ({ user: null }))
       if (user) {
