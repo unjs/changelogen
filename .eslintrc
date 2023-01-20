@@ -1,5 +1,10 @@
 {
   "extends": [
-    "@nuxtjs/eslint-config-typescript"
-  ]
+    "eslint-config-unjs"
+  ],
+  "rules": {
+    "unicorn/no-null": 0,
+    "unicorn/prefer-top-level-await": 0,
+    "unicorn/template-indent": 0
+  }
 }

@@ -1,24 +1,31 @@
-import { describe, expect, test } from 'vitest'
-import { generateMarkDown, getGitDiff, loadChangelogConfig, parseCommits } from '../src'
+import { describe, expect, test } from "vitest";
+import {
+  generateMarkDown,
+  getGitDiff,
+  loadChangelogConfig,
+  parseCommits,
+} from "../src";
 
-describe('git', () => {
-  test('getGitDiff should work', async () => {
-    const COMMIT_INITIAL = '4554fc49265ac532b14c89cec15e7d21bb55d48b'
-    const COMMIT_VER002 = '38d7ba15dccc3a44931bf8bf0abaa0d4d96603eb'
-    expect((await getGitDiff(COMMIT_INITIAL, COMMIT_VER002)).length).toBe(2)
+describe("git", () => {
+  test("getGitDiff should work", async () => {
+    const COMMIT_INITIAL = "4554fc49265ac532b14c89cec15e7d21bb55d48b";
+    const COMMIT_VER002 = "38d7ba15dccc3a44931bf8bf0abaa0d4d96603eb";
+    expect((await getGitDiff(COMMIT_INITIAL, COMMIT_VER002)).length).toBe(2);
 
-    const all = await getGitDiff(undefined)
-    expect((await getGitDiff(COMMIT_INITIAL, 'HEAD')).length + 1).toBe(
+    const all = await getGitDiff(undefined);
+    expect((await getGitDiff(COMMIT_INITIAL, "HEAD")).length + 1).toBe(
       all.length
-    )
-  })
+    );
+  });
 
-  test('parse', async () => {
-    const COMMIT_FROM = '1cb15d5dd93302ebd5ff912079ed584efcc6703b'
-    const COMMIT_TO = '3828bda8c45933396ddfa869d671473231ce3c95'
+  test("parse", async () => {
+    const COMMIT_FROM = "1cb15d5dd93302ebd5ff912079ed584efcc6703b";
+    const COMMIT_TO = "3828bda8c45933396ddfa869d671473231ce3c95";
 
-    const commits = await getGitDiff(COMMIT_FROM, COMMIT_TO)
-    commits[1].message = 'fix(scope)!: breaking change example, close #123 (#134)'
+    const commits = await getGitDiff(COMMIT_FROM, COMMIT_TO);
+    commits[1].message =
+      "fix(scope)!: breaking change example, close #123 (#134)";
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     expect(commits.map(({ body: _, ...rest }) => rest)).toMatchInlineSnapshot(`
       [
         {
@@ -102,14 +109,16 @@ describe('git', () => {
           "shortHash": "a80e372",
         },
       ]
-    `)
+    `);
     const config = await loadChangelogConfig(process.cwd(), {
       from: COMMIT_FROM,
-      to: COMMIT_TO
-    })
-    const parsed = parseCommits(commits, config)
+      to: COMMIT_TO,
+    });
+    const parsed = parseCommits(commits, config);
 
-    expect(parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest)).toMatchInlineSnapshot(`
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    expect(parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest))
+      .toMatchInlineSnapshot(`
       [
         {
           "description": "v0.3.5",
@@ -268,9 +277,9 @@ describe('git', () => {
           "type": "chore",
         },
       ]
-    `)
+    `);
 
-    const md = await generateMarkDown(parsed, config)
+    const md = await generateMarkDown(parsed, config);
 
     expect(md).toMatchInlineSnapshot(`
       "## 1cb15d5dd93302ebd5ff912079ed584efcc6703b...3828bda8c45933396ddfa869d671473231ce3c95
@@ -303,7 +312,7 @@ describe('git', () => {
 
       ### ❤️  Contributors
 
-      - Pooya Parsa ([@pi0](http://github.com/pi0))"
-    `)
-  })
-})
+      - Pooya Parsa <pooya@pi0.io>"
+    `);
+  });
+});
