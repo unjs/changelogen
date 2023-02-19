@@ -99,7 +99,7 @@ const ConventionalCommitRegex =
 const CoAuthoredByRegex = /co-authored-by:\s*(?<name>.+)(<(?<email>.+)>)/gim;
 const PullRequestRE = /\([ a-z]*(#\d+)\s*\)/gm;
 const IssueRE = /(#\d+)/gm;
-const RevertHashRegex = /This reverts commit (?<hash>[A-F0-9]{40})./gm;
+const RevertHashRegex = /This reverts commit (?<hash>[a-f0-9]{40})./gm;
 
 export function parseGitCommit(
   commit: RawGitCommit,
