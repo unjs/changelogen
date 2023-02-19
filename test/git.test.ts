@@ -1,9 +1,12 @@
 import { describe, expect, test } from "vitest";
+import { GitCommit } from '../src/git'
+import type { ChangelogConfig } from '../src/config'
 import {
   generateMarkDown,
   getGitDiff,
   loadChangelogConfig,
   parseCommits,
+  filterCommits,
 } from "../src";
 
 describe("git", () => {
@@ -130,6 +133,7 @@ describe("git", () => {
               "value": "3828bda",
             },
           ],
+          "revertedHashes": [],
           "scope": "release",
           "shortHash": "3828bda",
           "type": "chore",
@@ -152,6 +156,7 @@ describe("git", () => {
               "value": "20e622e",
             },
           ],
+          "revertedHashes": [],
           "scope": "scope",
           "shortHash": "20e622e",
           "type": "fix",
@@ -166,6 +171,7 @@ describe("git", () => {
               "value": "6fc5087",
             },
           ],
+          "revertedHashes": [],
           "scope": "release",
           "shortHash": "6fc5087",
           "type": "chore",
@@ -184,6 +190,7 @@ describe("git", () => {
               "value": "c0febf1",
             },
           ],
+          "revertedHashes": [],
           "scope": "",
           "shortHash": "c0febf1",
           "type": "feat",
@@ -198,6 +205,7 @@ describe("git", () => {
               "value": "f4f42a3",
             },
           ],
+          "revertedHashes": [],
           "scope": "release",
           "shortHash": "f4f42a3",
           "type": "chore",
@@ -212,6 +220,7 @@ describe("git", () => {
               "value": "648ccf1",
             },
           ],
+          "revertedHashes": [],
           "scope": "",
           "shortHash": "648ccf1",
           "type": "fix",
@@ -226,6 +235,7 @@ describe("git", () => {
               "value": "5451f18",
             },
           ],
+          "revertedHashes": [],
           "scope": "",
           "shortHash": "5451f18",
           "type": "feat",
@@ -240,6 +250,7 @@ describe("git", () => {
               "value": "8796cf1",
             },
           ],
+          "revertedHashes": [],
           "scope": "",
           "shortHash": "8796cf1",
           "type": "chore",
@@ -254,6 +265,7 @@ describe("git", () => {
               "value": "c210976",
             },
           ],
+          "revertedHashes": [],
           "scope": "",
           "shortHash": "c210976",
           "type": "chore",
@@ -272,6 +284,7 @@ describe("git", () => {
               "value": "a80e372",
             },
           ],
+          "revertedHashes": [],
           "scope": "deps",
           "shortHash": "a80e372",
           "type": "chore",
@@ -312,7 +325,99 @@ describe("git", () => {
 
       ### ❤️  Contributors
 
-      - Pooya Parsa <pooya@pi0.io>"
+      - Pooya Parsa ([@pi0](http://github.com/pi0))"
     `);
+  });
+
+  test("filterCommits should retain reverts from previous version", async () => {
+    const inputLog = [
+      {
+        type: 'example',
+        scope: '',
+        shortHash: 'a12345',
+        revertedHashes: ['b12345']
+      } as unknown as GitCommit,
+      {
+        type: 'example',
+        scope: '',
+        shortHash: 'c12345',
+        revertedHashes: ['d12345']
+      } as unknown as GitCommit
+    ];
+    const config: ChangelogConfig = {
+      types: {
+        example: { title: 'Example' }
+      },
+      scopeMap: undefined,
+      github: '',
+      from: '',
+      to: '',
+      cwd: '',
+      output: ''
+    }
+
+    const resolvedLog = filterCommits(inputLog, config)
+    expect(resolvedLog).toStrictEqual(
+      [
+        {
+          type: 'example',
+          scope: '',
+          shortHash: 'a12345',
+          revertedHashes: ['b12345']
+        } as unknown as GitCommit,
+        {
+          type: 'example',
+          scope: '',
+          shortHash: 'c12345',
+          revertedHashes: ['d12345']
+        } as unknown as GitCommit
+      ]
+    );
+  });
+
+  test("filterCommits should remove reverts from upcoming version", async () => {
+    const inputLog = [
+      {
+        type: 'example',
+        scope: '',
+        shortHash: 'a12345',
+        revertedHashes: ['b12345']
+      } as unknown as GitCommit,
+      {
+        type: 'example',
+        scope: '',
+        shortHash: 'b12345',
+        revertedHashes: []
+      } as unknown as GitCommit,
+      {
+        type: 'example',
+        scope: '',
+        shortHash: 'c12345',
+        revertedHashes: []
+      } as unknown as GitCommit
+    ];
+    const config: ChangelogConfig = {
+      types: {
+        example: { title: 'Example' }
+      },
+      scopeMap: undefined,
+      github: '',
+      from: '',
+      to: '',
+      cwd: '',
+      output: ''
+    }
+
+    const resolvedLog = filterCommits(inputLog, config)
+    expect(resolvedLog).toStrictEqual(
+      [
+        {
+          type: 'example',
+          scope: '',
+          shortHash: 'c12345',
+          revertedHashes: []
+        } as unknown as GitCommit
+      ]
+    );
   });
 });
