@@ -24,6 +24,7 @@ export interface GitCommit extends RawGitCommit {
   references: Reference[];
   authors: GitCommitAuthor[];
   isBreaking: boolean;
+  revertedHashes: string[];
 }
 
 export async function getLastGitTag() {
@@ -93,6 +94,7 @@ const ConventionalCommitRegex =
 const CoAuthoredByRegex = /co-authored-by:\s*(?<name>.+)(<(?<email>.+)>)/gim;
 const PullRequestRE = /\([ a-z]*(#\d+)\s*\)/gm;
 const IssueRE = /(#\d+)/gm;
+const RevertHashRegex = /This reverts commit (?<hash>[A-F0-9]{40})./gm;
 
 export function parseGitCommit(
   commit: RawGitCommit,
@@ -126,6 +128,13 @@ export function parseGitCommit(
   // Remove references and normalize
   description = description.replace(PullRequestRE, "").trim();
 
+  // Extract the reverted hashes.
+  const revertedHashes = []
+  const matchedHashes = commit.body.matchAll(RevertHashRegex)
+  for (const matchedHash of matchedHashes) {
+    revertedHashes.push(matchedHash.groups.match)
+  }
+
   // Find all authors
   const authors: GitCommitAuthor[] = [commit.author];
   for (const match of commit.body.matchAll(CoAuthoredByRegex)) {
@@ -143,6 +152,7 @@ export function parseGitCommit(
     scope,
     references,
     isBreaking,
+    revertedHashes,
   };
 }
 
