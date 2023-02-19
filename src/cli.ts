@@ -78,9 +78,10 @@ async function main() {
   // Commit and tag changes for release mode
   if (args.release) {
     if (args.commit !== false) {
+      await execa("git", ["add", "CHANGELOG.md", "package.json"], { cwd });
       await execa(
         "git",
-        ["commit", "-am", `chore(release): v${config.newVersion}`],
+        ["commit", "-m", `chore(release): v${config.newVersion}`],
         { cwd }
       );
     }
