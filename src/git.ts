@@ -156,6 +156,14 @@ export function parseGitCommit(
   };
 }
 
+export function filterCommits (commits: GitCommit[], config: ChangelogConfig): GitCommit[] {
+  return commits.filter(
+    (c) =>
+    config.types[c.type] &&
+    !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
+  );
+}
+
 async function execCommand(cmd: string, args: string[]) {
   const { execa } = await import("execa");
   const res = await execa(cmd, args);

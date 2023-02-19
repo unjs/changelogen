@@ -4,7 +4,7 @@ import { existsSync, promises as fsp } from "node:fs";
 import consola from "consola";
 import mri from "mri";
 import { execa } from "execa";
-import { getGitDiff, parseCommits } from "./git";
+import { getGitDiff, parseCommits, filterCommits } from "./git";
 import { loadChangelogConfig } from "./config";
 import { generateMarkDown } from "./markdown";
 import { bumpVersion } from "./semver";
@@ -27,15 +27,12 @@ async function main() {
   const rawCommits = await getGitDiff(config.from, config.to);
 
   // Parse commits as conventional commits
-  const commits = parseCommits(rawCommits, config).filter(
-    (c) =>
-      config.types[c.type] &&
-      !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
-  );
+  const commits = parseCommits(rawCommits, config)
+  const filteredCommits = filterCommits(commits, config)
 
   // Bump version optionally
   if (args.bump || args.release) {
-    const newVersion = await bumpVersion(commits, config);
+    const newVersion = await bumpVersion(filteredCommits, config);
     if (!newVersion) {
       consola.error("Unable to bump version based on changes.");
       process.exit(1);
@@ -44,7 +41,7 @@ async function main() {
   }
 
   // Generate markdown
-  const markdown = await generateMarkDown(commits, config);
+  const markdown = await generateMarkDown(filteredCommits, config);
 
   // Show changelog in CLI unless bumping or releasing
   const displayOnly = !args.bump && !args.release;
