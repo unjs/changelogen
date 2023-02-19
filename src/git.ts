@@ -99,7 +99,7 @@ const ConventionalCommitRegex =
 const CoAuthoredByRegex = /co-authored-by:\s*(?<name>.+)(<(?<email>.+)>)/gim;
 const PullRequestRE = /\([ a-z]*(#\d+)\s*\)/gm;
 const IssueRE = /(#\d+)/gm;
-const RevertHashRegex = /This reverts commit (?<hash>[a-f0-9]{40})./gm;
+const RevertHashRE = /This reverts commit (?<hash>[a-f0-9]{40})./gm;
 
 export function parseGitCommit(
   commit: RawGitCommit,
@@ -135,9 +135,9 @@ export function parseGitCommit(
 
   // Extract the reverted hashes.
   const revertedHashes = []
-  const matchedHashes = commit.body.matchAll(RevertHashRegex)
+  const matchedHashes = commit.body.matchAll(RevertHashRE)
   for (const matchedHash of matchedHashes) {
-    revertedHashes.push(matchedHash.groups.match)
+    revertedHashes.push(matchedHash.groups.hash)
   }
 
   // Find all authors
