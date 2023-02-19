@@ -75,7 +75,9 @@ describe('automatic resolving of revert commits', () => {
     scopeMap: undefined,
     github: '',
     from: '',
-    to: ''
+    to: '',
+    cwd: '',
+    output: ''
   }
 
   for (const test of tests) {
