@@ -27,8 +27,8 @@ async function main() {
   const rawCommits = await getGitDiff(config.from, config.to);
 
   // Parse commits as conventional commits
-  const commits = parseCommits(rawCommits, config)
-  const filteredCommits = filterCommits(commits, config)
+  const commits = parseCommits(rawCommits, config);
+  const filteredCommits = filterCommits(commits, config);
 
   // Bump version optionally
   if (args.bump || args.release) {

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { GitCommit } from '../src/git'
-import type { ChangelogConfig } from '../src/config'
+import { GitCommit } from "../src/git";
+import type { ChangelogConfig } from "../src/config";
 import {
   generateMarkDown,
   getGitDiff,
@@ -329,95 +329,91 @@ describe("git", () => {
     `);
   });
 
-  test("filterCommits should retain reverts from previous version", async () => {
+  test("filterCommits should retain reverts from previous version", () => {
     const inputLog = [
       {
-        type: 'example',
-        scope: '',
-        shortHash: 'a12345',
-        revertedHashes: ['b12345']
+        type: "example",
+        scope: "",
+        shortHash: "a12345",
+        revertedHashes: ["b12345"],
       } as unknown as GitCommit,
       {
-        type: 'example',
-        scope: '',
-        shortHash: 'c12345',
-        revertedHashes: ['d12345']
-      } as unknown as GitCommit
+        type: "example",
+        scope: "",
+        shortHash: "c12345",
+        revertedHashes: ["d12345"],
+      } as unknown as GitCommit,
     ];
     const config: ChangelogConfig = {
       types: {
-        example: { title: 'Example' }
+        example: { title: "Example" },
       },
       scopeMap: undefined,
-      github: '',
-      from: '',
-      to: '',
-      cwd: '',
-      output: ''
-    }
+      github: "",
+      from: "",
+      to: "",
+      cwd: "",
+      output: "",
+    };
 
-    const resolvedLog = filterCommits(inputLog, config)
-    expect(resolvedLog).toStrictEqual(
-      [
-        {
-          type: 'example',
-          scope: '',
-          shortHash: 'a12345',
-          revertedHashes: ['b12345']
-        } as unknown as GitCommit,
-        {
-          type: 'example',
-          scope: '',
-          shortHash: 'c12345',
-          revertedHashes: ['d12345']
-        } as unknown as GitCommit
-      ]
-    );
+    const resolvedLog = filterCommits(inputLog, config);
+    expect(resolvedLog).toStrictEqual([
+      {
+        type: "example",
+        scope: "",
+        shortHash: "a12345",
+        revertedHashes: ["b12345"],
+      } as unknown as GitCommit,
+      {
+        type: "example",
+        scope: "",
+        shortHash: "c12345",
+        revertedHashes: ["d12345"],
+      } as unknown as GitCommit,
+    ]);
   });
 
-  test("filterCommits should remove reverts from upcoming version", async () => {
+  test("filterCommits should remove reverts from upcoming version", () => {
     const inputLog = [
       {
-        type: 'example',
-        scope: '',
-        shortHash: 'a12345',
-        revertedHashes: ['b12345']
+        type: "example",
+        scope: "",
+        shortHash: "a12345",
+        revertedHashes: ["b12345"],
       } as unknown as GitCommit,
       {
-        type: 'example',
-        scope: '',
-        shortHash: 'b12345',
-        revertedHashes: []
+        type: "example",
+        scope: "",
+        shortHash: "b12345",
+        revertedHashes: [],
       } as unknown as GitCommit,
       {
-        type: 'example',
-        scope: '',
-        shortHash: 'c12345',
-        revertedHashes: []
-      } as unknown as GitCommit
+        type: "example",
+        scope: "",
+        shortHash: "c12345",
+        revertedHashes: [],
+      } as unknown as GitCommit,
     ];
     const config: ChangelogConfig = {
       types: {
-        example: { title: 'Example' }
+        example: { title: "Example" },
       },
       scopeMap: undefined,
-      github: '',
-      from: '',
-      to: '',
-      cwd: '',
-      output: ''
-    }
+      github: "",
+      from: "",
+      to: "",
+      cwd: "",
+      output: "",
+    };
 
-    const resolvedLog = filterCommits(inputLog, config)
-    expect(resolvedLog).toStrictEqual(
-      [
-        {
-          type: 'example',
-          scope: '',
-          shortHash: 'c12345',
-          revertedHashes: []
-        } as unknown as GitCommit
-      ]
-    );
+    const resolvedLog = filterCommits(inputLog, config);
+    expect(resolvedLog).toStrictEqual([
+      {
+        type: "example",
+        scope: "",
+        shortHash: "c12345",
+        revertedHashes: [],
+      } as unknown as GitCommit,
+    ]);
   });
 });

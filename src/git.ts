@@ -28,8 +28,8 @@ export interface GitCommit extends RawGitCommit {
 }
 
 export interface RevertPair {
-  shortRevertingHash: string
-  revertedHash: string
+  shortRevertingHash: string;
+  revertedHash: string;
 }
 
 export async function getLastGitTag() {
@@ -99,7 +99,7 @@ const ConventionalCommitRegex =
 const CoAuthoredByRegex = /co-authored-by:\s*(?<name>.+)(<(?<email>.+)>)/gim;
 const PullRequestRE = /\([ a-z]*(#\d+)\s*\)/gm;
 const IssueRE = /(#\d+)/gm;
-const RevertHashRE = /This reverts commit (?<hash>[a-f0-9]{40})./gm;
+const RevertHashRE = /This reverts commit (?<hash>[\da-f]{40})./gm;
 
 export function parseGitCommit(
   commit: RawGitCommit,
@@ -134,10 +134,10 @@ export function parseGitCommit(
   description = description.replace(PullRequestRE, "").trim();
 
   // Extract the reverted hashes.
-  const revertedHashes = []
-  const matchedHashes = commit.body.matchAll(RevertHashRE)
+  const revertedHashes = [];
+  const matchedHashes = commit.body.matchAll(RevertHashRE);
   for (const matchedHash of matchedHashes) {
-    revertedHashes.push(matchedHash.groups.hash)
+    revertedHashes.push(matchedHash.groups.hash);
   }
 
   // Find all authors
@@ -161,46 +161,56 @@ export function parseGitCommit(
   };
 }
 
-export function filterCommits (commits: GitCommit[], config: ChangelogConfig): GitCommit[] {
+export function filterCommits(
+  commits: GitCommit[],
+  config: ChangelogConfig
+): GitCommit[] {
   const commitsWithNoDeps = commits.filter(
     (c) =>
-    config.types[c.type] &&
-    !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
+      config.types[c.type] &&
+      !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
   );
 
-  let resolvedCommits: GitCommit[] = []
-  let revertWatchList: RevertPair[] = []
+  let resolvedCommits: GitCommit[] = [];
+  let revertWatchList: RevertPair[] = [];
   for (const commit of commitsWithNoDeps) {
     // Include the reverted hashes in the watch list
     if (commit.revertedHashes.length > 0) {
-      revertWatchList.push(...commit.revertedHashes.map(revertedHash => ({
-        revertedHash,
-        shortRevertingHash: commit.shortHash
-      } as RevertPair)))
+      revertWatchList.push(
+        ...commit.revertedHashes.map(
+          (revertedHash) =>
+            ({
+              revertedHash,
+              shortRevertingHash: commit.shortHash,
+            } as RevertPair)
+        )
+      );
     }
 
     // Find the commits which revert the current commit being evaluated
-    const shortRevertingHashes = revertWatchList.filter(
-      pair => pair.revertedHash.startsWith(commit.shortHash)
-    ).map(pair => pair.shortRevertingHash)
+    const shortRevertingHashes = revertWatchList
+      .filter((pair) => pair.revertedHash.startsWith(commit.shortHash))
+      .map((pair) => pair.shortRevertingHash);
 
     if (shortRevertingHashes.length > 0) {
       // Remove commits that reverts this current commit
       resolvedCommits = resolvedCommits.filter(
-        resolvedCommit => !shortRevertingHashes.includes(resolvedCommit.shortHash)
-      )
+        (resolvedCommit) =>
+          !shortRevertingHashes.includes(resolvedCommit.shortHash)
+      );
 
       // Unwatch reverting hashes that has been resolved
       revertWatchList = revertWatchList.filter(
-        watchedRevert => !shortRevertingHashes.includes(watchedRevert.shortRevertingHash)
-      )
+        (watchedRevert) =>
+          !shortRevertingHashes.includes(watchedRevert.shortRevertingHash)
+      );
     } else {
       // If the current commit is known not to have been reverted, put it to resolved commits.
-      resolvedCommits = [...resolvedCommits, commit]
+      resolvedCommits = [...resolvedCommits, commit];
     }
   }
 
-  return resolvedCommits
+  return resolvedCommits;
 }
 
 async function execCommand(cmd: string, args: string[]) {
