@@ -2,13 +2,15 @@ import { resolve } from "node:path";
 import { loadConfig } from "c12";
 import { readPackageJSON } from "pkg-types";
 import { getLastGitTag, getCurrentGitRef } from "./git";
+import { getRepoConfig } from "./repo";
 import type { SemverBumpType } from "./semver";
+import type { RepoConfig } from "./repo";
 
 export interface ChangelogConfig {
   cwd: string;
   types: Record<string, { title: string; semver?: SemverBumpType }>;
   scopeMap: Record<string, string>;
-  github: string;
+  repo?: RepoConfig;
   from: string;
   to: string;
   newVersion?: string;
@@ -31,7 +33,6 @@ const ConfigDefaults: ChangelogConfig = {
     ci: { title: "🤖 CI" },
   },
   cwd: null,
-  github: "",
   from: "",
   to: "",
   output: "CHANGELOG.md",
@@ -69,16 +70,14 @@ export async function loadChangelogConfig(
         : resolve(cwd, config.output);
   }
 
-  if (!config.github) {
+  if (!config.repo) {
     const pkg = await readPackageJSON(cwd).catch(() => {});
     if (pkg && pkg.repository) {
-      const repo =
+      const repoUrl =
         typeof pkg.repository === "string"
           ? pkg.repository
           : pkg.repository.url;
-      if (/^\w+\/\w+$/.test(repo)) {
-        config.github = repo;
-      }
+      config.repo = getRepoConfig(repoUrl);
     }
   }
 
