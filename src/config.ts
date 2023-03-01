@@ -2,15 +2,15 @@ import { resolve } from "node:path";
 import { loadConfig } from "c12";
 import { readPackageJSON } from "pkg-types";
 import { getLastGitTag, getCurrentGitRef } from "./git";
-import { getHostConfig } from "./host";
+import { getRepoConfig } from "./repo";
 import type { SemverBumpType } from "./semver";
-import type { HostConfig } from "./host";
+import type { RepoConfig } from "./repo";
 
 export interface ChangelogConfig {
   cwd: string;
   types: Record<string, { title: string; semver?: SemverBumpType }>;
   scopeMap: Record<string, string>;
-  host?: HostConfig;
+  repo?: RepoConfig;
   from: string;
   to: string;
   newVersion?: string;
@@ -70,14 +70,14 @@ export async function loadChangelogConfig(
         : resolve(cwd, config.output);
   }
 
-  if (!config.host) {
+  if (!config.repo) {
     const pkg = await readPackageJSON(cwd).catch(() => {});
     if (pkg && pkg.repository) {
       const repo =
         typeof pkg.repository === "string"
           ? pkg.repository
           : pkg.repository.url;
-      config.host = getHostConfig(repo);
+      config.repo = getRepoConfig(repo);
     }
   }
 

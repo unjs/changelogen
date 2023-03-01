@@ -1,15 +1,15 @@
 import type { Reference } from "./git";
 import type { ChangelogConfig } from "./config";
 
-const allowedHostTypes = [
+const allowedRepoTypes = [
   "github",
   "gitlab",
   "bitbucket",
   "selfhosted",
 ] as const;
 
-export type HostType = (typeof allowedHostTypes)[number];
-export type HostConfig = { domain: string; repo: string; type: HostType };
+export type RepoType = (typeof allowedRepoTypes)[number];
+export type RepoConfig = { domain: string; repo: string; type: RepoType };
 
 const defaultRefTypeMap: Record<Reference["type"], string> = {
   "pull-request": "pull",
@@ -18,7 +18,7 @@ const defaultRefTypeMap: Record<Reference["type"], string> = {
 };
 
 const refTypeMapByProvider: Record<
-  HostType,
+  RepoType,
   Record<Reference["type"], string>
 > = {
   github: defaultRefTypeMap,
@@ -27,11 +27,11 @@ const refTypeMapByProvider: Record<
   selfhosted: defaultRefTypeMap,
 };
 
-function baseUrl(config: HostConfig) {
+function baseUrl(config: RepoConfig) {
   return `https://${config.domain}/${config.repo}`;
 }
 
-export function formatReference(ref: Reference, config?: HostConfig) {
+export function formatReference(ref: Reference, config?: RepoConfig) {
   if (!config) {
     return ref.value;
   }
@@ -44,8 +44,8 @@ export function formatReference(ref: Reference, config?: HostConfig) {
 
 export function formatCompareChanges(v: string, config: ChangelogConfig) {
   const part =
-    config.host.type === "bitbucket" ? "branches/compare" : "compare";
-  return `[compare changes](${baseUrl(config.host)}/${part}/${config.from}...${
+    config.repo.type === "bitbucket" ? "branches/compare" : "compare";
+  return `[compare changes](${baseUrl(config.repo)}/${part}/${config.from}...${
     v || config.to
   })`;
 }
@@ -56,11 +56,11 @@ const typeDomainMap: Record<string, string> = {
   bitbucket: "bitbucket.org",
 };
 
-export function getHostConfig(repoUrl = ""): HostConfig | undefined {
+export function getRepoConfig(repoUrl = ""): RepoConfig | undefined {
   if (repoUrl) {
     // https://regex101.com/r/JZq179/1
-    const { hostType, repo } =
-      repoUrl.match(/(?:^(?<hostType>\w+):)?(?<repo>\w+\/\w+)(.git)?$/)
+    const { repoType, repo } =
+      repoUrl.match(/(?:^(?<repoType>\w+):)?(?<repo>\w+\/\w+)(.git)?$/)
         ?.groups ?? {};
 
     // https://regex101.com/r/Bdwsxu/1
@@ -73,19 +73,19 @@ export function getHostConfig(repoUrl = ""): HostConfig | undefined {
       return undefined;
     }
 
-    // there is a hostType, but it's not a valid one and we dont have a domain
-    const validHostType =
-      hostType !== "selfhosted" &&
-      allowedHostTypes.find((type) => type === hostType);
-    if (hostType && !validHostType && !domain) {
+    // there is a repoType, but it's not a valid one and we dont have a domain
+    const validRepoType =
+      repoType !== "selfhosted" &&
+      allowedRepoTypes.find((type) => type === repoType);
+    if (repoType && !validRepoType && !domain) {
       return undefined;
     }
 
-    const hostTypeByDomain = domain
+    const repoTypeByDomain = domain
       ? Object.keys(typeDomainMap).find((i) => typeDomainMap[i] === domain) ||
         "self-hosted"
       : undefined;
-    const type = (validHostType || hostTypeByDomain || "github") as HostType;
+    const type = (validRepoType || repoTypeByDomain || "github") as RepoType;
 
     return {
       type,

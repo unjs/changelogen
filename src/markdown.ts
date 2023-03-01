@@ -3,7 +3,7 @@ import { convert } from "convert-gitmoji";
 import { fetch } from "node-fetch-native";
 import type { ChangelogConfig } from "./config";
 import type { GitCommit, Reference } from "./git";
-import { formatReference, formatCompareChanges } from "./host";
+import { formatReference, formatCompareChanges } from "./repo";
 
 export async function generateMarkDown(
   commits: GitCommit[],
@@ -18,7 +18,7 @@ export async function generateMarkDown(
   const v = config.newVersion && `v${config.newVersion}`;
   markdown.push("", "## " + (v || `${config.from}...${config.to}`), "");
 
-  if (config.host) {
+  if (config.repo) {
     markdown.push(formatCompareChanges(v, config), "");
   }
 
@@ -115,13 +115,13 @@ function formatReferences(references: Reference[], config: ChangelogConfig) {
     return (
       " (" +
       [...pr, ...issue]
-        .map((ref) => formatReference(ref, config.host))
+        .map((ref) => formatReference(ref, config.repo))
         .join(", ") +
       ")"
     );
   }
   if (references.length > 0) {
-    return " (" + formatReference(references[0], config.host) + ")";
+    return " (" + formatReference(references[0], config.repo) + ")";
   }
   return "";
 }
