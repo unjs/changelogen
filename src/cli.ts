@@ -81,7 +81,9 @@ async function main() {
   // Commit and tag changes for release mode
   if (args.release) {
     if (args.commit !== false) {
-      const filesToAdd = [config.output, "package.json"].filter(f => f && typeof f === 'string') as string[]
+      const filesToAdd = [config.output, "package.json"].filter(
+        (f) => f && typeof f === "string"
+      ) as string[];
       await execa("git", ["add", ...filesToAdd], { cwd });
       await execa(
         "git",

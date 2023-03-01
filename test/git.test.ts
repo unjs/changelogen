@@ -312,7 +312,7 @@ describe("git", () => {
 
       ### ❤️  Contributors
 
-      - Pooya Parsa <pooya@pi0.io>"
+      - Pooya Parsa ([@pi0](http://github.com/pi0))"
     `);
   });
 });
