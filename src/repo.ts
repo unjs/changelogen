@@ -34,6 +34,10 @@ const domainToProvider: Record<string, RepoProvider> = {
   "bitbucket.org": "bitbucket",
 };
 
+// https://regex101.com/r/NA4Io6/1
+const providerURLRegex =
+  /^(?:(?<user>\w+)@)?(?:(?<provider>[^/:]+):)?(?<repo>\w+\/\w+)(?:\.git)?$/;
+
 function baseUrl(config: RepoConfig) {
   return `https://${config.domain}/${config.repo}`;
 }
@@ -66,11 +70,7 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
     url = new URL(repoUrl);
   } catch {}
 
-  // https://regex101.com/r/NA4Io6/1
-  const proiderRe =
-    /^(?:(?<user>\w+)@)?(?:(?<provider>[^/:]+):)?(?<repo>\w+\/\w+)(?:\.git)?$/;
-
-  const m = repoUrl.match(proiderRe)?.groups ?? {};
+  const m = repoUrl.match(providerURLRegex)?.groups ?? {};
   if (m.repo && m.provider) {
     repo = m.repo;
     provider =
