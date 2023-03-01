@@ -6,17 +6,23 @@ import mri from "mri";
 import { execa } from "execa";
 import { getGitDiff, parseCommits } from "./git";
 import { loadChangelogConfig } from "./config";
-import { generateMarkDown } from "./markdown";
+import { generateMarkDown, parseChangelogMd } from "./markdown";
 import { bumpVersion } from "./semver";
 
-import { GithubOptions, getChangelogMd, updateRelease, createRelease, getReleaseByTag, GithubRelease, listReleases } from './github'
-import { parseChangelogMd } from './markdown'
+import {
+  GithubOptions,
+  getChangelogMd,
+  updateRelease,
+  createRelease,
+  getReleaseByTag,
+  GithubRelease,
+} from "./github";
 
 async function main() {
   const args = mri(process.argv.splice(2));
 
   if (args._[0] === "sync") {
-    return syncGithubRelease(args);
+    return syncMain(args);
   }
 
   const cwd = resolve(args._[0] || "");
@@ -109,46 +115,61 @@ async function main() {
   }
 }
 
-async function syncGithubRelease(args: mri.Args) {
-  const repo = args._[1]
-  const version = args._[2]
+async function syncMain(args: mri.Argv) {
+  const repo = args._[1];
+  const versions = (args._[2] || "")
+    .split(",")
+    .map((i) => i.trim())
+    .filter(Boolean);
 
-  if (!repo || !version) {
-    throw new Error('Usage: changelogen sync <repo> <version>')
+  if (!repo || versions.length === 0) {
+    throw new Error("Usage: changelogen sync <repo> <versions>");
   }
 
   if (!process.env.CHANGELOGEN_GH_TOKEN) {
-    throw new Error('No CHANGELOGEN_GH_TOKEN env var set!')
+    throw new Error("No CHANGELOGEN_GH_TOKEN env var set!");
   }
 
-  const config: GithubOptions = { repo, token: process.env.GITHUB_TOKEN as string }
+  const config: GithubOptions = {
+    repo,
+    token: process.env.CHANGELOGEN_GH_TOKEN as string,
+  };
 
-  const changelogMd = await getChangelogMd(config)
-  const changelogReleases = parseChangelogMd(changelogMd).releases
+  const changelogMd = await getChangelogMd(config);
+  const changelogReleases = parseChangelogMd(changelogMd).releases;
 
-  console.log('Syncing release', version)
-
-  const changelogRelease = changelogReleases.find(r => r.version === version)
-  if (!changelogRelease) {
-    console.log('No release found in changelog!')
-    return
+  for (const version of versions) {
+    await syncGithubRelease(version);
   }
 
-  const ghRelease = await getReleaseByTag(config, `v${version}`).catch(() => {})
+  async function syncGithubRelease(version: string) {
+    console.log("Syncing release", version);
 
-  const release: GithubRelease = {
-    tag_name: `v${version}`,
-    name: `v${version}`,
-    body: changelogRelease.body,
-  }
+    const changelogRelease = changelogReleases.find(
+      (r) => r.version === version
+    );
+    if (!changelogRelease) {
+      console.log("No release found in changelog!");
+      return;
+    }
 
-  if (ghRelease) {
-    console.log('Updating existing release...')
-    await updateRelease(config, ghRelease.id! ,release)
-    return
-  } else {
-    console.log('Creating release...')
-    await createRelease(config,release)
+    const ghRelease = await getReleaseByTag(config, `v${version}`).catch(
+      () => {}
+    );
+
+    const release: GithubRelease = {
+      tag_name: `v${version}`,
+      name: `v${version}`,
+      body: changelogRelease.body,
+    };
+
+    if (ghRelease) {
+      console.log("Updating existing release...");
+      await updateRelease(config, ghRelease.id, release);
+    } else {
+      console.log("Creating release...");
+      await createRelease(config, release);
+    }
   }
 }
 

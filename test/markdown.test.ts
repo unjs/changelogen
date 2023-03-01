@@ -1,13 +1,13 @@
+import { promises as fsp } from "node:fs";
 import { describe, expect, test } from "vitest";
-import {
-  parseChangelogMd
-} from "../src";
-import { promises as fsp } from "node:fs"
-import { RepoConfig } from "./../src/repo";
+import { parseChangelogMd } from "../src";
 
 describe("markdown", () => {
-  test('should parse markdown', async () => {
-    const contents = await fsp.readFile(new URL('./fixtures/CHANGELOG.md', import.meta.url), 'utf8')
+  test("should parse markdown", async () => {
+    const contents = await fsp.readFile(
+      new URL("fixtures/CHANGELOG.md", import.meta.url),
+      "utf8"
+    );
     expect(parseChangelogMd(contents)).toMatchInlineSnapshot(`
       {
         "releases": [
@@ -64,6 +64,6 @@ describe("markdown", () => {
           },
         ],
       }
-    `)
-  })
-})
+    `);
+  });
+});

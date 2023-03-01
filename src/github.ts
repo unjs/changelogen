@@ -1,7 +1,7 @@
 import { $fetch, FetchOptions } from "ofetch";
 
 export interface GithubOptions {
-  repo: string
+  repo: string;
   token: string;
 }
 
@@ -30,42 +30,54 @@ export interface GithubRelease {
   prerelease?: boolean;
 }
 
-export async function listReleases(ghOptions: GithubOptions): Promise<GithubRelease[]> {
-  return ghFetch({
+export async function listReleases(
+  ghOptions: GithubOptions
+): Promise<GithubRelease[]> {
+  return await ghFetch({
     url: `/repos/${ghOptions.repo}/releases`,
     token: ghOptions.token,
-    query: { per_page: 100 }
-  })
+    query: { per_page: 100 },
+  });
 }
 
-export async function getReleaseByTag(ghOptions: GithubOptions, tag: string): Promise<GithubRelease> {
-  return ghFetch({
+export async function getReleaseByTag(
+  ghOptions: GithubOptions,
+  tag: string
+): Promise<GithubRelease> {
+  return await ghFetch({
     url: `/repos/${ghOptions.repo}/releases/tags/${tag}`,
     token: ghOptions.token,
-  })
+  });
 }
 
 export async function getChangelogMd(ghOptions: GithubOptions) {
-  return ghFetch({
+  return await ghFetch({
     url: `https://raw.githubusercontent.com/${ghOptions.repo}/main/CHANGELOG.md`,
     token: ghOptions.token,
-  })
+  });
 }
 
-export async function createRelease(ghOptions: GithubOptions, body: GithubRelease) {
-  return ghFetch({
+export async function createRelease(
+  ghOptions: GithubOptions,
+  body: GithubRelease
+) {
+  return await ghFetch({
     url: `/repos/${ghOptions.repo}/releases`,
     token: ghOptions.token,
     method: "POST",
-    body: body
-  })
+    body,
+  });
 }
 
-export async function updateRelease(ghOptions: GithubOptions, id: string, body: GithubRelease) {
-  return ghFetch({
+export async function updateRelease(
+  ghOptions: GithubOptions,
+  id: string,
+  body: GithubRelease
+) {
+  return await ghFetch({
     url: `/repos/${ghOptions.repo}/releases/${id}`,
     token: ghOptions.token,
     method: "PATCH",
-    body: body
-  })
+    body,
+  });
 }
