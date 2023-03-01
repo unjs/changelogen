@@ -9,8 +9,16 @@ import { loadChangelogConfig } from "./config";
 import { generateMarkDown } from "./markdown";
 import { bumpVersion } from "./semver";
 
+import { GithubOptions, getChangelogMd, updateRelease, createRelease, getReleaseByTag, GithubRelease, listReleases } from './github'
+import { parseChangelogMd } from './markdown'
+
 async function main() {
   const args = mri(process.argv.splice(2));
+
+  if (args._[0] === "sync") {
+    return syncGithubRelease(args);
+  }
+
   const cwd = resolve(args._[0] || "");
   process.chdir(cwd);
 
@@ -98,6 +106,49 @@ async function main() {
         { cwd }
       );
     }
+  }
+}
+
+async function syncGithubRelease(args: mri.Args) {
+  const repo = args._[1]
+  const version = args._[2]
+
+  if (!repo || !version) {
+    throw new Error('Usage: changelogen sync <repo> <version>')
+  }
+
+  if (!process.env.GITHUB_TOKEN) {
+    throw new Error('No GITHUB_TOKEN env var set!')
+  }
+
+  const config: GithubOptions = { repo, token: process.env.GITHUB_TOKEN as string }
+
+  const changelogMd = await getChangelogMd(config)
+  const changelogReleases = parseChangelogMd(changelogMd).releases
+
+  console.log('Syncing release', version)
+
+  const changelogRelease = changelogReleases.find(r => r.version === version)
+  if (!changelogRelease) {
+    console.log('No release found in changelog!')
+    return
+  }
+
+  const ghRelease = await getReleaseByTag(config, `v${version}`).catch(() => {})
+
+  const release: GithubRelease = {
+    tag_name: `v${version}`,
+    name: `v${version}`,
+    body: changelogRelease.body,
+  }
+
+  if (ghRelease) {
+    console.log('Updating existing release...')
+    await updateRelease(config, ghRelease.id! ,release)
+    return
+  } else {
+    console.log('Creating release...')
+    await createRelease(config,release)
   }
 }
 
