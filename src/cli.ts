@@ -117,8 +117,8 @@ async function syncGithubRelease(args: mri.Args) {
     throw new Error('Usage: changelogen sync <repo> <version>')
   }
 
-  if (!process.env.GITHUB_TOKEN) {
-    throw new Error('No GITHUB_TOKEN env var set!')
+  if (!process.env.CHANGELOGEN_GH_TOKEN) {
+    throw new Error('No CHANGELOGEN_GH_TOKEN env var set!')
   }
 
   const config: GithubOptions = { repo, token: process.env.GITHUB_TOKEN as string }
