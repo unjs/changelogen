@@ -390,7 +390,9 @@ describe("git", () => {
       repo: "unjs/changelogen",
     });
 
-    expect(getRepoConfig("https://git.unjs.io/unjs/changelogen")).toMatchObject(selfhosted);
+    expect(getRepoConfig("https://git.unjs.io/unjs/changelogen")).toMatchObject(
+      selfhosted
+    );
 
     expect(
       getRepoConfig("https://git.unjs.io/unjs/changelogen.git")
@@ -463,9 +465,9 @@ describe("git", () => {
       domain: "git.unjs.io",
     };
 
-    expect(
-      formatReference({ type: "hash", value: "3828bda" }, unkown)
-    ).toBe("3828bda");
+    expect(formatReference({ type: "hash", value: "3828bda" }, unkown)).toBe(
+      "3828bda"
+    );
     expect(
       formatReference({ type: "pull-request", value: "#123" }, unkown)
     ).toBe("#123");
