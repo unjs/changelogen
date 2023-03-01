@@ -1,96 +1,81 @@
 import type { Reference } from "./git";
 import type { ChangelogConfig } from "./config";
 
-const allowedRepoTypes = [
-  "github",
-  "gitlab",
-  "bitbucket",
-  "selfhosted",
-] as const;
+export type RepoProvider = "github" | "gitlab" | "bitbucket";
 
-export type RepoType = (typeof allowedRepoTypes)[number];
-export type RepoConfig = { domain: string; repo: string; type: RepoType };
+export type RepoConfig = { domain?: string; repo?: string; provider?: RepoProvider };
 
-const defaultRefTypeMap: Record<Reference["type"], string> = {
-  "pull-request": "pull",
-  hash: "commit",
-  issue: "issues",
-};
-
-const refTypeMapByProvider: Record<
-  RepoType,
+const providerToRefSpec: Record<
+  RepoProvider,
   Record<Reference["type"], string>
 > = {
-  github: defaultRefTypeMap,
-  gitlab: { ...defaultRefTypeMap, "pull-request": "merge_requests" },
-  bitbucket: { ...defaultRefTypeMap, "pull-request": "pull-requests" },
-  selfhosted: defaultRefTypeMap,
+  github: { "pull-request": "pull", hash: "commit", issue: "issues" },
+  gitlab: { "pull-request": "merge_requests", hash: "commit", issue: "issues" },
+  bitbucket: { "pull-request": "pull-requests", hash: "commit", issue: "issues" }
+};
+
+const providerToDomain: Record<RepoProvider, string> = {
+  github: "github.com",
+  gitlab: "gitlab.com",
+  bitbucket: "bitbucket.org",
+};
+
+const domainToProvider: Record<string, RepoProvider> = {
+  "github.com": "github",
+  "gitlab.com": "gitlab",
+  "bitbucket.org": "bitbucket",
 };
 
 function baseUrl(config: RepoConfig) {
   return `https://${config.domain}/${config.repo}`;
 }
 
-export function formatReference(ref: Reference, config?: RepoConfig) {
-  if (!config) {
+export function formatReference(ref: Reference, repo?: RepoConfig) {
+  if (!repo || !(repo.provider in providerToRefSpec)) {
     return ref.value;
   }
-  const refTypeMap = refTypeMapByProvider[config.type];
-
-  return `[${ref.value}](${baseUrl(config)}/${
-    refTypeMap[ref.type]
-  }/${ref.value.replace(/^#/, "")})`;
+  const refSpec = providerToRefSpec[repo.provider];
+  return `[${ref.value}](${baseUrl(repo)}/${refSpec[ref.type]}/${ref.value.replace(/^#/, "")})`;
 }
 
 export function formatCompareChanges(v: string, config: ChangelogConfig) {
   const part =
-    config.repo.type === "bitbucket" ? "branches/compare" : "compare";
+    config.repo.provider === "bitbucket" ? "branches/compare" : "compare";
   return `[compare changes](${baseUrl(config.repo)}/${part}/${config.from}...${
     v || config.to
   })`;
 }
 
-const typeDomainMap: Record<string, string> = {
-  github: "github.com",
-  gitlab: "gitlab.com",
-  bitbucket: "bitbucket.org",
-};
 
-export function getRepoConfig(repoUrl = ""): RepoConfig | undefined {
-  if (repoUrl) {
-    // https://regex101.com/r/JZq179/1
-    const { repoType, repo } =
-      repoUrl.match(/(?:^(?<repoType>\w+):)?(?<repo>\w+\/\w+)(.git)?$/)
-        ?.groups ?? {};
+export function getRepoConfig(repoUrl = ""): RepoConfig {
+  let provider
+  let repo
+  let domain
 
-    // https://regex101.com/r/Bdwsxu/1
-    const [domain] =
-      repoUrl.match(
-        /(((?!-))[\d_a-z-]{0,61}[\da-z]\.)*([\da-z-]{1,61}|[\da-z-]{1,30})\.[a-z]{2,}/
-      ) || [];
+  let url
+  try { url = new URL(repoUrl) } catch {}
 
-    if (!repo) {
-      return undefined;
-    }
+  // https://regex101.com/r/NA4Io6/1
+  const proiderRe = /^(?:(?<user>\w+)@)?(?:(?<provider>[^:/]+):)?(?<repo>[\w]+\/[\w]+)(?:\.git)?$/
 
-    // there is a repoType, but it's not a valid one and we dont have a domain
-    const validRepoType =
-      repoType !== "selfhosted" &&
-      allowedRepoTypes.find((type) => type === repoType);
-    if (repoType && !validRepoType && !domain) {
-      return undefined;
-    }
-
-    const repoTypeByDomain = domain
-      ? Object.keys(typeDomainMap).find((i) => typeDomainMap[i] === domain) ||
-        "self-hosted"
-      : undefined;
-    const type = (validRepoType || repoTypeByDomain || "github") as RepoType;
-
-    return {
-      type,
-      repo,
-      domain: domain || typeDomainMap[type],
-    };
+  const m = repoUrl.match(proiderRe)?.groups ?? {};
+  if (m.repo && m.provider) {
+    repo = m.repo;
+    provider = m.provider in domainToProvider ? domainToProvider[m.provider] : m.provider;
+    domain = providerToDomain[provider] ? providerToDomain[provider] : provider
+  } else if (url) {
+    domain = url.hostname;
+    repo = url.pathname.split('/').slice(1, 3).join('/').replace(/\.git$/, '');
+    provider = domainToProvider[domain];
+  } else if (m.repo) {
+    repo = m.repo;
+    provider = "github";
+    domain = providerToDomain[provider];
   }
+
+  return {
+    provider,
+    repo,
+    domain,
+  };
 }

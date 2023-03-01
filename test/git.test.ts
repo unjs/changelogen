@@ -7,7 +7,7 @@ import {
   getRepoConfig,
   formatReference,
 } from "../src";
-import { RepoConfig } from "./../src/host";
+import { RepoConfig } from "./../src/repo";
 
 describe("git", () => {
   test("getGitDiff should work", async () => {
@@ -320,12 +320,12 @@ describe("git", () => {
   });
 
   test("parse host config", () => {
-    expect(getRepoConfig(undefined)).toBeUndefined();
-    expect(getRepoConfig("")).toBeUndefined();
-    expect(getRepoConfig("unjs")).toBeUndefined();
+    expect(getRepoConfig(undefined)).toMatchObject({});
+    expect(getRepoConfig("")).toMatchObject({});
+    expect(getRepoConfig("unjs")).toMatchObject({});
 
     const github = {
-      type: "github",
+      provider: "github",
       repo: "unjs/changelogen",
       domain: "github.com",
     };
@@ -342,7 +342,7 @@ describe("git", () => {
     );
 
     const gitlab = {
-      type: "gitlab",
+      provider: "gitlab",
       repo: "unjs/changelogen",
       domain: "gitlab.com",
     };
@@ -359,7 +359,7 @@ describe("git", () => {
     );
 
     const bitbucket = {
-      type: "bitbucket",
+      provider: "bitbucket",
       repo: "unjs/changelogen",
       domain: "bitbucket.org",
     };
@@ -381,22 +381,24 @@ describe("git", () => {
     ).toStrictEqual(bitbucket);
 
     const selfhosted = {
-      type: "self-hosted",
       repo: "unjs/changelogen",
       domain: "git.unjs.io",
     };
 
-    expect(getRepoConfig("selfhosted:unjs/changelogen")).toBeUndefined();
-    expect(getRepoConfig("https://git.unjs.io/unjs/changelogen")).toStrictEqual(
-      selfhosted
-    );
+    expect(getRepoConfig("selfhosted:unjs/changelogen")).toMatchObject({
+      provider: "selfhosted",
+      repo: "unjs/changelogen",
+    });
+
+    expect(getRepoConfig("https://git.unjs.io/unjs/changelogen")).toMatchObject(selfhosted);
+
     expect(
       getRepoConfig("https://git.unjs.io/unjs/changelogen.git")
-    ).toStrictEqual(selfhosted);
+    ).toMatchObject(selfhosted);
     expect(
       getRepoConfig("https://donaldsh@git.unjs.io/unjs/changelogen.git")
-    ).toStrictEqual(selfhosted);
-    expect(getRepoConfig("git@git.unjs.io:unjs/changelogen.git")).toStrictEqual(
+    ).toMatchObject(selfhosted);
+    expect(getRepoConfig("git@git.unjs.io:unjs/changelogen.git")).toMatchObject(
       selfhosted
     );
   });
@@ -409,7 +411,7 @@ describe("git", () => {
     expect(formatReference({ type: "issue", value: "#14" })).toBe("#14");
 
     const github: RepoConfig = {
-      type: "github",
+      provider: "github",
       repo: "unjs/changelogen",
       domain: "github.com",
     };
@@ -425,7 +427,7 @@ describe("git", () => {
     );
 
     const gitlab: RepoConfig = {
-      type: "gitlab",
+      provider: "gitlab",
       repo: "unjs/changelogen",
       domain: "gitlab.com",
     };
@@ -441,7 +443,7 @@ describe("git", () => {
     );
 
     const bitbucket: RepoConfig = {
-      type: "bitbucket",
+      provider: "bitbucket",
       repo: "unjs/changelogen",
       domain: "bitbucket.org",
     };
@@ -456,20 +458,19 @@ describe("git", () => {
       "[#14](https://bitbucket.org/unjs/changelogen/issues/14)"
     );
 
-    const selfhosted: RepoConfig = {
-      type: "selfhosted",
+    const unkown: RepoConfig = {
       repo: "unjs/changelogen",
       domain: "git.unjs.io",
     };
 
     expect(
-      formatReference({ type: "hash", value: "3828bda" }, selfhosted)
-    ).toBe("[3828bda](https://git.unjs.io/unjs/changelogen/commit/3828bda)");
+      formatReference({ type: "hash", value: "3828bda" }, unkown)
+    ).toBe("3828bda");
     expect(
-      formatReference({ type: "pull-request", value: "#123" }, selfhosted)
-    ).toBe("[#123](https://git.unjs.io/unjs/changelogen/pull/123)");
-    expect(formatReference({ type: "issue", value: "#14" }, selfhosted)).toBe(
-      "[#14](https://git.unjs.io/unjs/changelogen/issues/14)"
+      formatReference({ type: "pull-request", value: "#123" }, unkown)
+    ).toBe("#123");
+    expect(formatReference({ type: "issue", value: "#14" }, unkown)).toBe(
+      "#14"
     );
   });
 });

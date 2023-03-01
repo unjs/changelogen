@@ -36,7 +36,7 @@ const ConfigDefaults: ChangelogConfig = {
   from: "",
   to: "",
   output: "CHANGELOG.md",
-  scopeMap: {},
+  scopeMap: {}
 };
 
 export async function loadChangelogConfig(
@@ -73,11 +73,8 @@ export async function loadChangelogConfig(
   if (!config.repo) {
     const pkg = await readPackageJSON(cwd).catch(() => {});
     if (pkg && pkg.repository) {
-      const repo =
-        typeof pkg.repository === "string"
-          ? pkg.repository
-          : pkg.repository.url;
-      config.repo = getRepoConfig(repo);
+      const repoUrl = typeof pkg.repository === "string" ? pkg.repository : pkg.repository.url;
+      config.repo = getRepoConfig(repoUrl)
     }
   }
 
