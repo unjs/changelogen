@@ -15,6 +15,7 @@ import {
   updateRelease,
   createRelease,
   getReleaseByTag,
+  // listReleases,
   GithubRelease,
 } from "./github";
 
@@ -117,7 +118,7 @@ async function main() {
 
 async function syncMain(args: mri.Argv) {
   const repo = args._[1];
-  const versions = (args._[2] || "")
+  let versions = (args._[2] || "")
     .split(",")
     .map((i) => i.trim())
     .filter(Boolean);
@@ -137,6 +138,12 @@ async function syncMain(args: mri.Argv) {
 
   const changelogMd = await getChangelogMd(config);
   const changelogReleases = parseChangelogMd(changelogMd).releases;
+
+  if (versions.length === 1 && versions[0] === "all") {
+    versions = changelogReleases.map((r) => r.version).sort();
+    // const ghReleases = await listReleases(config);
+    // versions.splice(0, versions.length, ...ghReleases.map((r) => r.tag_name.replace(/^v/, '')).sort());
+  }
 
   for (const version of versions) {
     await syncGithubRelease(version);
