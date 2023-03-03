@@ -59,6 +59,7 @@ By default in unauthenticated mode, changelogen will open a browser link to make
 - Using environment variables or `.env`, use `CHANGELOGEN_TOKENS_GITHUB` or `GITHUB_TOKEN` or `GH_TOKEN`
 - Using CLI args, use `--token <token>`
 - Using global configuration, put `tokens.github=<token>` inside `~/.changlogenrc`
+- Using [GitHub CLI](https://cli.github.com/) token when authenticated with `gh auth login`
 
 ## Configuration
 
