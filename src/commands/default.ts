@@ -115,7 +115,7 @@ export default async function defaultMain(args: Argv) {
     if (args.github !== false && config.repo.provider === "github") {
       await githubRelease(config, {
         version: config.newVersion,
-        body: markdown,
+        body: markdown.split("\n").slice(2).join("\n"),
       });
     }
   }

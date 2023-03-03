@@ -50,7 +50,13 @@ npx changelogen@latest [...args] [--dir <dir>]
 
 Changelogen has built-in functionality to sync with with Github releases!
 
-In order to manually sync a release, you can use `changelogen gh release <versions|all> [--dir] [--token]`. It will parse current `CHANGELOG.md` from current repository (local, then remote) and create or update releases.
+In order to manually sync a release, you can use `changelogen gh release`. It will parse current `CHANGELOG.md` from current repository (local, then remote) and create or update releases.
+
+Usage:
+
+```sh
+npx changelogen@latest gh release [all|versions...] [--dir] [--token]
+```
 
 To enable this integration, make sure there is a valid `repository` field in `package.json` or `repo` is set in `.changelogenrc`.
 
