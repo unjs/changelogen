@@ -9,10 +9,12 @@ const subCommands = {
 };
 
 async function main() {
-  let subCommand = process.argv[2];
-
+  const args = process.argv.slice(2);
+  let subCommand = args[0];
   if (!subCommand || subCommand.startsWith("-")) {
     subCommand = "_default";
+  } else {
+    args.shift();
   }
 
   if (!(subCommand in subCommands)) {
@@ -20,9 +22,7 @@ async function main() {
     process.exit(1);
   }
 
-  await subCommands[subCommand]().then((r) =>
-    r.default(mri(process.argv.splice(3)))
-  );
+  await subCommands[subCommand]().then((r) => r.default(mri(args)));
 }
 
 main().catch(consola.error);
