@@ -13,9 +13,10 @@ export default async function githubMain(args: Argv) {
 
   const [action, ..._versions] = args._;
   if (action !== "release" || _versions.length === 0) {
-    throw new Error(
-      "Usage: changelogen github release <versions...> [--token]"
+    consola.log(
+      "Usage: changelogen gh release <versions|all> [--dir] [--token]"
     );
+    process.exit(1);
   }
 
   let versions = [..._versions].map((v) => v.replace(/^v/, ""));

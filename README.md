@@ -43,6 +43,20 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--release`. Bumps version in `package.json` and creates commit and git tags using local `git`. You can disable commit using `--no-commit` and tag using `--no-tag`.
 - `-r`: Release as specific version.
 
+### `changelogen gh release`
+
+Changelogen has built-in functionality to sync with with Github releases!
+
+In order to manually sync a release, you can use `changelogen gh release <versions|all> [--dir] [--token]`. It will parse current `CHANGELOG.md` from current repository (local, then remote) and create or update versions.
+
+To enable this integration, make sure there is a valid `repository` field in `package.json` or `repo` is set in `.changelogenrc`.
+
+By default in unauthenticated mode, changelogen will open a browser link to make manual release. By providing github token, it can be automated.
+
+- Using environment variables or `.env`, use `CHANGELOGEN_TOKEN_GITHUB` or `GITHUB_TOKEN` or `GH_TOKEN`
+- Using CLI args, use `--token <token>`
+- Using global configuration, put `token.github=<token>` inside `~/.changlogenrc` (global user directory not in the project!)
+
 ## Configuration
 
 Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `changelog.json`, `changelog.{ts,js,mjs,cjs}`, `.changelogrc` or use the `changelog` field in `package.json`.
