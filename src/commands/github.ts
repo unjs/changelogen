@@ -53,7 +53,7 @@ export default async function githubMain(args: Argv) {
         config,
         release as { version: string; body: string }
       );
-      consola.warn(
+      consola.info(
         `Failed to sync v${version} to Github releases! Open this link to manually create a release: \n\n` +
           underline(cyan(releaseURL)) +
           "\n"
