@@ -53,11 +53,14 @@ export default async function githubMain(args: Argv) {
         config,
         release as { version: string; body: string }
       );
-      consola.info(
-        `Failed to sync v${version} to Github releases! Open this link to manually create a release: \n\n` +
+      consola.warn(
+        `Failed to sync ${cyan(
+          `v${version}`
+        )} to Github releases! Open this link to manually create a release: \n\n` +
           underline(cyan(releaseURL)) +
           "\n"
       );
+      process.exit(1);
     }
   }
 }

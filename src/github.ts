@@ -131,7 +131,7 @@ async function githubFetch(
       !githubToken
     ) {
       console.warn(
-        "[changelogen] Make sure `CHANGELOGEN_GITHUB_TOKEN` or `GITHUB_TOKEN` or `GH_TOKEN` environment variable is provided and has enough access!"
+        "[changelogen] Please make sure `GITHUB_TOKEN` is set in your environment."
       );
       isEnvWarnDisplayed = true;
     }
