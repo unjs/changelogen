@@ -14,6 +14,7 @@ import {
 export default async function defaultMain(args: Argv) {
   const cwd = resolve(args._[0] /* bw compat */ || args.dir || "");
   process.chdir(cwd);
+  consola.wrapConsole();
 
   const config = await loadChangelogConfig(cwd, {
     from: args.from,

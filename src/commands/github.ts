@@ -1,12 +1,18 @@
 import type { Argv } from "mri";
 import { resolve } from "pathe";
 import consola from "consola";
-import { getGithubChangelog, syncGithubRelease } from "../github";
+import { underline, cyan } from "colorette";
+import {
+  getGithubChangelog,
+  syncGithubRelease,
+  githubNewReleaseURL,
+} from "../github";
 import { loadChangelogConfig, parseChangelogMarkdown } from "..";
 
 export default async function githubMain(args: Argv) {
   const cwd = resolve(args.dir || "");
   process.chdir(cwd);
+  consola.wrapConsole();
 
   const config = await loadChangelogConfig(cwd, {});
   const [action, ..._versions] = args._;
@@ -25,16 +31,28 @@ export default async function githubMain(args: Argv) {
   }
 
   for (const version of versions) {
-    const r = changelogReleases.find((r) => r.version === version);
-    if (!r) {
+    const release = changelogReleases.find((r) => r.version === version);
+    if (!release) {
       consola.warn(
         `No matching changelog entry found for ${version} in CHANGELOG.md`
       );
       continue;
     }
-    await syncGithubRelease(config, {
-      version,
-      body: r.body,
-    });
+    try {
+      await syncGithubRelease(config, {
+        version,
+        body: release.body,
+      });
+    } catch {
+      const releaseURL = githubNewReleaseURL(
+        config,
+        release as { version: string; body: string }
+      );
+      consola.warn(
+        `Failed to sync ${version} to Github releases! Open this link to manually create a release: \n\n` +
+          underline(cyan(releaseURL)) +
+          "\n"
+      );
+    }
   }
 }

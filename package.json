@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "c12": "^1.1.2",
+    "colorette": "^2.0.19",
     "consola": "^2.15.3",
     "convert-gitmoji": "^0.1.3",
     "execa": "^7.0.0",

@@ -91,6 +91,15 @@ export async function syncGithubRelease(
   };
 }
 
+export function githubNewReleaseURL(
+  config: ChangelogConfig,
+  release: { version: string; body: string }
+) {
+  return `https://${config.repo.domain}/${config.repo.repo}/releases/new?tag=v${
+    release.version
+  }&title=v${release.version}&body=${encodeURIComponent(release.body)}`;
+}
+
 // --- Internal utils ---
 let isEnvWarnDisplayed = false;
 
