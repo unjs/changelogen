@@ -58,8 +58,19 @@ export default async function githubMain(args: Argv) {
 
   const changelogReleases = parseChangelogMarkdown(changelogMd).releases;
 
-  if (versions.length === 1 && versions[0] === "all") {
+  if (versions[0] === "all") {
     versions = changelogReleases.map((r) => r.version).sort();
+  } else if (versions.length === 0) {
+    if (config.newVersion) {
+      versions = [config.newVersion];
+    } else if (changelogReleases.length > 0) {
+      versions = [changelogReleases[0].version];
+    }
+  }
+
+  if (versions.length === 0) {
+    consola.error(`No versions specified to release!`);
+    process.exit(1);
   }
 
   for (const version of versions) {
