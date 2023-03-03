@@ -11,7 +11,7 @@ export interface ChangelogConfig {
   types: Record<string, { title: string; semver?: SemverBumpType }>;
   scopeMap: Record<string, string>;
   repo?: RepoConfig;
-  token: Partial<Record<RepoProvider, string>>;
+  tokens: Partial<Record<RepoProvider, string>>;
   from: string;
   to: string;
   newVersion?: string;
@@ -39,9 +39,9 @@ const getDefaultConfig = () =>
     to: "",
     output: "CHANGELOG.md",
     scopeMap: {},
-    token: {
+    tokens: {
       github:
-        process.env.CHANGELOGEN_TOKEN_GITHUB ||
+        process.env.CHANGELOGEN_TOKENS_GITHUB ||
         process.env.GITHUB_TOKEN ||
         process.env.GH_TOKEN,
     },

@@ -53,9 +53,9 @@ To enable this integration, make sure there is a valid `repository` field in `pa
 
 By default in unauthenticated mode, changelogen will open a browser link to make manual release. By providing github token, it can be automated.
 
-- Using environment variables or `.env`, use `CHANGELOGEN_TOKEN_GITHUB` or `GITHUB_TOKEN` or `GH_TOKEN`
+- Using environment variables or `.env`, use `CHANGELOGEN_TOKENS_GITHUB` or `GITHUB_TOKEN` or `GH_TOKEN`
 - Using CLI args, use `--token <token>`
-- Using global configuration, put `token.github=<token>` inside `~/.changlogenrc`
+- Using global configuration, put `tokens.github=<token>` inside `~/.changlogenrc`
 
 ## Configuration
 

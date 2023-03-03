@@ -35,7 +35,7 @@ export default async function githubMain(args: Argv) {
   }
 
   if (args.token) {
-    config.token.github = args.token;
+    config.tokens.github = args.token;
   }
 
   let changelogMd: string;
