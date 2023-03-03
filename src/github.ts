@@ -81,14 +81,28 @@ export async function syncGithubRelease(
     body: release.body,
   };
 
-  const newGhRelease = await (currentGhRelease
-    ? updateGithubRelease(config, currentGhRelease.id, ghRelease)
-    : createGithubRelease(config, ghRelease));
+  if (!config.token.github) {
+    return {
+      status: "manual",
+      url: githubNewReleaseURL(config, release),
+    };
+  }
 
-  return {
-    status: currentGhRelease ? "updated" : "created",
-    id: newGhRelease.id,
-  };
+  try {
+    const newGhRelease = await (currentGhRelease
+      ? updateGithubRelease(config, currentGhRelease.id, ghRelease)
+      : createGithubRelease(config, ghRelease));
+    return {
+      status: currentGhRelease ? "updated" : "created",
+      id: newGhRelease.id,
+    };
+  } catch (error) {
+    return {
+      status: "manual",
+      error,
+      url: githubNewReleaseURL(config, release),
+    };
+  }
 }
 
 export function githubNewReleaseURL(
@@ -101,40 +115,22 @@ export function githubNewReleaseURL(
 }
 
 // --- Internal utils ---
-let isEnvWarnDisplayed = false;
-
 async function githubFetch(
   config: ChangelogConfig,
   url: string,
   opts: FetchOptions = {}
 ) {
-  if (config.repo?.provider !== "github") {
-    throw new Error("Cannot perform action on non-Github repositories!");
-  }
-
-  const githubToken =
-    process.env.CHANGELOGEN_GITHUB_TOKEN ||
-    process.env.GITHUB_TOKEN ||
-    process.env.GH_TOKEN;
-
   return await $fetch(url, {
     ...opts,
-    baseURL: "https://api.github.com", // TODO: Support custom domain
+    baseURL:
+      config.repo.domain === "github.com"
+        ? "https://api.github.com"
+        : `https://${config.repo.domain}/api/v3`,
     headers: {
       ...opts.headers,
-      authorization: githubToken ? `Token ${githubToken}` : undefined,
+      authorization: config.token.github
+        ? `Token ${config.token.github}`
+        : undefined,
     },
-  }).catch((error) => {
-    if (
-      !isEnvWarnDisplayed &&
-      Math.round(error.status / 100) === 4 &&
-      !githubToken
-    ) {
-      console.warn(
-        "[changelogen] Please make sure `GITHUB_TOKEN` is set in your environment."
-      );
-      isEnvWarnDisplayed = true;
-    }
-    throw error;
   });
 }

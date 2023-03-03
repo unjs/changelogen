@@ -7,6 +7,7 @@ export type RepoConfig = {
   domain?: string;
   repo?: string;
   provider?: RepoProvider;
+  token?: string;
 };
 
 const providerToRefSpec: Record<

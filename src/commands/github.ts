@@ -1,22 +1,21 @@
+import { promises as fsp } from "node:fs";
 import type { Argv } from "mri";
 import { resolve } from "pathe";
 import consola from "consola";
 import { underline, cyan } from "colorette";
-import {
-  getGithubChangelog,
-  syncGithubRelease,
-  githubNewReleaseURL,
-} from "../github";
+import open from "open";
+import { getGithubChangelog, syncGithubRelease } from "../github";
 import { loadChangelogConfig, parseChangelogMarkdown } from "..";
 
 export default async function githubMain(args: Argv) {
   const cwd = resolve(args.dir || "");
   process.chdir(cwd);
-  consola.wrapConsole();
 
   const [action, ..._versions] = args._;
-  if (!action || _versions.length === 0) {
-    throw new Error("Usage: changelogen github release <versions...>");
+  if (action !== "release" || _versions.length === 0) {
+    throw new Error(
+      "Usage: changelogen github release <versions...> [--token]"
+    );
   }
 
   let versions = [..._versions].map((v) => v.replace(/^v/, ""));
@@ -30,7 +29,24 @@ export default async function githubMain(args: Argv) {
     process.exit(1);
   }
 
-  const changelogMd = await getGithubChangelog(config);
+  if (args.token) {
+    config.token.github = args.token;
+  }
+
+  let changelogMd: string;
+  if (typeof config.output === "string") {
+    changelogMd = await fsp
+      .readFile(resolve(config.output), "utf8")
+      .catch(() => null);
+  }
+  if (!changelogMd) {
+    changelogMd = await getGithubChangelog(config).catch(() => null);
+  }
+  if (!changelogMd) {
+    consola.error(`Cannot resolve CHANGELOG.md`);
+    process.exit(1);
+  }
+
   const changelogReleases = parseChangelogMarkdown(changelogMd).releases;
 
   if (versions.length === 1 && versions[0] === "all") {
@@ -51,24 +67,32 @@ export default async function githubMain(args: Argv) {
       );
       continue;
     }
-    try {
-      await syncGithubRelease(config, {
-        version,
-        body: release.body,
-      });
-    } catch {
-      const releaseURL = githubNewReleaseURL(
-        config,
-        release as { version: string; body: string }
-      );
-      consola.warn(
-        `Failed to sync ${cyan(
-          `v${version}`
-        )} to Github releases! Open this link to manually create a release: \n\n` +
-          underline(cyan(releaseURL)) +
-          "\n"
-      );
-      process.exitCode = 1;
+
+    const result = await syncGithubRelease(config, {
+      version,
+      body: release.body,
+    });
+
+    if (result.status === "manual") {
+      if (result.error) {
+        consola.error(result.error);
+        process.exitCode = 1;
+      }
+      await open(result.url)
+        .then(() => {
+          consola.info(
+            `Followup in the browser to manually create the release.`
+          );
+        })
+        .catch(() => {
+          consola.info(
+            `Open this link to manually create a release: \n` +
+              underline(cyan(result.url)) +
+              "\n"
+          );
+        });
+    } else {
+      consola.success(`Synced ${cyan(`v${version}`)} to Github releases!`);
     }
   }
 }
