@@ -1,4 +1,7 @@
+import { existsSync, promises as fsp } from "node:fs";
+import { homedir } from "node:os";
 import { $fetch, FetchOptions } from "ofetch";
+import { join } from "pathe";
 import { ChangelogConfig } from "./config";
 
 export interface GithubOptions {
@@ -112,6 +115,27 @@ export function githubNewReleaseURL(
   return `https://${config.repo.domain}/${config.repo.repo}/releases/new?tag=v${
     release.version
   }&title=v${release.version}&body=${encodeURIComponent(release.body)}`;
+}
+
+export async function resolveGithubToken(config: ChangelogConfig) {
+  const env =
+    process.env.CHANGELOGEN_TOKENS_GITHUB ||
+    process.env.GITHUB_TOKEN ||
+    process.env.GH_TOKEN;
+  if (env) {
+    return env;
+  }
+
+  const configHome = process.env.XDG_CONFIG_HOME || join(homedir(), ".config");
+  const ghCLIPath = join(configHome, "gh", "hosts.yml");
+  if (existsSync(ghCLIPath)) {
+    const yamlContents = await fsp.readFile(ghCLIPath, "utf8");
+    const parseYAML = await import("yaml").then((r) => r.parse);
+    const ghCLIConfig = parseYAML(yamlContents);
+    if (ghCLIConfig && ghCLIConfig[config.repo.domain]) {
+      return ghCLIConfig["github.com"].oauth_token;
+    }
+  }
 }
 
 // --- Internal utils ---

@@ -25,6 +25,7 @@ specifiers:
   typescript: ^4.9.5
   unbuild: ^1.1.2
   vitest: ^0.29.2
+  yaml: ^2.2.1
 
 dependencies:
   c12: 1.1.2
@@ -40,6 +41,7 @@ dependencies:
   pkg-types: 1.0.2
   scule: 1.0.0
   semver: 7.3.8
+  yaml: 2.2.1
 
 devDependencies:
   '@types/node': 18.14.2
@@ -4645,6 +4647,11 @@ packages:
 
   /yallist/4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
+
+  /yaml/2.2.1:
+    resolution: {integrity: sha512-e0WHiYql7+9wr4cWMx3TVQrNwejKaEe7/rHNmQmqRjazfOP5W8PB6Jpebb5o6fIapbz9o9+2ipcaTM2ZwDI6lw==}
+    engines: {node: '>= 14'}
+    dev: false
 
   /yargs-parser/20.2.9:
     resolution: {integrity: sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==}

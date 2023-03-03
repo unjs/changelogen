@@ -4,7 +4,11 @@ import { resolve } from "pathe";
 import consola from "consola";
 import { underline, cyan } from "colorette";
 import open from "open";
-import { getGithubChangelog, syncGithubRelease } from "../github";
+import {
+  getGithubChangelog,
+  resolveGithubToken,
+  syncGithubRelease,
+} from "../github";
 import {
   ChangelogConfig,
   loadChangelogConfig,
@@ -83,6 +87,11 @@ export async function githubRelease(
   config: ChangelogConfig,
   release: { version: string; body: string }
 ) {
+  if (!config.tokens.github) {
+    config.tokens.github = await resolveGithubToken(config).catch(
+      () => undefined
+    );
+  }
   const result = await syncGithubRelease(config, release);
   if (result.status === "manual") {
     if (result.error) {
