@@ -27,12 +27,9 @@ export interface GitCommit extends RawGitCommit {
 }
 
 export async function getLastGitTag() {
-  const r = await execCommand("git", [
-    "--no-pager",
-    "tag",
-    "-l",
-    "--sort=creatordate",
-  ]).then((r) => r.split("\n"));
+  const r = await execCommand("git", ["describe", "--tags", "--abbrev=0"]).then(
+    (r) => r.split("\n")
+  );
   return r[r.length - 1];
 }
 
