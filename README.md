@@ -42,6 +42,9 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--bump`: Determine semver change and update version in `package.json`.
 - `--release`. Bumps version in `package.json` and creates commit and git tags using local `git`. You can disable commit using `--no-commit` and tag using `--no-tag`.
 - `-r`: Release as specific version.
+- `--major`: Bump as a semver-major version
+- `--minor`: Bump as a semver-minor version
+- `--patch`: Bump as a semver-patch version
 
 ### `changelogen gh release`
 

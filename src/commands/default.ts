@@ -38,7 +38,15 @@ export default async function defaultMain(args: Argv) {
 
   // Bump version optionally
   if (args.bump || args.release) {
-    const newVersion = await bumpVersion(commits, config);
+    let type;
+    if (args.major) {
+      type = "major";
+    } else if (args.minor) {
+      type = "minor";
+    } else if (args.patch) {
+      type = "patch";
+    }
+    const newVersion = await bumpVersion(commits, config, { type });
     if (!newVersion) {
       consola.error("Unable to bump version based on changes.");
       process.exit(1);

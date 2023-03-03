@@ -29,9 +29,10 @@ export function determineSemverChange(
 
 export async function bumpVersion(
   commits: GitCommit[],
-  config: ChangelogConfig
+  config: ChangelogConfig,
+  opts: { type?: SemverBumpType } = {}
 ): Promise<string | false> {
-  let type = determineSemverChange(commits, config) || "patch";
+  let type = opts.type || determineSemverChange(commits, config) || "patch";
   const originalType = type;
 
   const pkgPath = resolve(config.cwd, "package.json");
