@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v0.5.1
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.5.0...v0.5.1)
+
+
+### 🩹 Fixes
+
+  - Allow providing no versions ([ac84c39](https://github.com/unjs/changelogen/commit/ac84c39))
+  - Use parsed release body ([aec2341](https://github.com/unjs/changelogen/commit/aec2341))
+  - Strip title line from release ([319f7ce](https://github.com/unjs/changelogen/commit/319f7ce))
+
+### 🏡 Chore
+
+  - Simplify release command ([225fa64](https://github.com/unjs/changelogen/commit/225fa64))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v0.5.0
 
 [compare changes](https://github.com/unjs/changelogen/compare/v0.4.1...v0.5.0)
