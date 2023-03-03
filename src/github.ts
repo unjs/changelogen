@@ -81,7 +81,7 @@ export async function syncGithubRelease(
     body: release.body,
   };
 
-  if (!config.token.github) {
+  if (!config.tokens.github) {
     return {
       status: "manual",
       url: githubNewReleaseURL(config, release),
@@ -128,8 +128,8 @@ async function githubFetch(
         : `https://${config.repo.domain}/api/v3`,
     headers: {
       ...opts.headers,
-      authorization: config.token.github
-        ? `Token ${config.token.github}`
+      authorization: config.tokens.github
+        ? `Token ${config.tokens.github}`
         : undefined,
     },
   });
