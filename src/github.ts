@@ -37,7 +37,7 @@ export async function getGithubReleaseByTag(
 export async function getGithubChangelog(config: ChangelogConfig) {
   return await githubFetch(
     config,
-    `https://raw.githubusercontent.com/${ghOptions.repo}/main/CHANGELOG.md`
+    `https://raw.githubusercontent.com/${config.repo.repo}/main/CHANGELOG.md`
   );
 }
 
@@ -92,8 +92,9 @@ export async function syncGithubRelease(
 }
 
 // --- Internal utils ---
+let isEnvWarnDisplayed = false;
 
-function githubFetch(
+async function githubFetch(
   config: ChangelogConfig,
   url: string,
   opts: FetchOptions = {}
@@ -107,18 +108,23 @@ function githubFetch(
     process.env.GITHUB_TOKEN ||
     process.env.GH_TOKEN;
 
-  return $fetch(url, {
+  return await $fetch(url, {
     ...opts,
     baseURL: "https://api.github.com", // TODO: Support custom domain
     headers: {
       ...opts.headers,
-      Authorization: githubToken ? `Token ${githubToken}` : undefined,
+      authorization: githubToken ? `Token ${githubToken}` : undefined,
     },
   }).catch((error) => {
-    if (error.status / 100 === 4 && !githubToken) {
+    if (
+      !isEnvWarnDisplayed &&
+      Math.round(error.status / 100) === 4 &&
+      !githubToken
+    ) {
       console.warn(
-        "Please make sure `CHANGELOGEN_GITHUB_TOKEN` or `GITHUB_TOKEN` or `GH_TOKEN` env is provided!"
+        "[changelogen] Make sure `CHANGELOGEN_GITHUB_TOKEN` or `GITHUB_TOKEN` or `GH_TOKEN` environment variable is provided and has enough access!"
       );
+      isEnvWarnDisplayed = true;
     }
     throw error;
   });

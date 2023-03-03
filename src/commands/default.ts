@@ -12,7 +12,7 @@ import {
 } from "..";
 
 export default async function defaultMain(args: Argv) {
-  const cwd = resolve(args._[0] || "");
+  const cwd = resolve(args._[0] /* bw compat */ || args.dir || "");
   process.chdir(cwd);
 
   const config = await loadChangelogConfig(cwd, {

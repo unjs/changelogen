@@ -5,19 +5,17 @@ import { getGithubChangelog, syncGithubRelease } from "../github";
 import { loadChangelogConfig, parseChangelogMarkdown } from "..";
 
 export default async function githubMain(args: Argv) {
-  const cwd = resolve(args._[0] || "");
+  const cwd = resolve(args.dir || "");
   process.chdir(cwd);
 
   const config = await loadChangelogConfig(cwd, {});
-  const [action, repo] = args._;
-  let versions = (args._[2] || "")
-    .split(",")
-    .map((i) => i.trim())
-    .filter(Boolean);
+  const [action, ..._versions] = args._;
 
-  if (!repo || versions.length === 0 || !action) {
-    throw new Error("Usage: changelogen github sync <repo> <versions>");
+  if (!action || _versions.length === 0) {
+    throw new Error("Usage: changelogen github sync <versions...>");
   }
+
+  let versions = [..._versions].map((v) => v.replace(/^v/, ""));
 
   const changelogMd = await getGithubChangelog(config);
   const changelogReleases = parseChangelogMarkdown(changelogMd).releases;
