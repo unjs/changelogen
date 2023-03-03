@@ -19,15 +19,13 @@ export default async function githubMain(args: Argv) {
   const cwd = resolve(args.dir || "");
   process.chdir(cwd);
 
-  const [action, ..._versions] = args._;
-  if (action !== "release" || _versions.length === 0) {
+  const [subCommand, ..._versions] = args._;
+  if (subCommand !== "release") {
     consola.log(
-      "Usage: changelogen gh release <versions|all> [--dir] [--token]"
+      "Usage: changelogen gh release [all|versions...] [--dir] [--token]"
     );
     process.exit(1);
   }
-
-  let versions = [..._versions].map((v) => v.replace(/^v/, ""));
 
   const config = await loadChangelogConfig(cwd, {});
 
@@ -58,6 +56,7 @@ export default async function githubMain(args: Argv) {
 
   const changelogReleases = parseChangelogMarkdown(changelogMd).releases;
 
+  let versions = [..._versions].map((v) => v.replace(/^v/, ""));
   if (versions[0] === "all") {
     versions = changelogReleases.map((r) => r.version).sort();
   } else if (versions.length === 0) {
