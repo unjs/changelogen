@@ -16,7 +16,7 @@ export default async function githubMain(args: Argv) {
 
   const [action, ..._versions] = args._;
   if (!action || _versions.length === 0) {
-    throw new Error("Usage: changelogen github sync <versions...>");
+    throw new Error("Usage: changelogen github release <versions...>");
   }
 
   let versions = [..._versions].map((v) => v.replace(/^v/, ""));
@@ -24,7 +24,9 @@ export default async function githubMain(args: Argv) {
   const config = await loadChangelogConfig(cwd, {});
 
   if (config.repo?.provider !== "github") {
-    consola.error("Sync is only supported for Github repos.");
+    consola.error(
+      "This command is only supported for github repository provider."
+    );
     process.exit(1);
   }
 
@@ -39,7 +41,13 @@ export default async function githubMain(args: Argv) {
     const release = changelogReleases.find((r) => r.version === version);
     if (!release) {
       consola.warn(
-        `No matching changelog entry found for ${version} in CHANGELOG.md`
+        `No matching changelog entry found for ${version} in CHANGELOG.md. Skipping!`
+      );
+      continue;
+    }
+    if (!release.body || !release.version) {
+      consola.warn(
+        `Changelog entry for ${version} in CHANGELOG.md is missing body or version. Skipping!`
       );
       continue;
     }
@@ -60,7 +68,7 @@ export default async function githubMain(args: Argv) {
           underline(cyan(releaseURL)) +
           "\n"
       );
-      process.exit(1);
+      process.exitCode = 1;
     }
   }
 }
