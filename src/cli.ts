@@ -20,8 +20,6 @@ async function main() {
     process.exit(1);
   }
 
-  consola.log(subCommand);
-
   await subCommands[subCommand]().then((r) =>
     r.default(mri(process.argv.splice(3)))
   );
