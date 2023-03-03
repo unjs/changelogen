@@ -1,6 +1,6 @@
 import { promises as fsp } from "node:fs";
 import { describe, expect, test } from "vitest";
-import { parseChangelogMd } from "../src";
+import { parseChangelogMarkdown } from "../src";
 
 describe("markdown", () => {
   test("should parse markdown", async () => {
@@ -8,7 +8,7 @@ describe("markdown", () => {
       new URL("fixtures/CHANGELOG.md", import.meta.url),
       "utf8"
     );
-    expect(parseChangelogMd(contents)).toMatchInlineSnapshot(`
+    expect(parseChangelogMarkdown(contents)).toMatchInlineSnapshot(`
       {
         "releases": [
           {
