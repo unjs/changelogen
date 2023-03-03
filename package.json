@@ -28,7 +28,7 @@
     "lint": "eslint --ext .ts,.js,.mjs,.cjs . && prettier -c src test",
     "lint:fix": "eslint --fix --ext .ts,.js,.mjs,.cjs . && prettier -w src test",
     "prepack": "unbuild",
-    "release": "pnpm test && pnpm changelogen --release && git push --follow-tags && pnpm publish",
+    "release": "pnpm test && pnpm changelogen --release --push && pnpm publish",
     "test": "pnpm lint && vitest run --coverage"
   },
   "dependencies": {
