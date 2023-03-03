@@ -98,6 +98,34 @@ export async function generateMarkDown(
   return convert(markdown.join("\n").trim(), true);
 }
 
+export function parseChangelogMarkdown(contents: string) {
+  const headings = [...contents.matchAll(CHANGELOG_RELEASE_HEAD_RE)];
+  const releases: { version?: string; body: string }[] = [];
+
+  for (let i = 0; i < headings.length; i++) {
+    const heading = headings[i];
+    const nextHeading = headings[i + 1];
+    const [, title] = heading;
+    const version = title.match(VERSION_RE);
+    const release = {
+      version: version ? version[1] : undefined,
+      body: contents
+        .slice(
+          heading.index + heading[0].length,
+          nextHeading?.index ?? contents.length
+        )
+        .trim(),
+    };
+    releases.push(release);
+  }
+
+  return {
+    releases,
+  };
+}
+
+// --- Internal utils ---
+
 function formatCommit(commit: GitCommit, config: ChangelogConfig) {
   return (
     "  - " +
@@ -145,3 +173,6 @@ function groupBy(items: any[], key: string) {
   }
   return groups;
 }
+
+const CHANGELOG_RELEASE_HEAD_RE = /^#{2,}\s+.*(v?(\d+\.\d+\.\d+)).*$/gm;
+const VERSION_RE = /^v?(\d+\.\d+\.\d+)$/;
