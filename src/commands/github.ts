@@ -5,7 +5,11 @@ import consola from "consola";
 import { underline, cyan } from "colorette";
 import open from "open";
 import { getGithubChangelog, syncGithubRelease } from "../github";
-import { loadChangelogConfig, parseChangelogMarkdown } from "..";
+import {
+  ChangelogConfig,
+  loadChangelogConfig,
+  parseChangelogMarkdown,
+} from "..";
 
 export default async function githubMain(args: Argv) {
   const cwd = resolve(args.dir || "");
@@ -68,32 +72,37 @@ export default async function githubMain(args: Argv) {
       );
       continue;
     }
-
-    const result = await syncGithubRelease(config, {
-      version,
-      body: release.body,
+    await githubRelease(config, {
+      version: release.version,
+      body: release.version,
     });
+  }
+}
 
-    if (result.status === "manual") {
-      if (result.error) {
-        consola.error(result.error);
-        process.exitCode = 1;
-      }
-      await open(result.url)
-        .then(() => {
-          consola.info(
-            `Followup in the browser to manually create the release.`
-          );
-        })
-        .catch(() => {
-          consola.info(
-            `Open this link to manually create a release: \n` +
-              underline(cyan(result.url)) +
-              "\n"
-          );
-        });
-    } else {
-      consola.success(`Synced ${cyan(`v${version}`)} to Github releases!`);
+export async function githubRelease(
+  config: ChangelogConfig,
+  release: { version: string; body: string }
+) {
+  const result = await syncGithubRelease(config, release);
+  if (result.status === "manual") {
+    if (result.error) {
+      consola.error(result.error);
+      process.exitCode = 1;
     }
+    await open(result.url)
+      .then(() => {
+        consola.info(`Followup in the browser to manually create the release.`);
+      })
+      .catch(() => {
+        consola.info(
+          `Open this link to manually create a release: \n` +
+            underline(cyan(result.url)) +
+            "\n"
+        );
+      });
+  } else {
+    consola.success(
+      `Synced ${cyan(`v${release.version}`)} to Github releases!`
+    );
   }
 }

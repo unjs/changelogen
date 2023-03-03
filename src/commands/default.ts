@@ -10,6 +10,7 @@ import {
   bumpVersion,
   generateMarkDown,
 } from "..";
+import { githubRelease } from "./github";
 
 export default async function defaultMain(args: Argv) {
   const cwd = resolve(args._[0] /* bw compat */ || args.dir || "");
@@ -99,6 +100,15 @@ export default async function defaultMain(args: Argv) {
         ["tag", "-am", "v" + config.newVersion, "v" + config.newVersion],
         { cwd }
       );
+    }
+    if (args.push === true) {
+      await execa("git", ["push", "--follow-tags"], { cwd });
+    }
+    if (args.github !== false && config.repo.provider === "github") {
+      await githubRelease(config, {
+        version: config.newVersion,
+        body: markdown,
+      });
     }
   }
 }
