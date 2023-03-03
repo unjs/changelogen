@@ -88,7 +88,7 @@ export default async function githubMain(args: Argv) {
     }
     await githubRelease(config, {
       version: release.version,
-      body: release.version,
+      body: release.body,
     });
   }
 }
