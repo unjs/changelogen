@@ -2,6 +2,62 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v0.5.1
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.5.0...v0.5.1)
+
+
+### 🩹 Fixes
+
+  - Allow providing no versions ([ac84c39](https://github.com/unjs/changelogen/commit/ac84c39))
+  - Use parsed release body ([aec2341](https://github.com/unjs/changelogen/commit/aec2341))
+  - Strip title line from release ([319f7ce](https://github.com/unjs/changelogen/commit/319f7ce))
+
+### 🏡 Chore
+
+  - Simplify release command ([225fa64](https://github.com/unjs/changelogen/commit/225fa64))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
+## v0.5.0
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.4.1...v0.5.0)
+
+
+### 🚀 Enhancements
+
+  - Update execa to v7 ([e61e2f6](https://github.com/unjs/changelogen/commit/e61e2f6))
+  - ⚠️  Support different repository providers ([#55](https://github.com/unjs/changelogen/pull/55))
+  - Github release integration ([#67](https://github.com/unjs/changelogen/pull/67))
+  - Support explicit bumping as major, minor, or patch via cli ([c8afa86](https://github.com/unjs/changelogen/commit/c8afa86))
+  - Automatically resolve github token from gh cli ([231a3ec](https://github.com/unjs/changelogen/commit/231a3ec))
+  - Default `gh release` to latest version ([44788f5](https://github.com/unjs/changelogen/commit/44788f5))
+
+### 🩹 Fixes
+
+  - Stage `CHANGELOG.md` and `package.json` when releasing ([69d375c](https://github.com/unjs/changelogen/commit/69d375c))
+  - Add correct output file to git ([#64](https://github.com/unjs/changelogen/pull/64))
+  - Update ungh link ([a5ab510](https://github.com/unjs/changelogen/commit/a5ab510))
+  - Only access latest tag accessible from current branch ([#69](https://github.com/unjs/changelogen/pull/69))
+  - **cli:** Don't eat up first `-*` arg ([77b483b](https://github.com/unjs/changelogen/commit/77b483b))
+
+### 🏡 Chore
+
+  - Fix lint issue and update snapshots ([e162ab8](https://github.com/unjs/changelogen/commit/e162ab8))
+  - Mention gh cli login ([7f4a05f](https://github.com/unjs/changelogen/commit/7f4a05f))
+
+#### ⚠️  Breaking Changes
+
+  - ⚠️  Support different repository providers ([#55](https://github.com/unjs/changelogen/pull/55))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Daniel Roe <daniel@roe.dev>
+- Donald Shtjefni ([@dnldsht](http://github.com/dnldsht))
+
 ## v0.4.1
 
 [compare changes](https://github.com/unjs/changelogen/compare/v0.4.0...v0.4.1)

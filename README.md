@@ -30,25 +30,48 @@ npx changelogen@latest --release
 ## CLI Usage
 
 ```sh
-npx changelogen@latest [...args] [<rootDir>]
+npx changelogen@latest [...args] [--dir <dir>]
 ```
 
 **Arguments:**
 
 - `--from`: Start commit reference. When not provided, **latest git tag** will be used as default.
 - `--to`: End commit reference. When not provided, **latest commit in HEAD** will be used as default.
-- `--rootDir`: Path to git repository. When not provided, **current working directory** will be used as as default.
-- `--output`: Changelog file name to create or update. Defaults to `CHANGELOG.md` and resolved relative to rootDir. Use `--no-output` to write to console only.
+- `--dir`: Path to git repository. When not provided, **current working directory** will be used as as default.
+- `--output`: Changelog file name to create or update. Defaults to `CHANGELOG.md` and resolved relative to dir. Use `--no-output` to write to console only.
 - `--bump`: Determine semver change and update version in `package.json`.
 - `--release`. Bumps version in `package.json` and creates commit and git tags using local `git`. You can disable commit using `--no-commit` and tag using `--no-tag`.
 - `-r`: Release as specific version.
+- `--major`: Bump as a semver-major version
+- `--minor`: Bump as a semver-minor version
+- `--patch`: Bump as a semver-patch version
+
+### `changelogen gh release`
+
+Changelogen has built-in functionality to sync with with Github releases!
+
+In order to manually sync a release, you can use `changelogen gh release`. It will parse current `CHANGELOG.md` from current repository (local, then remote) and create or update releases.
+
+Usage:
+
+```sh
+npx changelogen@latest gh release [all|versions...] [--dir] [--token]
+```
+
+To enable this integration, make sure there is a valid `repository` field in `package.json` or `repo` is set in `.changelogenrc`.
+
+By default in unauthenticated mode, changelogen will open a browser link to make manual release. By providing github token, it can be automated.
+
+- Using environment variables or `.env`, use `CHANGELOGEN_TOKENS_GITHUB` or `GITHUB_TOKEN` or `GH_TOKEN`
+- Using CLI args, use `--token <token>`
+- Using global configuration, put `tokens.github=<token>` inside `~/.changlogenrc`
+- Using [GitHub CLI](https://cli.github.com/) token when authenticated with `gh auth login`
 
 ## Configuration
 
 Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `changelog.json`, `changelog.{ts,js,mjs,cjs}`, `.changelogrc` or use the `changelog` field in `package.json`.
 
 See [./src/config.ts](./src/config.ts) for available options and defaults.
-
 
 ## 💻 Development
 
@@ -64,14 +87,12 @@ Made with 💛
 Published under [MIT License](./LICENSE).
 
 <!-- Badges -->
+
 [npm-version-src]: https://img.shields.io/npm/v/changelogen?style=flat-square
 [npm-version-href]: https://npmjs.com/package/changelogen
-
 [npm-downloads-src]: https://img.shields.io/npm/dm/changelogen?style=flat-square
 [npm-downloads-href]: https://npmjs.com/package/changelogen
-
 [github-actions-src]: https://img.shields.io/github/workflow/status/unjs/changelogen/ci/main?style=flat-square
 [github-actions-href]: https://github.com/unjs/changelogen/actions?query=workflow%3Aci
-
 [codecov-src]: https://img.shields.io/codecov/c/gh/unjs/changelogen/main?style=flat-square
 [codecov-href]: https://codecov.io/gh/unjs/changelogen
