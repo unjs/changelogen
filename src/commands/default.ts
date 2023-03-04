@@ -9,6 +9,7 @@ import {
   parseCommits,
   bumpVersion,
   generateMarkDown,
+  filterCommits,
 } from "..";
 import { githubRelease } from "./github";
 
@@ -35,6 +36,7 @@ export default async function defaultMain(args: Argv) {
       config.types[c.type] &&
       !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
   );
+  const filteredCommits = filterCommits(commits, config);
 
   // Bump version optionally
   if (args.bump || args.release) {
@@ -46,7 +48,7 @@ export default async function defaultMain(args: Argv) {
     } else if (args.patch) {
       type = "patch";
     }
-    const newVersion = await bumpVersion(commits, config, { type });
+    const newVersion = await bumpVersion(filteredCommits, config, { type });
     if (!newVersion) {
       consola.error("Unable to bump version based on changes.");
       process.exit(1);
@@ -55,7 +57,7 @@ export default async function defaultMain(args: Argv) {
   }
 
   // Generate markdown
-  const markdown = await generateMarkDown(commits, config);
+  const markdown = await generateMarkDown(filteredCommits, config);
 
   // Show changelog in CLI unless bumping or releasing
   const displayOnly = !args.bump && !args.release;
