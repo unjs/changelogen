@@ -1,7 +1,10 @@
-import { promises as fsp } from "node:fs";
-import { resolve } from "node:path";
 import semver from "semver";
 import consola from "consola";
+import {
+  readPackageJSON,
+  resolvePackageJSON,
+  writePackageJSON,
+} from "pkg-types";
 import type { ChangelogConfig } from "./config";
 import type { GitCommit } from "./git";
 
@@ -51,9 +54,8 @@ export async function bumpVersion(
   let type = opts.type || determineSemverChange(commits, config) || "patch";
   const originalType = type;
 
-  const pkgPath = resolve(config.cwd, "package.json");
-  const pkg =
-    JSON.parse(await fsp.readFile(pkgPath, "utf8").catch(() => "{}")) || {};
+  const pkgPath = await resolvePackageJSON(config.cwd);
+  const pkg = await readPackageJSON(pkgPath);
   const currentVersion = pkg.version || "0.0.0";
 
   if (currentVersion.startsWith("0.")) {
@@ -79,7 +81,7 @@ export async function bumpVersion(
   consola.info(
     `Bumping version from ${currentVersion} to ${pkg.version} (${originalType})`
   );
-  await fsp.writeFile(pkgPath, JSON.stringify(pkg, null, 2) + "\n", "utf8");
+  await writePackageJSON(pkgPath, pkg);
 
   return pkg.version;
 }
