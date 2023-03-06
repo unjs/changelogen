@@ -45,6 +45,10 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--major`: Bump as a semver-major version
 - `--minor`: Bump as a semver-minor version
 - `--patch`: Bump as a semver-patch version
+- `--premajor`: Bump as a semver-premajor version, can set id with string, default are `beta` (ex: `--premajor=alpha`)
+- `--preminor`: Bump as a semver-preminor version, can set id with string, default are `beta` (ex: `--preminor=alpha`)
+- `--prepatch`: Bump as a semver-prepatch version, can set id with string, default are `beta` (ex: `--prepatch=alpha`)
+- `--prerelease`: Bump as a semver-prerelease version, can set id with string, default are `beta` (ex: `--prerelease=alpha`)
 
 ### `changelogen gh release`
 

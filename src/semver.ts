@@ -5,7 +5,18 @@ import consola from "consola";
 import type { ChangelogConfig } from "./config";
 import type { GitCommit } from "./git";
 
-export type SemverBumpType = "major" | "minor" | "patch";
+export const SemverBumpTypes = {
+  Major: "major",
+  Minor: "minor",
+  Patch: "patch",
+  PreMajor: "premajor",
+  PreMinor: "preminor",
+  PrePatch: "prepatch",
+  PreRelease: "prerelease",
+} as const;
+
+export type SemverBumpType =
+  (typeof SemverBumpTypes)[keyof typeof SemverBumpTypes];
 
 export function determineSemverChange(
   commits: GitCommit[],
@@ -27,10 +38,15 @@ export function determineSemverChange(
   return hasMajor ? "major" : hasMinor ? "minor" : hasPatch ? "patch" : null;
 }
 
+export type BumpVersionOptions = {
+  type?: SemverBumpType;
+  preid?: string;
+};
+
 export async function bumpVersion(
   commits: GitCommit[],
   config: ChangelogConfig,
-  opts: { type?: SemverBumpType } = {}
+  opts: BumpVersionOptions = {}
 ): Promise<string | false> {
   let type = opts.type || determineSemverChange(commits, config) || "patch";
   const originalType = type;
@@ -52,7 +68,7 @@ export async function bumpVersion(
     pkg.version = config.newVersion;
   } else if (type) {
     // eslint-disable-next-line import/no-named-as-default-member
-    pkg.version = semver.inc(currentVersion, type);
+    pkg.version = semver.inc(currentVersion, type, opts.preid);
     config.newVersion = pkg.version;
   }
 

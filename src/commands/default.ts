@@ -9,6 +9,8 @@ import {
   parseCommits,
   bumpVersion,
   generateMarkDown,
+  BumpVersionOptions,
+  SemverBumpTypes,
 } from "..";
 import { githubRelease } from "./github";
 
@@ -38,15 +40,8 @@ export default async function defaultMain(args: Argv) {
 
   // Bump version optionally
   if (args.bump || args.release) {
-    let type;
-    if (args.major) {
-      type = "major";
-    } else if (args.minor) {
-      type = "minor";
-    } else if (args.patch) {
-      type = "patch";
-    }
-    const newVersion = await bumpVersion(commits, config, { type });
+    const opts = getBumpVersionOptions(args);
+    const newVersion = await bumpVersion(commits, config, opts);
     if (!newVersion) {
       consola.error("Unable to bump version based on changes.");
       process.exit(1);
@@ -118,5 +113,25 @@ export default async function defaultMain(args: Argv) {
         body: markdown.split("\n").slice(2).join("\n"),
       });
     }
+  }
+}
+
+function getBumpVersionOptions(args: Argv): BumpVersionOptions {
+  for (const type of Object.values(SemverBumpTypes)) {
+    const value = args[type];
+    if (value == null) {
+      continue;
+    }
+
+    if (type.startsWith("pre")) {
+      return {
+        type,
+        preid: typeof value === "string" ? value : "beta",
+      };
+    }
+
+    return {
+      type,
+    };
   }
 }
