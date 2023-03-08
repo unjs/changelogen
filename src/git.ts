@@ -45,6 +45,15 @@ export async function getCurrentGitRef() {
   return (await getCurrentGitTag()) || (await getCurrentGitBranch());
 }
 
+export async function getGitRemoteURL(cwd: string, remote = "origin") {
+  return await execCommand("git", [
+    `--work-tree=${cwd}`,
+    "remote",
+    "get-url",
+    remote,
+  ]);
+}
+
 export async function getGitDiff(
   from: string | undefined,
   to = "HEAD"
