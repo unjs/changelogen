@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@types/node': ^18.14.2
+  '@types/node': ^18.14.6
   '@types/semver': ^7.3.13
   '@vitest/coverage-c8': ^0.29.2
   c12: ^1.1.2
@@ -11,7 +11,7 @@ specifiers:
   eslint: ^8.35.0
   eslint-config-unjs: ^0.1.0
   execa: ^7.0.0
-  jiti: ^1.17.1
+  jiti: ^1.17.2
   mri: ^1.2.0
   node-fetch-native: ^1.0.2
   ofetch: ^1.0.1
@@ -44,12 +44,12 @@ dependencies:
   yaml: 2.2.1
 
 devDependencies:
-  '@types/node': 18.14.2
+  '@types/node': 18.14.6
   '@types/semver': 7.3.13
   '@vitest/coverage-c8': 0.29.2_vitest@0.29.2
   eslint: 8.35.0
   eslint-config-unjs: 0.1.0_ycpbpc6yetojsgtrx3mwntkhsu
-  jiti: 1.17.1
+  jiti: 1.17.2
   prettier: 2.8.4
   standard-version: 9.5.0
   typescript: 4.9.5
@@ -909,8 +909,8 @@ packages:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
     dev: true
 
-  /@types/node/18.14.2:
-    resolution: {integrity: sha512-1uEQxww3DaghA0RxqHx0O0ppVlo43pJhepY51OxuQIKHpjbnYLA7vcdwioNPzIqmC2u3I/dmylcqjlh0e7AyUA==}
+  /@types/node/18.14.6:
+    resolution: {integrity: sha512-93+VvleD3mXwlLI/xASjw0FzKcwzl3OdTCzm1LaRfqgS21gfFtK3zDXM5Op9TeeMsJVOaJ2VRDpT9q4Y3d0AvA==}
     dev: true
 
   /@types/normalize-package-data/2.4.1:
@@ -1299,7 +1299,7 @@ packages:
       defu: 6.1.2
       dotenv: 16.0.3
       giget: 1.1.2
-      jiti: 1.17.1
+      jiti: 1.17.2
       mlly: 1.1.1
       pathe: 1.1.0
       pkg-types: 1.0.2
@@ -3066,8 +3066,8 @@ packages:
       istanbul-lib-report: 3.0.0
     dev: true
 
-  /jiti/1.17.1:
-    resolution: {integrity: sha512-NZIITw8uZQFuzQimqjUxIrIcEdxYDFIe/0xYfIlVXTkiBjjyBEvgasj5bb0/cHtPRD/NziPbT312sFrkI5ALpw==}
+  /jiti/1.17.2:
+    resolution: {integrity: sha512-Xf0nU8+8wuiQpLcqdb2HRyHqYwGk2Pd+F7kstyp20ZuqTyCmB9dqpX2NxaxFc1kovraa2bG6c1RL3W7XfapiZg==}
     hasBin: true
 
   /js-sdsl/4.3.0:
@@ -3377,7 +3377,7 @@ packages:
       esbuild: 0.17.10
       fs-extra: 11.1.0
       globby: 13.1.3
-      jiti: 1.17.1
+      jiti: 1.17.2
       mri: 1.2.0
       pathe: 1.1.0
       typescript: 4.9.5
@@ -4390,7 +4390,7 @@ packages:
       esbuild: 0.17.10
       globby: 13.1.3
       hookable: 5.4.2
-      jiti: 1.17.1
+      jiti: 1.17.2
       magic-string: 0.29.0
       mkdist: 1.1.1_typescript@4.9.5
       mlly: 1.1.1
@@ -4461,7 +4461,7 @@ packages:
       spdx-expression-parse: 3.0.1
     dev: true
 
-  /vite-node/0.29.2_@types+node@18.14.2:
+  /vite-node/0.29.2_@types+node@18.14.6:
     resolution: {integrity: sha512-5oe1z6wzI3gkvc4yOBbDBbgpiWiApvuN4P55E8OI131JGrSuo4X3SOZrNmZYo4R8Zkze/dhi572blX0zc+6SdA==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
@@ -4471,7 +4471,7 @@ packages:
       mlly: 1.1.1
       pathe: 1.1.0
       picocolors: 1.0.0
-      vite: 4.0.4_@types+node@18.14.2
+      vite: 4.0.4_@types+node@18.14.6
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -4482,7 +4482,7 @@ packages:
       - terser
     dev: true
 
-  /vite/4.0.4_@types+node@18.14.2:
+  /vite/4.0.4_@types+node@18.14.6:
     resolution: {integrity: sha512-xevPU7M8FU0i/80DMR+YhgrzR5KS2ORy1B4xcX/cXLsvnUWvfHuqMmVU6N0YiJ4JWGRJJsLCgjEzKjG9/GKoSw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -4507,7 +4507,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 18.14.2
+      '@types/node': 18.14.6
       esbuild: 0.16.17
       postcss: 8.4.21
       resolve: 1.22.1
@@ -4540,7 +4540,7 @@ packages:
     dependencies:
       '@types/chai': 4.3.4
       '@types/chai-subset': 1.3.3
-      '@types/node': 18.14.2
+      '@types/node': 18.14.6
       '@vitest/expect': 0.29.2
       '@vitest/runner': 0.29.2
       '@vitest/spy': 0.29.2
@@ -4559,8 +4559,8 @@ packages:
       tinybench: 2.3.1
       tinypool: 0.3.1
       tinyspy: 1.0.2
-      vite: 4.0.4_@types+node@18.14.2
-      vite-node: 0.29.2_@types+node@18.14.2
+      vite: 4.0.4_@types+node@18.14.6
+      vite-node: 0.29.2_@types+node@18.14.6
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
