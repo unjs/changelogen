@@ -1,10 +1,7 @@
+import { resolve } from "node:path";
 import semver from "semver";
 import consola from "consola";
-import {
-  readPackageJSON,
-  resolvePackageJSON,
-  writePackageJSON,
-} from "pkg-types";
+import { readPackageJSON, writePackageJSON } from "pkg-types";
 import type { ChangelogConfig } from "./config";
 import type { GitCommit } from "./git";
 
@@ -54,7 +51,7 @@ export async function bumpVersion(
   let type = opts.type || determineSemverChange(commits, config) || "patch";
   const originalType = type;
 
-  const pkgPath = await resolvePackageJSON(config.cwd);
+  const pkgPath = resolve(config.cwd, "package.json");
   const pkg = await readPackageJSON(pkgPath);
   const currentVersion = pkg.version || "0.0.0";
 
