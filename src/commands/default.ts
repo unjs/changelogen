@@ -112,7 +112,7 @@ export default async function defaultMain(args: Argv) {
     if (args.push === true) {
       await execa("git", ["push", "--follow-tags"], { cwd });
     }
-    if (args.github !== false && config.repo.provider === "github") {
+    if (args.github !== false && config.repo?.provider === "github") {
       await githubRelease(config, {
         version: config.newVersion,
         body: markdown.split("\n").slice(2).join("\n"),
