@@ -2,26 +2,26 @@
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
-[![Github Actions][github-actions-src]][github-actions-href]
 [![Codecov][codecov-src]][codecov-href]
+[![License][license-src]][license-href]
 
-> Generate Beautiful Changelogs using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+Generate Beautiful Changelogs using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 
 ## Quick Start
 
-Generate changelog in markdown format and show in console:
+Generate a changelog in Markdown format and display in the console:
 
 ```sh
 npx changelogen@latest
 ```
 
-Generate changelog, bump version in `package.json` automatically and update `CHANGELOG.md` (without commit)
+Generate a changelog, bump the version in `package.json` and update `CHANGELOG.md` (without commit):
 
 ```sh
 npx changelogen@latest --bump
 ```
 
-Bump version, update `CHANGELOG.md` and make a git commit and tag:
+Bump the version, update `CHANGELOG.md` and make a git commit and tag:
 
 ```sh
 npx changelogen@latest --release
@@ -48,7 +48,7 @@ npx changelogen@latest [...args] [--dir <dir>]
 
 ### `changelogen gh release`
 
-Changelogen has built-in functionality to sync with with Github releases!
+Changelogen has built-in functionality to sync with with Github releases.
 
 In order to manually sync a release, you can use `changelogen gh release`. It will parse current `CHANGELOG.md` from current repository (local, then remote) and create or update releases.
 
@@ -87,12 +87,11 @@ Made with 💛
 Published under [MIT License](./LICENSE).
 
 <!-- Badges -->
-
-[npm-version-src]: https://img.shields.io/npm/v/changelogen?style=flat-square
+[npm-version-src]: https://img.shields.io/npm/v/changelogen?style=flat&colorA=18181B&colorB=F0DB4F
 [npm-version-href]: https://npmjs.com/package/changelogen
-[npm-downloads-src]: https://img.shields.io/npm/dm/changelogen?style=flat-square
+[npm-downloads-src]: https://img.shields.io/npm/dm/changelogen?style=flat&colorA=18181B&colorB=F0DB4F
 [npm-downloads-href]: https://npmjs.com/package/changelogen
-[github-actions-src]: https://img.shields.io/github/workflow/status/unjs/changelogen/ci/main?style=flat-square
-[github-actions-href]: https://github.com/unjs/changelogen/actions?query=workflow%3Aci
-[codecov-src]: https://img.shields.io/codecov/c/gh/unjs/changelogen/main?style=flat-square
+[codecov-src]: https://img.shields.io/codecov/c/gh/unjs/changelogen/main?style=flat&colorA=18181B&colorB=F0DB4F
 [codecov-href]: https://codecov.io/gh/unjs/changelogen
+[license-src]: https://img.shields.io/github/license/unjs/changelogen.svg?style=flat&colorA=18181B&colorB=F0DB4F
+[license-href]: https://github.com/unjs/changelogen/blob/main/LICENSE
