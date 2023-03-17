@@ -25,7 +25,7 @@ export default async function defaultMain(args: Argv) {
   });
 
   const logger = consola.create({ stdout: process.stderr });
-  logger.info(`Generating changelog for ${config.from}...${config.to}`);
+  logger.info(`Generating changelog for ${config.from || ""}...${config.to}`);
 
   const rawCommits = await getGitDiff(config.from, config.to);
 
