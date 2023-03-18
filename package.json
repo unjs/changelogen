@@ -32,11 +32,11 @@
     "test": "pnpm lint && vitest run --coverage"
   },
   "dependencies": {
-    "c12": "^1.1.2",
+    "c12": "^1.2.0",
     "colorette": "^2.0.19",
     "consola": "^2.15.3",
     "convert-gitmoji": "^0.1.3",
-    "execa": "^7.0.0",
+    "execa": "^7.1.1",
     "mri": "^1.2.0",
     "node-fetch-native": "^1.0.2",
     "ofetch": "^1.0.1",
@@ -48,17 +48,17 @@
     "yaml": "^2.2.1"
   },
   "devDependencies": {
-    "@types/node": "^18.14.6",
+    "@types/node": "^18.15.3",
     "@types/semver": "^7.3.13",
-    "@vitest/coverage-c8": "^0.29.2",
-    "eslint": "^8.35.0",
+    "@vitest/coverage-c8": "^0.29.3",
+    "eslint": "^8.36.0",
     "eslint-config-unjs": "^0.1.0",
-    "jiti": "^1.17.2",
+    "jiti": "^1.18.2",
     "prettier": "^2.8.4",
     "standard-version": "^9.5.0",
     "typescript": "^4.9.5",
     "unbuild": "^1.1.2",
-    "vitest": "^0.29.2"
+    "vitest": "^0.29.3"
   },
-  "packageManager": "pnpm@7.29.1"
+  "packageManager": "pnpm@7.29.3"
 }
