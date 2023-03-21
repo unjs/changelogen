@@ -21,6 +21,17 @@ export function getTagMessageWithAnyVersion(
   });
 }
 
+export function getTagMessageWithVersion(
+  config: ChangelogConfig,
+  version: string,
+  pkg?: Package
+) {
+  return format(config.tag.message, {
+    ...getTemplateParams(config, pkg),
+    NEW_VERSION: version,
+  });
+}
+
 export function getTagBody(config: ChangelogConfig, pkg?: Package) {
   return format(config.tag.body, getTemplateParams(config, pkg));
 }

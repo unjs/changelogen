@@ -1,8 +1,11 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { homedir } from "node:os";
+import { Package } from "@manypkg/get-packages";
 import { $fetch, FetchOptions } from "ofetch";
 import { join } from "pathe";
 import { ChangelogConfig } from "./config";
+import { getChangelogPath } from "./changelog";
+import { getTagMessageWithVersion } from "./git-tag";
 
 export interface GithubOptions {
   repo: string;
@@ -37,10 +40,15 @@ export async function getGithubReleaseByTag(
   );
 }
 
-export async function getGithubChangelog(config: ChangelogConfig) {
+export async function getGithubChangelog(
+  config: ChangelogConfig,
+  pkg?: Package
+) {
+  const filePath = getChangelogPath(config, pkg, true);
+
   return await githubFetch(
     config,
-    `https://raw.githubusercontent.com/${config.repo.repo}/main/CHANGELOG.md`
+    `https://raw.githubusercontent.com/${config.repo.repo}/main/${filePath}`
   );
 }
 
@@ -71,23 +79,27 @@ export async function updateGithubRelease(
 
 export async function syncGithubRelease(
   config: ChangelogConfig,
-  release: { version: string; body: string }
+  release: { version: string; body: string },
+  pkg?: Package
 ) {
-  const currentGhRelease = await getGithubReleaseByTag(
-    config,
-    `v${release.version}`
-  ).catch(() => {});
+  const tagName = getTagMessageWithVersion(config, release.version, pkg);
+  const currentGhRelease = await getGithubReleaseByTag(config, tagName).catch(
+    () => {}
+  );
 
   const ghRelease: GithubRelease = {
-    tag_name: `v${release.version}`,
-    name: `v${release.version}`,
+    tag_name: tagName,
+    name: tagName,
     body: release.body,
   };
 
   if (!config.tokens.github) {
     return {
       status: "manual",
-      url: githubNewReleaseURL(config, release),
+      url: githubNewReleaseURL(config, {
+        tag: tagName,
+        body: release.body,
+      }),
     };
   }
 
@@ -103,18 +115,26 @@ export async function syncGithubRelease(
     return {
       status: "manual",
       error,
-      url: githubNewReleaseURL(config, release),
+      url: githubNewReleaseURL(config, {
+        tag: tagName,
+        body: release.body,
+      }),
     };
   }
 }
 
 export function githubNewReleaseURL(
   config: ChangelogConfig,
-  release: { version: string; body: string }
+  release: { version: string; body: string } | { tag: string; body: string }
 ) {
-  return `https://${config.repo.domain}/${config.repo.repo}/releases/new?tag=v${
-    release.version
-  }&title=v${release.version}&body=${encodeURIComponent(release.body)}`;
+  const tag = "tag" in release ? release.tag : `v${release.version}`;
+  const url = new URL(
+    `https://${config.repo.domain}/${config.repo.repo}/releases/new`
+  );
+  url.searchParams.set("tag", tag);
+  url.searchParams.set("title", tag);
+  url.searchParams.set("body", release.body);
+  return url.toString();
 }
 
 export async function resolveGithubToken(config: ChangelogConfig) {

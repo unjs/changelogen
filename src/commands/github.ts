@@ -4,6 +4,7 @@ import { resolve } from "pathe";
 import consola from "consola";
 import { underline, cyan } from "colorette";
 import open from "open";
+import { Package } from "@manypkg/get-packages";
 import {
   getGithubChangelog,
   resolveGithubToken,
@@ -14,6 +15,8 @@ import {
   loadChangelogConfig,
   parseChangelogMarkdown,
 } from "..";
+import { getChangelogPath } from "../changelog";
+import { getSubPackages } from "../monorepo";
 
 export default async function githubMain(args: Argv) {
   const cwd = resolve(args.dir || "");
@@ -40,69 +43,57 @@ export default async function githubMain(args: Argv) {
     config.tokens.github = args.token;
   }
 
-  let changelogMd: string;
-  if (typeof config.output === "string") {
-    changelogMd = await fsp
-      .readFile(resolve(config.output), "utf8")
-      .catch(() => null);
-  }
-  if (!changelogMd) {
-    changelogMd = await getGithubChangelog(config).catch(() => null);
-  }
-  if (!changelogMd) {
-    consola.error(`Cannot resolve CHANGELOG.md`);
-    process.exit(1);
-  }
+  if (config.monorepo) {
+    const packages = await getSubPackages(config);
+    for (const pkg of packages) {
+      consola.info(`Release ${pkg.packageJson.name} changelog`);
 
-  const changelogReleases = parseChangelogMarkdown(changelogMd).releases;
+      const changelogMd = await getChangelogMd(config, pkg);
+      if (!changelogMd) {
+        consola.error(`Cannot resolve CHANGELOG.md`);
+        continue;
+      }
 
-  let versions = [..._versions].map((v) => v.replace(/^v/, ""));
-  if (versions[0] === "all") {
-    versions = changelogReleases.map((r) => r.version).sort();
-  } else if (versions.length === 0) {
-    if (config.newVersion) {
-      versions = [config.newVersion];
-    } else if (changelogReleases.length > 0) {
-      versions = [changelogReleases[0].version];
+      const changelogReleases = parseChangelogMarkdown(changelogMd).releases;
+
+      const versions = getVersions(config, _versions, changelogReleases);
+      if (versions.length === 0) {
+        consola.error(`No versions specified to release!`);
+        continue;
+      }
+
+      await execRelease(config, versions, changelogReleases, pkg);
     }
-  }
-
-  if (versions.length === 0) {
-    consola.error(`No versions specified to release!`);
-    process.exit(1);
-  }
-
-  for (const version of versions) {
-    const release = changelogReleases.find((r) => r.version === version);
-    if (!release) {
-      consola.warn(
-        `No matching changelog entry found for ${version} in CHANGELOG.md. Skipping!`
-      );
-      continue;
+  } else {
+    const changelogMd = await getChangelogMd(config);
+    if (!changelogMd) {
+      consola.error(`Cannot resolve CHANGELOG.md`);
+      process.exit(1);
     }
-    if (!release.body || !release.version) {
-      consola.warn(
-        `Changelog entry for ${version} in CHANGELOG.md is missing body or version. Skipping!`
-      );
-      continue;
+
+    const changelogReleases = parseChangelogMarkdown(changelogMd).releases;
+
+    const versions = getVersions(config, _versions, changelogReleases);
+    if (versions.length === 0) {
+      consola.error(`No versions specified to release!`);
+      process.exit(1);
     }
-    await githubRelease(config, {
-      version: release.version,
-      body: release.body,
-    });
+
+    await execRelease(config, versions, changelogReleases);
   }
 }
 
 export async function githubRelease(
   config: ChangelogConfig,
-  release: { version: string; body: string }
+  release: { version: string; body: string },
+  pkg?: Package
 ) {
   if (!config.tokens.github) {
     config.tokens.github = await resolveGithubToken(config).catch(
       () => undefined
     );
   }
-  const result = await syncGithubRelease(config, release);
+  const result = await syncGithubRelease(config, release, pkg);
   if (result.status === "manual") {
     if (result.error) {
       consola.error(result.error);
@@ -122,6 +113,69 @@ export async function githubRelease(
   } else {
     consola.success(
       `Synced ${cyan(`v${release.version}`)} to Github releases!`
+    );
+  }
+}
+
+async function getChangelogMd(config: ChangelogConfig, pkg?: Package) {
+  let changelogMd: string;
+  if (typeof config.output === "string") {
+    changelogMd = await fsp
+      .readFile(getChangelogPath(config, pkg), "utf8")
+      .catch(() => null);
+  }
+  if (!changelogMd) {
+    changelogMd = await getGithubChangelog(config, pkg).catch(() => null);
+  }
+
+  return changelogMd;
+}
+
+function getVersions(
+  config: ChangelogConfig,
+  _versions: string[],
+  changelogReleases: ReturnType<typeof parseChangelogMarkdown>["releases"]
+) {
+  let versions = [..._versions].map((v) => v.replace(/^v/, ""));
+  if (versions[0] === "all") {
+    versions = changelogReleases.map((r) => r.version).sort();
+  } else if (versions.length === 0) {
+    if (config.newVersion) {
+      versions = [config.newVersion];
+    } else if (changelogReleases.length > 0) {
+      versions = [changelogReleases[0].version];
+    }
+  }
+  return versions;
+}
+
+async function execRelease(
+  config: ChangelogConfig,
+  versions: string[],
+  changelogReleases: ReturnType<typeof parseChangelogMarkdown>["releases"],
+  pkg?: Package
+) {
+  for (const version of versions) {
+    const release = changelogReleases.find((r) => r.version === version);
+    if (!release) {
+      consola.warn(
+        `No matching changelog entry found for ${version} in CHANGELOG.md. Skipping!`
+      );
+      continue;
+    }
+    if (!release.body || !release.version) {
+      consola.warn(
+        `Changelog entry for ${version} in CHANGELOG.md is missing body or version. Skipping!`
+      );
+      continue;
+    }
+    await githubRelease(
+      config,
+      {
+        version: release.version,
+        body: release.body,
+      },
+      pkg
     );
   }
 }

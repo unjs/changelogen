@@ -168,10 +168,14 @@ async function execRelease(
       await execa("git", ["push", "--follow-tags"], { cwd: config.cwd });
     }
     if (args.github !== false && config.repo?.provider === "github") {
-      await githubRelease(config, {
-        version: config.newVersion,
-        body: markdown.split("\n").slice(2).join("\n"),
-      });
+      await githubRelease(
+        config,
+        {
+          version: config.newVersion,
+          body: markdown.split("\n").slice(2).join("\n"),
+        },
+        pkg
+      );
     }
   }
 }

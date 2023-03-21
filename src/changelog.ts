@@ -43,14 +43,25 @@ export async function writeChangelog(
   await writeFile(targetPath, content);
 }
 
-export function getChangelogPath(config: ChangelogConfig, pkg?: Package) {
+export function getChangelogPath(
+  config: ChangelogConfig,
+  pkg?: Package,
+  relative = false
+) {
   if (config.output === false) {
     return;
   }
 
-  const rawPath = format(
-    config.output as string,
-    getTemplateParams(config, pkg)
-  );
+  const params = getTemplateParams(config, pkg);
+  if (relative) {
+    params.PACKAGE_DIR = pkg.relativeDir;
+  }
+
+  const rawPath = format(config.output as string, params);
+
+  if (relative) {
+    return rawPath;
+  }
+
   return resolve(rawPath);
 }
