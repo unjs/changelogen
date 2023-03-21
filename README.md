@@ -69,9 +69,55 @@ By default in unauthenticated mode, changelogen will open a browser link to make
 
 ## Configuration
 
-Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `changelog.json`, `changelog.{ts,js,mjs,cjs}`, `.changelogrc` or use the `changelog` field in `package.json`.
+Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `changelog.config.json`, `changelog.config.{ts,js,mjs,cjs}`, `.changelogrc` or use the `changelog` field in `package.json`.
 
 See [./src/config.ts](./src/config.ts) for available options and defaults.
+
+### Monorepo
+
+To support a monorepo, you can set `monorepo: true` in the config. This will scan packages using [@manypkg/get-packages](https://github.com/Thinkmill/manypkg/tree/main/packages/get-packages) and generate a CHANGELOG.md file in every package directory.
+
+```ts
+export default {
+    monorepo: true,
+}
+```
+
+If you don't want to use the entire package, you can specify the package name(s) in the `monorepo.filter`.
+
+```ts
+export default {
+    monorepo: {
+        filter: [
+            'awesome-pkg',
+            '@awesome-pkg/shared',
+        ],
+    },
+}
+```
+
+If you want to change the order in which packages are applied, you can set `monorepo.sort` and pass in the compareFn (just like using [Array.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#parameters)).
+
+
+```ts
+export default {
+    monorepo: {
+        sort: (pkgA: Package, pkgB: Package) => {
+            return pkgA.packageJson.name - pkgB.packageJson.name
+        },
+    }
+}
+```
+
+### Configure git commit message / tag message / tag body
+
+You can freely specify the content of the git commit message, git tag message, and tag body, with the default value being available in [./src/config.ts](./src/config.ts).
+
+The following variables are supported:
+
+- `NEW_VERSION`: the new version number (e.g. `1.0.0`)
+- `PACKAGE_NAME`: the current package name (only available if monorepo is set)
+- `PACKAGE_DIR`: the current package directory (only available if monorepo is set)
 
 ## 💻 Development
 
