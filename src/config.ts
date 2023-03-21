@@ -1,9 +1,12 @@
-import { resolve } from "node:path";
+import { defu } from "defu";
 import { loadConfig, setupDotenv } from "c12";
 import { getLastGitTag, getCurrentGitRef } from "./git";
 import { resolveRepoConfig, RepoProvider } from "./repo";
 import type { SemverBumpType } from "./semver";
 import type { RepoConfig } from "./repo";
+import type { MonorepoConfig } from "./monorepo";
+import type { GitCommitConfig } from "./git-commit";
+import type { GitTagConfig } from "./git-tag";
 
 export interface ChangelogConfig {
   cwd: string;
@@ -15,10 +18,35 @@ export interface ChangelogConfig {
   to: string;
   newVersion?: string;
   output: string | boolean;
+  commit: GitCommitConfig;
+  tag: GitTagConfig;
+  monorepo?: MonorepoConfig | boolean;
 }
 
+const DEFAULT_GIT_COMMIT_CONFIG = {
+  commit: {
+    message: "chore(release): v%NEW_VERSION%",
+  },
+  tag: {
+    message: "v%NEW_VERSION%",
+    body: "v%NEW_VERSION%",
+  },
+  output: "CHANGELOG.md",
+};
+
+const DEFAULT_MONOREPO_GIT_COMMIT_CONFIG = {
+  commit: {
+    message: "chore(release): %PACKAGE_NAME% v%NEW_VERSION%",
+  },
+  tag: {
+    message: "%PACKAGE_NAME%@%NEW_VERSION%",
+    body: "%PACKAGE_NAME% v%NEW_VERSION%",
+  },
+  output: "%PACKAGE_DIR%/CHANGELOG.md",
+};
+
 const getDefaultConfig = () =>
-  <ChangelogConfig>{
+  ({
     types: {
       feat: { title: "🚀 Enhancements", semver: "minor" },
       perf: { title: "🔥 Performance", semver: "patch" },
@@ -36,7 +64,6 @@ const getDefaultConfig = () =>
     cwd: null,
     from: "",
     to: "",
-    output: "CHANGELOG.md",
     scopeMap: {},
     tokens: {
       github:
@@ -44,7 +71,8 @@ const getDefaultConfig = () =>
         process.env.GITHUB_TOKEN ||
         process.env.GH_TOKEN,
     },
-  };
+    monorepo: false,
+  } as any as ChangelogConfig);
 
 export async function loadChangelogConfig(
   cwd: string,
@@ -62,7 +90,13 @@ export async function loadChangelogConfig(
     },
   });
 
-  if (!config.from) {
+  if (config.monorepo) {
+    Object.assign(config, defu(config, DEFAULT_MONOREPO_GIT_COMMIT_CONFIG));
+  } else {
+    Object.assign(config, defu(config, DEFAULT_GIT_COMMIT_CONFIG));
+  }
+
+  if (!config.from && !config.monorepo) {
     config.from = await getLastGitTag();
   }
 
@@ -73,8 +107,7 @@ export async function loadChangelogConfig(
   if (!config.output) {
     config.output = false;
   } else if (config.output) {
-    config.output =
-      config.output === true ? defaults.output : resolve(cwd, config.output);
+    config.output = config.output === true ? defaults.output : config.output;
   }
 
   if (!config.repo) {

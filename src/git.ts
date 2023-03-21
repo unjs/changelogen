@@ -26,8 +26,13 @@ export interface GitCommit extends RawGitCommit {
   isBreaking: boolean;
 }
 
-export async function getLastGitTag() {
-  const r = await execCommand("git", ["describe", "--tags", "--abbrev=0"])
+export async function getLastGitTag(pattern?: string) {
+  const args = ["describe", "--tags", "--abbrev=0"];
+  if (pattern) {
+    args.push("--match", pattern);
+  }
+
+  const r = await execCommand("git", args)
     .then((r) => r.split("\n"))
     .catch(() => []);
   return r[r.length - 1];
@@ -56,16 +61,21 @@ export async function getGitRemoteURL(cwd: string, remote = "origin") {
 
 export async function getGitDiff(
   from: string | undefined,
-  to = "HEAD"
+  to = "HEAD",
+  dir?: string
 ): Promise<RawGitCommit[]> {
-  // https://git-scm.com/docs/pretty-formats
-  const r = await execCommand("git", [
+  const args = [
     "--no-pager",
     "log",
     `${from ? `${from}...` : ""}${to}`,
     '--pretty="----%n%s|%h|%an|%ae%n%b"',
     "--name-status",
-  ]);
+  ];
+  if (dir) {
+    args.push("--", dir);
+  }
+  // https://git-scm.com/docs/pretty-formats
+  const r = await execCommand("git", args.filter(Boolean));
   return r
     .split("----\n")
     .splice(1)
