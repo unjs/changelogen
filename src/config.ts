@@ -55,6 +55,7 @@ export async function loadChangelogConfig(
   const { config } = await loadConfig<ChangelogConfig>({
     cwd,
     name: "changelog",
+    packageJson: true,
     defaults,
     overrides: {
       cwd,
