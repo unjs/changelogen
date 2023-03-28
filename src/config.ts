@@ -50,9 +50,9 @@ const getDefaultConfig = () =>
         process.env.GH_TOKEN,
     },
     templates: {
-      commitMessage: "chore(release): v%NEW_VERSION%",
-      tagMessage: "v%NEW_VERSION%",
-      tagBody: "v%NEW_VERSION%",
+      commitMessage: "chore(release): v{{newVersion}}",
+      tagMessage: "v{{newVersion}}",
+      tagBody: "v{{newVersion}}",
     },
   };
 
