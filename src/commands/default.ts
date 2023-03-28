@@ -10,7 +10,6 @@ import {
   bumpVersion,
   generateMarkDown,
   BumpVersionOptions,
-  SemverBumpTypes,
 } from "..";
 import { githubRelease } from "./github";
 
@@ -40,8 +39,8 @@ export default async function defaultMain(args: Argv) {
 
   // Bump version optionally
   if (args.bump || args.release) {
-    const opts = getBumpVersionOptions(args);
-    const newVersion = await bumpVersion(commits, config, opts);
+    const bumpOptions = _getBumpVersionOptions(args);
+    const newVersion = await bumpVersion(commits, config, bumpOptions);
     if (!newVersion) {
       consola.error("Unable to bump version based on changes.");
       process.exit(1);
@@ -116,22 +115,27 @@ export default async function defaultMain(args: Argv) {
   }
 }
 
-function getBumpVersionOptions(args: Argv): BumpVersionOptions {
-  for (const type of Object.values(SemverBumpTypes)) {
+function _getBumpVersionOptions(args: Argv): BumpVersionOptions {
+  for (const type of [
+    "major",
+    "premajor",
+    "minor",
+    "preminor",
+    "patch",
+    "prepatch",
+    "prerelease",
+  ] as const) {
     const value = args[type];
-    if (value == null) {
-      continue;
-    }
-
-    if (type.startsWith("pre")) {
+    if (value) {
+      if (type.startsWith("pre")) {
+        return {
+          type,
+          preid: typeof value === "string" ? value : "",
+        };
+      }
       return {
         type,
-        preid: typeof value === "string" ? value : "beta",
       };
     }
-
-    return {
-      type,
-    };
   }
 }

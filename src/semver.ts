@@ -5,18 +5,14 @@ import { readPackageJSON, writePackageJSON } from "pkg-types";
 import type { ChangelogConfig } from "./config";
 import type { GitCommit } from "./git";
 
-export const SemverBumpTypes = {
-  Major: "major",
-  Minor: "minor",
-  Patch: "patch",
-  PreMajor: "premajor",
-  PreMinor: "preminor",
-  PrePatch: "prepatch",
-  PreRelease: "prerelease",
-} as const;
-
 export type SemverBumpType =
-  (typeof SemverBumpTypes)[keyof typeof SemverBumpTypes];
+  | "major"
+  | "premajor"
+  | "minor"
+  | "preminor"
+  | "patch"
+  | "prepatch"
+  | "prerelease";
 
 export function determineSemverChange(
   commits: GitCommit[],
