@@ -90,18 +90,18 @@ export default async function defaultMain(args: Argv) {
         (f) => f && typeof f === "string"
       ) as string[];
       await execa("git", ["add", ...filesToAdd], { cwd });
-      const msg = config.templates.commitMessage.replace(
+      const msg = config.templates.commitMessage.replaceAll(
         "%NEW_VERSION%",
         config.newVersion
       );
       await execa("git", ["commit", "-m", msg], { cwd });
     }
     if (args.tag !== false) {
-      const msg = config.templates.tagMessage.replace(
+      const msg = config.templates.tagMessage.replaceAll(
         "%NEW_VERSION%",
         config.newVersion
       );
-      const body = config.templates.tagBody.replace(
+      const body = config.templates.tagBody.replaceAll(
         "%NEW_VERSION%",
         config.newVersion
       );
