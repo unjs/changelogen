@@ -90,18 +90,22 @@ export default async function defaultMain(args: Argv) {
         (f) => f && typeof f === "string"
       ) as string[];
       await execa("git", ["add", ...filesToAdd], { cwd });
-      await execa(
-        "git",
-        ["commit", "-m", `chore(release): v${config.newVersion}`],
-        { cwd }
+      const msg = config.templates.commitMessage.replaceAll(
+        "{{newVersion}}",
+        config.newVersion
       );
+      await execa("git", ["commit", "-m", msg], { cwd });
     }
     if (args.tag !== false) {
-      await execa(
-        "git",
-        ["tag", "-am", "v" + config.newVersion, "v" + config.newVersion],
-        { cwd }
+      const msg = config.templates.tagMessage.replaceAll(
+        "{{newVersion}}",
+        config.newVersion
       );
+      const body = config.templates.tagBody.replaceAll(
+        "{{newVersion}}",
+        config.newVersion
+      );
+      await execa("git", ["tag", "-am", msg, body], { cwd });
     }
     if (args.push === true) {
       await execa("git", ["push", "--follow-tags"], { cwd });

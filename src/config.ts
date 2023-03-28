@@ -15,6 +15,11 @@ export interface ChangelogConfig {
   to: string;
   newVersion?: string;
   output: string | boolean;
+  templates: {
+    commitMessage?: string;
+    tagMessage?: string;
+    tagBody?: string;
+  };
 }
 
 const getDefaultConfig = () =>
@@ -43,6 +48,11 @@ const getDefaultConfig = () =>
         process.env.CHANGELOGEN_TOKENS_GITHUB ||
         process.env.GITHUB_TOKEN ||
         process.env.GH_TOKEN,
+    },
+    templates: {
+      commitMessage: "chore(release): v{{newVersion}}",
+      tagMessage: "v{{newVersion}}",
+      tagBody: "v{{newVersion}}",
     },
   };
 
