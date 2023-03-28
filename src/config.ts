@@ -16,12 +16,10 @@ export interface ChangelogConfig {
   to: string;
   newVersion?: string;
   output: string | boolean;
-  commit?: {
-    message?: string;
-  };
-  tag?: {
-    message?: string;
-    body?: string;
+  templates: {
+    commitMessage?: string;
+    tagMessage?: string;
+    tagBody?: string;
   };
 }
 
@@ -52,12 +50,10 @@ const getDefaultConfig = () =>
         process.env.GITHUB_TOKEN ||
         process.env.GH_TOKEN,
     },
-    commit: {
-      message: "chore(release): v%NEW_VERSION%",
-    },
-    tag: {
-      message: "v%NEW_VERSION%",
-      body: "v%NEW_VERSION%",
+    templates: {
+      commitMessage: "chore(release): v%NEW_VERSION%",
+      tagMessage: "v%NEW_VERSION%",
+      tagBody: "v%NEW_VERSION%",
     },
   };
 

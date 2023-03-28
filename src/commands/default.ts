@@ -96,18 +96,21 @@ export default async function defaultMain(args: Argv) {
         (f) => f && typeof f === "string"
       ) as string[];
       await execa("git", ["add", ...filesToAdd], { cwd });
-      const msg = config.commit.message.replace(
+      const msg = config.templates.commitMessage.replace(
         "%NEW_VERSION%",
         config.newVersion
       );
       await execa("git", ["commit", "-m", msg], { cwd });
     }
     if (args.tag !== false) {
-      const msg = config.tag.message.replace(
+      const msg = config.templates.tagMessage.replace(
         "%NEW_VERSION%",
         config.newVersion
       );
-      const body = config.tag.body.replace("%NEW_VERSION%", config.newVersion);
+      const body = config.templates.tagBody.replace(
+        "%NEW_VERSION%",
+        config.newVersion
+      );
       await execa("git", ["tag", "-am", msg, body], { cwd });
     }
     if (args.push === true) {
