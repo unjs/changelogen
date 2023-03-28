@@ -1,8 +1,7 @@
 import { resolve } from "node:path";
 import { loadConfig, setupDotenv } from "c12";
-import { readPackageJSON } from "pkg-types";
 import { getLastGitTag, getCurrentGitRef } from "./git";
-import { getRepoConfig, RepoProvider } from "./repo";
+import { resolveRepoConfig, RepoProvider } from "./repo";
 import type { SemverBumpType } from "./semver";
 import type { RepoConfig } from "./repo";
 
@@ -66,6 +65,7 @@ export async function loadChangelogConfig(
   const { config } = await loadConfig<ChangelogConfig>({
     cwd,
     name: "changelog",
+    packageJson: true,
     defaults,
     overrides: {
       cwd,
@@ -89,14 +89,7 @@ export async function loadChangelogConfig(
   }
 
   if (!config.repo) {
-    const pkg = await readPackageJSON(cwd).catch(() => {});
-    if (pkg && pkg.repository) {
-      const repoUrl =
-        typeof pkg.repository === "string"
-          ? pkg.repository
-          : pkg.repository.url;
-      config.repo = getRepoConfig(repoUrl);
-    }
+    config.repo = await resolveRepoConfig(cwd);
   }
 
   return config;

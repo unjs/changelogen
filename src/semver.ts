@@ -1,11 +1,18 @@
-import { promises as fsp } from "node:fs";
 import { resolve } from "node:path";
 import semver from "semver";
 import consola from "consola";
+import { readPackageJSON, writePackageJSON } from "pkg-types";
 import type { ChangelogConfig } from "./config";
 import type { GitCommit } from "./git";
 
-export type SemverBumpType = "major" | "minor" | "patch";
+export type SemverBumpType =
+  | "major"
+  | "premajor"
+  | "minor"
+  | "preminor"
+  | "patch"
+  | "prepatch"
+  | "prerelease";
 
 export function determineSemverChange(
   commits: GitCommit[],
@@ -27,17 +34,21 @@ export function determineSemverChange(
   return hasMajor ? "major" : hasMinor ? "minor" : hasPatch ? "patch" : null;
 }
 
+export type BumpVersionOptions = {
+  type?: SemverBumpType;
+  preid?: string;
+};
+
 export async function bumpVersion(
   commits: GitCommit[],
   config: ChangelogConfig,
-  opts: { type?: SemverBumpType } = {}
+  opts: BumpVersionOptions = {}
 ): Promise<string | false> {
   let type = opts.type || determineSemverChange(commits, config) || "patch";
   const originalType = type;
 
   const pkgPath = resolve(config.cwd, "package.json");
-  const pkg =
-    JSON.parse(await fsp.readFile(pkgPath, "utf8").catch(() => "{}")) || {};
+  const pkg = await readPackageJSON(pkgPath);
   const currentVersion = pkg.version || "0.0.0";
 
   if (currentVersion.startsWith("0.")) {
@@ -52,7 +63,7 @@ export async function bumpVersion(
     pkg.version = config.newVersion;
   } else if (type) {
     // eslint-disable-next-line import/no-named-as-default-member
-    pkg.version = semver.inc(currentVersion, type);
+    pkg.version = semver.inc(currentVersion, type, opts.preid);
     config.newVersion = pkg.version;
   }
 
@@ -63,7 +74,7 @@ export async function bumpVersion(
   consola.info(
     `Bumping version from ${currentVersion} to ${pkg.version} (${originalType})`
   );
-  await fsp.writeFile(pkgPath, JSON.stringify(pkg, null, 2) + "\n", "utf8");
+  await writePackageJSON(pkgPath, pkg);
 
   return pkg.version;
 }
