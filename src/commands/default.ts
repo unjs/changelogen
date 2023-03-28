@@ -9,6 +9,7 @@ import {
   parseCommits,
   bumpVersion,
   generateMarkDown,
+  BumpVersionOptions,
 } from "..";
 import { githubRelease } from "./github";
 
@@ -38,15 +39,8 @@ export default async function defaultMain(args: Argv) {
 
   // Bump version optionally
   if (args.bump || args.release) {
-    let type;
-    if (args.major) {
-      type = "major";
-    } else if (args.minor) {
-      type = "minor";
-    } else if (args.patch) {
-      type = "patch";
-    }
-    const newVersion = await bumpVersion(commits, config, { type });
+    const bumpOptions = _getBumpVersionOptions(args);
+    const newVersion = await bumpVersion(commits, config, bumpOptions);
     if (!newVersion) {
       consola.error("Unable to bump version based on changes.");
       process.exit(1);
@@ -117,6 +111,31 @@ export default async function defaultMain(args: Argv) {
         version: config.newVersion,
         body: markdown.split("\n").slice(2).join("\n"),
       });
+    }
+  }
+}
+
+function _getBumpVersionOptions(args: Argv): BumpVersionOptions {
+  for (const type of [
+    "major",
+    "premajor",
+    "minor",
+    "preminor",
+    "patch",
+    "prepatch",
+    "prerelease",
+  ] as const) {
+    const value = args[type];
+    if (value) {
+      if (type.startsWith("pre")) {
+        return {
+          type,
+          preid: typeof value === "string" ? value : "",
+        };
+      }
+      return {
+        type,
+      };
     }
   }
 }

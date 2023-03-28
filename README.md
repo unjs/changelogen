@@ -45,6 +45,10 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--major`: Bump as a semver-major version
 - `--minor`: Bump as a semver-minor version
 - `--patch`: Bump as a semver-patch version
+- `--premajor`: Bump as a semver-premajor version, can set id with string.
+- `--preminor`: Bump as a semver-preminor version, can set id with string.
+- `--prepatch`: Bump as a semver-prepatch version, can set id with string.
+- `--prerelease`: Bump as a semver-prerelease version, can set id with string.
 
 ### `changelogen gh release`
 
@@ -87,6 +91,7 @@ Made with 💛
 Published under [MIT License](./LICENSE).
 
 <!-- Badges -->
+
 [npm-version-src]: https://img.shields.io/npm/v/changelogen?style=flat&colorA=18181B&colorB=F0DB4F
 [npm-version-href]: https://npmjs.com/package/changelogen
 [npm-downloads-src]: https://img.shields.io/npm/dm/changelogen?style=flat&colorA=18181B&colorB=F0DB4F
