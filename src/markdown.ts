@@ -16,9 +16,9 @@ export async function generateMarkDown(
 
   // Version Title
   const v = config.newVersion && `v${config.newVersion}`;
-  markdown.push("", "## " + (v || `${config.from}...${config.to}`), "");
+  markdown.push("", "## " + (v || `${config.from || ""}...${config.to}`), "");
 
-  if (config.repo) {
+  if (config.repo && config.from) {
     markdown.push(formatCompareChanges(v, config), "");
   }
 

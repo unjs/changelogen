@@ -27,9 +27,9 @@ export interface GitCommit extends RawGitCommit {
 }
 
 export async function getLastGitTag() {
-  const r = await execCommand("git", ["describe", "--tags", "--abbrev=0"]).then(
-    (r) => r.split("\n")
-  );
+  const r = await execCommand("git", ["describe", "--tags", "--abbrev=0"])
+    .then((r) => r.split("\n"))
+    .catch(() => []);
   return r[r.length - 1];
 }
 
@@ -43,6 +43,15 @@ export async function getCurrentGitTag() {
 
 export async function getCurrentGitRef() {
   return (await getCurrentGitTag()) || (await getCurrentGitBranch());
+}
+
+export async function getGitRemoteURL(cwd: string, remote = "origin") {
+  return await execCommand("git", [
+    `--work-tree=${cwd}`,
+    "remote",
+    "get-url",
+    remote,
+  ]);
 }
 
 export async function getGitDiff(
