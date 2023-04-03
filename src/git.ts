@@ -55,6 +55,10 @@ export async function getGitRemoteURL(cwd: string, remote = "origin") {
   ]);
 }
 
+export async function getCurrentGitStatus() {
+  return await execCommand("git", ["status", "--porcelain"]);
+}
+
 export async function getGitDiff(
   from: string | undefined,
   to = "HEAD"
