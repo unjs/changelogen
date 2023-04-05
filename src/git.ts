@@ -26,9 +26,7 @@ export interface GitCommit extends RawGitCommit {
   isBreaking: boolean;
 }
 
-export async function getLastGitTag(
-  pattern?: string
-) {
+export async function getLastGitTag(pattern?: string) {
   const args = ["describe", "--tags", "--abbrev=0"];
   if (pattern) {
     args.push("--match", pattern);

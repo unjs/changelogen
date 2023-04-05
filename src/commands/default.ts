@@ -91,12 +91,12 @@ export default async function defaultMain(args: Argv) {
         (f) => f && typeof f === "string"
       ) as string[];
       await execa("git", ["add", ...filesToAdd], { cwd });
-      const msg = getCommitMessage(config)
+      const msg = getCommitMessage(config);
       await execa("git", ["commit", "-m", msg], { cwd });
     }
     if (args.tag !== false) {
-      const msg = getTagMessage(config)
-      const body = getTagBody(config)
+      const msg = getTagMessage(config);
+      const body = getTagBody(config);
       await execa("git", ["tag", "-am", msg, body], { cwd });
     }
     if (args.push === true) {

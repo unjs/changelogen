@@ -75,9 +75,7 @@ export async function loadChangelogConfig(
   });
 
   if (!config.from) {
-    config.from = await getLastGitTag(
-      getTagMessagePattern(config),
-    );
+    config.from = await getLastGitTag(getTagMessagePattern(config));
   }
 
   if (!config.to) {
