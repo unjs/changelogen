@@ -55,7 +55,7 @@ const getDefaultConfig = () =>
       tagMessage: "v{{newVersion}}",
       tagBody: "v{{newVersion}}",
     },
-    subDir: '/',
+    subDir: "/",
   };
 
 export async function loadChangelogConfig(
@@ -86,10 +86,10 @@ export async function loadChangelogConfig(
   if (!config.output) {
     config.output = false;
   } else if (config.output) {
-    config.output = resolve(cwd, config.subDir,
-      config.output === true
-        ? defaults.output as string
-        : config.output
+    config.output = resolve(
+      cwd,
+      config.subDir,
+      config.output === true ? (defaults.output as string) : config.output
     );
   }
 

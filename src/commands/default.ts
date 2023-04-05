@@ -89,10 +89,8 @@ export default async function defaultMain(args: Argv) {
     if (args.commit !== false) {
       const filesToAdd = [
         config.output,
-        resolve(config.cwd, config.subDir, "package.json")
-      ].filter(
-        (f) => f && typeof f === "string"
-      ) as string[];
+        resolve(config.cwd, config.subDir, "package.json"),
+      ].filter((f) => f && typeof f === "string") as string[];
       await execa("git", ["add", ...filesToAdd], { cwd });
       const msg = config.templates.commitMessage.replaceAll(
         "{{newVersion}}",

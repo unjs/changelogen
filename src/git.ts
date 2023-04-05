@@ -57,7 +57,7 @@ export async function getGitRemoteURL(cwd: string, remote = "origin") {
 export async function getGitDiff(
   from: string | undefined,
   to = "HEAD",
-  dir?: string,
+  dir?: string
 ): Promise<RawGitCommit[]> {
   const args = [
     "--no-pager",

@@ -39,8 +39,8 @@ export async function getGithubReleaseByTag(
 }
 
 export async function getGithubChangelog(config: ChangelogConfig) {
-  const filePath = relative(config.cwd, config.output as string)
-  const urlPath = joinURL(config.repo.repo, 'main', filePath)
+  const filePath = relative(config.cwd, config.output as string);
+  const urlPath = joinURL(config.repo.repo, "main", filePath);
   return await githubFetch(
     config,
     `https://raw.githubusercontent.com/${urlPath}`
