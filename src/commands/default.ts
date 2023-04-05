@@ -11,6 +11,7 @@ import {
   generateMarkDown,
   BumpVersionOptions,
 } from "..";
+import { getCommitMessage, getTagBody, getTagMessage } from "../template";
 import { githubRelease } from "./github";
 
 export default async function defaultMain(args: Argv) {
@@ -90,21 +91,12 @@ export default async function defaultMain(args: Argv) {
         (f) => f && typeof f === "string"
       ) as string[];
       await execa("git", ["add", ...filesToAdd], { cwd });
-      const msg = config.templates.commitMessage.replaceAll(
-        "{{newVersion}}",
-        config.newVersion
-      );
+      const msg = getCommitMessage(config)
       await execa("git", ["commit", "-m", msg], { cwd });
     }
     if (args.tag !== false) {
-      const msg = config.templates.tagMessage.replaceAll(
-        "{{newVersion}}",
-        config.newVersion
-      );
-      const body = config.templates.tagBody.replaceAll(
-        "{{newVersion}}",
-        config.newVersion
-      );
+      const msg = getTagMessage(config)
+      const body = getTagBody(config)
       await execa("git", ["tag", "-am", msg, body], { cwd });
     }
     if (args.push === true) {
