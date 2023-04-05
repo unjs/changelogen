@@ -25,6 +25,7 @@ export interface ChangelogConfig {
     tagMessage?: string;
     tagBody?: string;
   };
+  excludeAuthors: string[];
 }
 
 const getDefaultConfig = () =>
@@ -64,6 +65,7 @@ const getDefaultConfig = () =>
       tagMessage: "v{{newVersion}}",
       tagBody: "v{{newVersion}}",
     },
+    excludeAuthors: [],
   };
 
 export async function loadChangelogConfig(
