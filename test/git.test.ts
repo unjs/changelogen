@@ -21,6 +21,14 @@ describe("git", () => {
     );
   });
 
+  test("getGitDiff with dir should work", async () => {
+    const COMMIT_INITIAL = "4554fc49265ac532b14c89cec15e7d21bb55d48b";
+    const COMMIT_VER002 = "38d7ba15dccc3a44931bf8bf0abaa0d4d96603eb";
+    expect(
+      (await getGitDiff(COMMIT_INITIAL, COMMIT_VER002, "./test")).length
+    ).toBe(1);
+  });
+
   test("parse", async () => {
     const COMMIT_FROM = "1cb15d5dd93302ebd5ff912079ed584efcc6703b";
     const COMMIT_TO = "3828bda8c45933396ddfa869d671473231ce3c95";
