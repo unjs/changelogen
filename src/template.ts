@@ -1,9 +1,9 @@
 import { ChangelogConfig } from "./config";
 
 function format(template: string, vars: Record<string, string>) {
-  const result = template;
+  let result = template;
   for (const [key, value] of Object.entries(vars)) {
-    result.replaceAll(key, value);
+    result = result.replaceAll(key, value);
   }
   return result;
 }
@@ -27,7 +27,7 @@ export function getTagBody(config: ChangelogConfig) {
 }
 
 export function getTagMessagePattern(config: ChangelogConfig) {
-  return format(config.templates.tagBody, {
+  return format(config.templates.tagMessage, {
     "{{newVersion}}": "*",
   });
 }
