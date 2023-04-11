@@ -1,46 +1,51 @@
 import { describe, test, expect } from "vitest";
-import { getCommitMessage, getTagMessage, getTagBody, getTagMessagePattern } from '../src/template';
+import {
+  getCommitMessage,
+  getTagMessage,
+  getTagBody,
+  getTagMessagePattern,
+} from "../src/template";
 import { ChangelogConfig } from "../src";
 
-describe('template', () => {
-  test('getCommitMessage should work', () => {
+describe("template", () => {
+  test("getCommitMessage should work", () => {
     const result = getCommitMessage({
       templates: {
-        commitMessage: 'v{{newVersion}}'
+        commitMessage: "v{{newVersion}}",
       },
-      newVersion: '1.0.0'
-    } as ChangelogConfig)
+      newVersion: "1.0.0",
+    } as ChangelogConfig);
 
-    expect(result).toBe('v1.0.0')
-  })
-  test('getTagMessage should work', () => {
+    expect(result).toBe("v1.0.0");
+  });
+  test("getTagMessage should work", () => {
     const result = getTagMessage({
       templates: {
-        tagMessage: 'v{{newVersion}}'
+        tagMessage: "v{{newVersion}}",
       },
-      newVersion: '1.0.0'
-    } as ChangelogConfig)
+      newVersion: "1.0.0",
+    } as ChangelogConfig);
 
-    expect(result).toBe('v1.0.0')
-  })
-  test('getTagBody should work', () => {
+    expect(result).toBe("v1.0.0");
+  });
+  test("getTagBody should work", () => {
     const result = getTagBody({
       templates: {
-        tagBody: 'Release new version: v{{newVersion}}'
+        tagBody: "Release new version: v{{newVersion}}",
       },
-      newVersion: '1.0.0'
-    } as ChangelogConfig)
+      newVersion: "1.0.0",
+    } as ChangelogConfig);
 
-    expect(result).toBe('Release new version: v1.0.0')
-  })
-  test('getTagMessagePattern should work', () => {
+    expect(result).toBe("Release new version: v1.0.0");
+  });
+  test("getTagMessagePattern should work", () => {
     const result = getTagMessagePattern({
       templates: {
-        tagMessage: 'v{{newVersion}}'
+        tagMessage: "v{{newVersion}}",
       },
-      newVersion: '1.0.0'
-    } as ChangelogConfig)
+      newVersion: "1.0.0",
+    } as ChangelogConfig);
 
-    expect(result).toBe('v*')
-  })
-})
+    expect(result).toBe("v*");
+  });
+});
