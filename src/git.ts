@@ -97,6 +97,22 @@ export function parseCommits(
     .filter(Boolean);
 }
 
+export function filterParsedCommits(
+  commits: GitCommit[],
+  config: ChangelogConfig
+): GitCommit[] {
+  return commits.filter(
+    (c) =>
+      config.types[c.type] &&
+      !(
+        c.type === "chore" &&
+        config.excludeChoreDeps &&
+        c.scope === "deps" &&
+        !c.isBreaking
+      )
+  );
+}
+
 // https://www.conventionalcommits.org/en/v1.0.0/
 // https://regex101.com/r/FSfNvA/1
 const ConventionalCommitRegex =
