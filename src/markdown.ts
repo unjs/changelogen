@@ -19,7 +19,7 @@ export async function generateMarkDown(
   markdown.push("", "## " + (v || `${config.from || ""}...${config.to}`), "");
 
   if (config.repo && config.from) {
-    markdown.push(formatCompareChanges(v, config), "");
+    markdown.push(formatCompareChanges(v, config));
   }
 
   for (const type in config.types) {
@@ -128,7 +128,7 @@ export function parseChangelogMarkdown(contents: string) {
 
 function formatCommit(commit: GitCommit, config: ChangelogConfig) {
   return (
-    "  - " +
+    "- " +
     (commit.scope ? `**${commit.scope.trim()}:** ` : "") +
     (commit.isBreaking ? "⚠️  " : "") +
     upperFirst(commit.description) +
