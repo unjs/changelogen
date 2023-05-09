@@ -42,7 +42,7 @@ export async function pullRequest(args: Argv, config: ChangelogConfig) {
 
   // Add updated files to git
   await execa("git", ["add", ...filesToAdd], { cwd: config.cwd });
-  // Commit the changes
+  // Commit changes
   const msg = config.templates.commitMessage.replaceAll(
     "{{newVersion}}",
     config.newVersion
