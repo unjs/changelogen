@@ -40,7 +40,7 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--dir`: Path to git repository. When not provided, **current working directory** will be used as as default.
 - `--output`: Changelog file name to create or update. Defaults to `CHANGELOG.md` and resolved relative to dir. Use `--no-output` to write to console only.
 - `--bump`: Determine semver change and update version in `package.json`.
-- `--release`. Bumps version in `package.json` and creates commit and git tags using local `git`. You can disable commit using `--no-commit` and tag using `--no-tag`.
+- `--release`. Bumps version in `package.json` and creates commit and git tags using local `git`. You can disable commit using `--no-commit` and tag using `--no-tag`. You can enable the automatic push of the new tag and release commit to your git repository by adding `--push`.
 - `-r`: Release as specific version.
 - `--major`: Bump as a semver-major version
 - `--minor`: Bump as a semver-minor version
