@@ -14,6 +14,7 @@ export interface ChangelogConfig {
   from: string;
   to: string;
   newVersion?: string;
+  signTags?: boolean;
   output: string | boolean;
   templates: {
     commitMessage?: string;
