@@ -46,6 +46,7 @@
     "pkg-types": "^1.0.2",
     "scule": "^1.0.0",
     "semver": "^7.5.0",
+    "ufo": "^1.1.1",
     "yaml": "^2.2.2"
   },
   "devDependencies": {

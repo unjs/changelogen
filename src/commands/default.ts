@@ -23,12 +23,13 @@ export default async function defaultMain(args: Argv) {
     to: args.to,
     output: args.output,
     newVersion: args.r,
+    subDir: args.subDir,
   });
 
   const logger = consola.create({ stdout: process.stderr });
   logger.info(`Generating changelog for ${config.from || ""}...${config.to}`);
 
-  const rawCommits = await getGitDiff(config.from, config.to);
+  const rawCommits = await getGitDiff(config.from, config.to, config.subDir);
 
   // Parse commits as conventional commits
   const commits = parseCommits(rawCommits, config).filter(
@@ -86,9 +87,10 @@ export default async function defaultMain(args: Argv) {
   // Commit and tag changes for release mode
   if (args.release) {
     if (args.commit !== false) {
-      const filesToAdd = [config.output, "package.json"].filter(
-        (f) => f && typeof f === "string"
-      ) as string[];
+      const filesToAdd = [
+        config.output,
+        resolve(config.cwd, config.subDir, "package.json"),
+      ].filter((f) => f && typeof f === "string") as string[];
       await execa("git", ["add", ...filesToAdd], { cwd });
       const msg = config.templates.commitMessage.replaceAll(
         "{{newVersion}}",

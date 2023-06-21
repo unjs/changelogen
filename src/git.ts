@@ -56,16 +56,21 @@ export async function getGitRemoteURL(cwd: string, remote = "origin") {
 
 export async function getGitDiff(
   from: string | undefined,
-  to = "HEAD"
+  to = "HEAD",
+  dir?: string
 ): Promise<RawGitCommit[]> {
-  // https://git-scm.com/docs/pretty-formats
-  const r = await execCommand("git", [
+  const args = [
     "--no-pager",
     "log",
     `${from ? `${from}...` : ""}${to}`,
     '--pretty="----%n%s|%h|%an|%ae%n%b"',
     "--name-status",
-  ]);
+  ];
+  if (dir) {
+    args.push("--", dir);
+  }
+  // https://git-scm.com/docs/pretty-formats
+  const r = await execCommand("git", args.filter(Boolean));
   return r
     .split("----\n")
     .splice(1)

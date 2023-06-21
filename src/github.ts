@@ -1,7 +1,8 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { homedir } from "node:os";
 import { $fetch, FetchOptions } from "ofetch";
-import { join } from "pathe";
+import { join, relative } from "pathe";
+import { joinURL } from "ufo";
 import { ChangelogConfig } from "./config";
 
 export interface GithubOptions {
@@ -38,9 +39,11 @@ export async function getGithubReleaseByTag(
 }
 
 export async function getGithubChangelog(config: ChangelogConfig) {
+  const filePath = relative(config.cwd, config.output as string);
+  const urlPath = joinURL(config.repo.repo, "main", filePath);
   return await githubFetch(
     config,
-    `https://raw.githubusercontent.com/${config.repo.repo}/main/CHANGELOG.md`
+    `https://raw.githubusercontent.com/${urlPath}`
   );
 }
 

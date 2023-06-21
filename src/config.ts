@@ -20,6 +20,7 @@ export interface ChangelogConfig {
     tagMessage?: string;
     tagBody?: string;
   };
+  subDir: string;
 }
 
 const getDefaultConfig = () =>
@@ -54,6 +55,7 @@ const getDefaultConfig = () =>
       tagMessage: "v{{newVersion}}",
       tagBody: "v{{newVersion}}",
     },
+    subDir: "/",
   };
 
 export async function loadChangelogConfig(
@@ -84,8 +86,11 @@ export async function loadChangelogConfig(
   if (!config.output) {
     config.output = false;
   } else if (config.output) {
-    config.output =
-      config.output === true ? defaults.output : resolve(cwd, config.output);
+    config.output = resolve(
+      cwd,
+      config.subDir,
+      config.output === true ? (defaults.output as string) : config.output
+    );
   }
 
   if (!config.repo) {
