@@ -297,29 +297,28 @@ describe("git", () => {
 
       [compare changes](https://github.com/unjs/changelogen/compare/1cb15d5dd93302ebd5ff912079ed584efcc6703b...3828bda8c45933396ddfa869d671473231ce3c95)
 
-
       ### 🚀 Enhancements
 
-        - Expose \`determineSemverChange\` and \`bumpVersion\` ([5451f18](https://github.com/unjs/changelogen/commit/5451f18))
-        - Infer github config from package.json ([#37](https://github.com/unjs/changelogen/pull/37))
+      - Expose \`determineSemverChange\` and \`bumpVersion\` ([5451f18](https://github.com/unjs/changelogen/commit/5451f18))
+      - Infer github config from package.json ([#37](https://github.com/unjs/changelogen/pull/37))
 
       ### 🩹 Fixes
 
-        - Consider docs and refactor as semver patch for bump ([648ccf1](https://github.com/unjs/changelogen/commit/648ccf1))
-        - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
+      - Consider docs and refactor as semver patch for bump ([648ccf1](https://github.com/unjs/changelogen/commit/648ccf1))
+      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
 
       ### 🏡 Chore
 
-        - **deps:** Update all non-major dependencies ([#42](https://github.com/unjs/changelogen/pull/42))
-        - Update dependencies ([c210976](https://github.com/unjs/changelogen/commit/c210976))
-        - Fix typecheck ([8796cf1](https://github.com/unjs/changelogen/commit/8796cf1))
-        - **release:** V0.3.3 ([f4f42a3](https://github.com/unjs/changelogen/commit/f4f42a3))
-        - **release:** V0.3.4 ([6fc5087](https://github.com/unjs/changelogen/commit/6fc5087))
-        - **release:** V0.3.5 ([3828bda](https://github.com/unjs/changelogen/commit/3828bda))
+      - **deps:** Update all non-major dependencies ([#42](https://github.com/unjs/changelogen/pull/42))
+      - Update dependencies ([c210976](https://github.com/unjs/changelogen/commit/c210976))
+      - Fix typecheck ([8796cf1](https://github.com/unjs/changelogen/commit/8796cf1))
+      - **release:** V0.3.3 ([f4f42a3](https://github.com/unjs/changelogen/commit/f4f42a3))
+      - **release:** V0.3.4 ([6fc5087](https://github.com/unjs/changelogen/commit/6fc5087))
+      - **release:** V0.3.5 ([3828bda](https://github.com/unjs/changelogen/commit/3828bda))
 
       #### ⚠️  Breaking Changes
 
-        - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
+      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
 
       ### ❤️  Contributors
 
