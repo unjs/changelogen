@@ -10,9 +10,8 @@ import {
   bumpVersion,
   generateMarkDown,
   BumpVersionOptions,
-  updatePackageName,
 } from "..";
-import { publishNpmPackage } from "../publish";
+import { npmPublish, renamePackage } from "../package";
 import { githubRelease } from "./github";
 
 export default async function defaultMain(args: Argv) {
@@ -24,9 +23,7 @@ export default async function defaultMain(args: Argv) {
     from: args.from,
     to: args.to,
     output: args.output,
-    edge: args.edge,
-    publish: args.publish,
-    newVersion: args.r,
+    newVersion: typeof args.r === 'string' ? args.r : undefined,
   });
 
   const logger = consola.create({ stdout: process.stderr });
@@ -41,8 +38,22 @@ export default async function defaultMain(args: Argv) {
       !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
   );
 
+  // Shortcut for canary releases
+  if (args.canary) {
+    const canaryName = typeof args.canary === "string" ? args.canary : "canary";
+    if (args.bump === undefined) {
+      args.bump = true;
+    }
+    if (args.versionSuffix === undefined) {
+      args.versionSuffix = true;
+    }
+    if (args.nameSuffix === undefined) {
+      args.nameSuffix = canaryName;
+    }
+  }
+
   // Bump version optionally
-  if (args.bump || args.release || args.edge) {
+  if (args.bump || args.release) {
     const bumpOptions = _getBumpVersionOptions(args);
     const newVersion = await bumpVersion(commits, config, bumpOptions);
     if (!newVersion) {
@@ -52,16 +63,11 @@ export default async function defaultMain(args: Argv) {
     config.newVersion = newVersion;
   }
 
-  // Update package name if performing an edge release
-  if (args.edge) {
-    await updatePackageName(config);
-  }
-
   // Generate markdown
   const markdown = await generateMarkDown(commits, config);
 
   // Show changelog in CLI unless bumping or releasing
-  const displayOnly = (!args.bump && !args.release) || args.edge;
+  const displayOnly = !args.bump && !args.release;
   if (displayOnly) {
     consola.log("\n\n" + markdown + "\n\n");
   }
@@ -92,8 +98,14 @@ export default async function defaultMain(args: Argv) {
     await fsp.writeFile(config.output, changelogMD);
   }
 
+  if (typeof args.nameSuffix === 'string') {
+    await renamePackage(config, `-${args.nameSuffix}`);
+  }
   if (args.publish) {
-    await publishNpmPackage(config);
+    if (args.publishTag) {
+      config.publish.tag = args.publishTag;
+    }
+    await npmPublish(config);
   }
 
   // Commit and tag changes for release mode
@@ -133,6 +145,12 @@ export default async function defaultMain(args: Argv) {
 }
 
 function _getBumpVersionOptions(args: Argv): BumpVersionOptions {
+  if (args.versionSuffix) {
+    return {
+      suffix: args.versionSuffix,
+    };
+  }
+
   for (const type of [
     "major",
     "premajor",

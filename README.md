@@ -42,7 +42,9 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--bump`: Determine semver change and update version in `package.json`.
 - `--release`. Bumps version in `package.json` and creates commit and git tags using local `git`. You can disable commit using `--no-commit` and tag using `--no-tag`. You can enable the automatic push of the new tag and release commit to your git repository by adding `--push`.
 - `--publish`. Publishes package as a new version on `npm`. You will need to set authorisation tokens separately via `.npmrc` or environment variables.
-- `--edge`. Bumps version in `package.json` to an edge-compatible version based on type of commit since last release + date + commit hash.
+- `--nameSuffix`: Adds suffix to package name (Example: `--nameSuffix canary` renames `foo` to `foo-canary`)
+- `--versionSuffix`: Adds suffix to package version. When set without value or to `true`, uses date + commit hash as commit
+- `--canary`. Shortcut to `--bump true --versionSuffix true --nameSuffix [name]`.
 - `-r`: Release as specific version.
 - `--major`: Bump as a semver-major version
 - `--minor`: Bump as a semver-minor version
