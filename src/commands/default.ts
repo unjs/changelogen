@@ -11,6 +11,7 @@ import {
   generateMarkDown,
   BumpVersionOptions,
 } from "..";
+import { npmPublish, renamePackage } from "../package";
 import { githubRelease } from "./github";
 
 export default async function defaultMain(args: Argv) {
@@ -22,7 +23,7 @@ export default async function defaultMain(args: Argv) {
     from: args.from,
     to: args.to,
     output: args.output,
-    newVersion: args.r,
+    newVersion: typeof args.r === "string" ? args.r : undefined,
   });
 
   const logger = consola.create({ stdout: process.stderr });
@@ -36,6 +37,24 @@ export default async function defaultMain(args: Argv) {
       config.types[c.type] &&
       !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
   );
+
+  // Shortcut for canary releases
+  if (args.canary) {
+    if (args.bump === undefined) {
+      args.bump = true;
+    }
+    if (args.versionSuffix === undefined) {
+      args.versionSuffix = true;
+    }
+    if (args.nameSuffix === undefined && typeof args.canary === "string") {
+      args.nameSuffix = args.canary;
+    }
+  }
+
+  // Rename package name optionally
+  if (typeof args.nameSuffix === "string") {
+    await renamePackage(config, `-${args.nameSuffix}`);
+  }
 
   // Bump version optionally
   if (args.bump || args.release) {
@@ -117,9 +136,23 @@ export default async function defaultMain(args: Argv) {
       });
     }
   }
+
+  // Publish package optionally
+  if (args.publish) {
+    if (args.publishTag) {
+      config.publish.tag = args.publishTag;
+    }
+    await npmPublish(config);
+  }
 }
 
 function _getBumpVersionOptions(args: Argv): BumpVersionOptions {
+  if (args.versionSuffix) {
+    return {
+      suffix: args.versionSuffix,
+    };
+  }
+
   for (const type of [
     "major",
     "premajor",

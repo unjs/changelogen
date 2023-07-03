@@ -1,9 +1,8 @@
-import { resolve } from "node:path";
 import semver from "semver";
 import consola from "consola";
-import { readPackageJSON, writePackageJSON } from "pkg-types";
 import type { ChangelogConfig } from "./config";
 import type { GitCommit } from "./git";
+import { readPackageJSON, writePackageJSON } from "./package";
 
 export type SemverBumpType =
   | "major"
@@ -37,6 +36,7 @@ export function determineSemverChange(
 export type BumpVersionOptions = {
   type?: SemverBumpType;
   preid?: string;
+  suffix?: boolean;
 };
 
 export async function bumpVersion(
@@ -47,8 +47,7 @@ export async function bumpVersion(
   let type = opts.type || determineSemverChange(commits, config) || "patch";
   const originalType = type;
 
-  const pkgPath = resolve(config.cwd, "package.json");
-  const pkg = await readPackageJSON(pkgPath);
+  const pkg = await readPackageJSON(config);
   const currentVersion = pkg.version || "0.0.0";
 
   if (currentVersion.startsWith("0.")) {
@@ -61,10 +60,18 @@ export async function bumpVersion(
 
   if (config.newVersion) {
     pkg.version = config.newVersion;
-  } else if (type) {
+  } else if (type || opts.preid) {
     // eslint-disable-next-line import/no-named-as-default-member
     pkg.version = semver.inc(currentVersion, type, opts.preid);
     config.newVersion = pkg.version;
+  }
+
+  if (opts.suffix) {
+    const suffix =
+      typeof opts.suffix === "string"
+        ? `-${opts.suffix}`
+        : `-${Math.round(Date.now() / 1000)}.${commits[0].shortHash}`;
+    pkg.version = config.newVersion = config.newVersion.split("-")[0] + suffix;
   }
 
   if (pkg.version === currentVersion) {
@@ -72,9 +79,10 @@ export async function bumpVersion(
   }
 
   consola.info(
-    `Bumping version from ${currentVersion} to ${pkg.version} (${originalType})`
+    `Bumping npm package version from \`${currentVersion}\` to \`${pkg.version}\` (${originalType})`
   );
-  await writePackageJSON(pkgPath, pkg);
+
+  await writePackageJSON(config, pkg);
 
   return pkg.version;
 }
