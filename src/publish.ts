@@ -1,4 +1,4 @@
-import { isCI } from "std-env";
+import { isCI, provider } from "std-env";
 
 import { ChangelogConfig } from "./config";
 import { execCommand } from "./exec";
@@ -10,7 +10,11 @@ export async function publishNpmPackage(config: ChangelogConfig) {
     args.push("--tag", config.edgeTag ?? "edge");
   }
 
-  if (isCI) {
+  if (
+    isCI &&
+    provider === "github_actions" &&
+    process.env.NPM_CONFIG_PROVENANCE !== "false"
+  ) {
     args.push("--provenance");
   }
 
