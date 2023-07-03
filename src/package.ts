@@ -20,20 +20,15 @@ export function writePackageJSON(config: ChangelogConfig, pkg: PackageJson) {
   return _writePackageJSON(path, pkg);
 }
 
-export async function renamePackage(
-  config: ChangelogConfig,
-  newName: string
-) {
+export async function renamePackage(config: ChangelogConfig, newName: string) {
   const pkg = await readPackageJSON(config);
-  if (newName.startsWith('-')) {
+  if (newName.startsWith("-")) {
     if (pkg.name.endsWith(newName)) {
-      return
+      return;
     }
     newName = pkg.name + newName;
   }
-  consola.info(
-    `Updating package name from ${pkg.name} to ${newName}`
-  );
+  consola.info(`Updating package name from ${pkg.name} to ${newName}`);
   pkg.name = newName;
   await writePackageJSON(config, pkg);
 }

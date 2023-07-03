@@ -59,7 +59,7 @@ export async function bumpVersion(
   }
 
   if (config.newVersion) {
-    consola.log('A', JSON.stringify(config.newVersion))
+    consola.log("A", JSON.stringify(config.newVersion));
     pkg.version = config.newVersion;
   } else if (type || opts.preid) {
     // eslint-disable-next-line import/no-named-as-default-member

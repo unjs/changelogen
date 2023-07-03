@@ -23,7 +23,7 @@ export default async function defaultMain(args: Argv) {
     from: args.from,
     to: args.to,
     output: args.output,
-    newVersion: typeof args.r === 'string' ? args.r : undefined,
+    newVersion: typeof args.r === "string" ? args.r : undefined,
   });
 
   const logger = consola.create({ stdout: process.stderr });
@@ -98,7 +98,7 @@ export default async function defaultMain(args: Argv) {
     await fsp.writeFile(config.output, changelogMD);
   }
 
-  if (typeof args.nameSuffix === 'string') {
+  if (typeof args.nameSuffix === "string") {
     await renamePackage(config, `-${args.nameSuffix}`);
   }
   if (args.publish) {
