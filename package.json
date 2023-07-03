@@ -1,6 +1,6 @@
 {
-  "name": "changelogen-edge",
-  "version": "0.5.4-1688420378.3164854",
+  "name": "changelogen",
+  "version": "0.5.3",
   "description": "Generate Beautiful Changelogs using Conventional Commits",
   "repository": "unjs/changelogen",
   "license": "MIT",
