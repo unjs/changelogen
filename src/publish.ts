@@ -1,3 +1,5 @@
+import { isCI } from "std-env";
+
 import { ChangelogConfig } from "./config";
 import { execCommand } from "./exec";
 
@@ -6,6 +8,10 @@ export async function publishNpmPackage(config: ChangelogConfig) {
 
   if (config.edge && (!config.edgePackage || config.edgeTag)) {
     args.push("--tag", config.edgeTag ?? "edge");
+  }
+
+  if (isCI) {
+    args.push("--provenance");
   }
 
   return await execCommand("npm", args);
