@@ -4,6 +4,7 @@ import consola from "consola";
 import { readPackageJSON, writePackageJSON } from "pkg-types";
 import type { ChangelogConfig } from "./config";
 import type { GitCommit } from "./git";
+import { usePkg } from "./pkg";
 
 export type SemverBumpType =
   | "major"
@@ -47,8 +48,7 @@ export async function bumpVersion(
   let type = opts.type || determineSemverChange(commits, config) || "patch";
   const originalType = type;
 
-  const pkgPath = resolve(config.cwd, "package.json");
-  const pkg = await readPackageJSON(pkgPath);
+  const { pkg, writePkg } = await usePkg(config);
   const currentVersion = pkg.version || "0.0.0";
 
   if (currentVersion.startsWith("0.")) {
@@ -61,6 +61,13 @@ export async function bumpVersion(
 
   if (config.newVersion) {
     pkg.version = config.newVersion;
+  } else if (config.edge) {
+    const date = Math.round(Date.now() / (1000 * 60));
+    const hash = commits[0].shortHash;
+    // eslint-disable-next-line import/no-named-as-default-member
+    const nextVersion = semver.inc(currentVersion, type, opts.preid);
+    pkg.version = `${nextVersion}-${date}.${hash}`;
+    config.newVersion = pkg.version;
   } else if (type) {
     // eslint-disable-next-line import/no-named-as-default-member
     pkg.version = semver.inc(currentVersion, type, opts.preid);
@@ -74,7 +81,24 @@ export async function bumpVersion(
   consola.info(
     `Bumping version from ${currentVersion} to ${pkg.version} (${originalType})`
   );
-  await writePackageJSON(pkgPath, pkg);
+  await writePkg();
 
   return pkg.version;
+}
+
+export async function updatePackageName(
+  config: ChangelogConfig
+): Promise<string | false> {
+  if (!config.edge || !config.edgePackage) {
+    return false;
+  }
+
+  const { pkg, writePkg } = await usePkg(config);
+  consola.info(
+    `Updating package name from ${pkg.name} to ${config.edgePackage} for edge release`
+  );
+  pkg.name = config.edgePackage;
+  await writePkg();
+
+  return pkg.name;
 }

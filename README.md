@@ -41,6 +41,8 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--output`: Changelog file name to create or update. Defaults to `CHANGELOG.md` and resolved relative to dir. Use `--no-output` to write to console only.
 - `--bump`: Determine semver change and update version in `package.json`.
 - `--release`. Bumps version in `package.json` and creates commit and git tags using local `git`. You can disable commit using `--no-commit` and tag using `--no-tag`. You can enable the automatic push of the new tag and release commit to your git repository by adding `--push`.
+- `--publish`. Publishes package as a new version on `npm`. You will need to set authorisation tokens separately via `.npmrc` or environment variables.
+- `--edge`. Bumps version in `package.json` to an edge-compatible version based on type of commit since last release + date + commit hash.
 - `-r`: Release as specific version.
 - `--major`: Bump as a semver-major version
 - `--minor`: Bump as a semver-minor version

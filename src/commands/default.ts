@@ -10,7 +10,9 @@ import {
   bumpVersion,
   generateMarkDown,
   BumpVersionOptions,
+  updatePackageName,
 } from "..";
+import { publishNpmPackage } from "../publish";
 import { githubRelease } from "./github";
 
 export default async function defaultMain(args: Argv) {
@@ -22,6 +24,8 @@ export default async function defaultMain(args: Argv) {
     from: args.from,
     to: args.to,
     output: args.output,
+    edge: args.edge,
+    publish: args.publish,
     newVersion: args.r,
   });
 
@@ -38,7 +42,7 @@ export default async function defaultMain(args: Argv) {
   );
 
   // Bump version optionally
-  if (args.bump || args.release) {
+  if (args.bump || args.release || args.edge) {
     const bumpOptions = _getBumpVersionOptions(args);
     const newVersion = await bumpVersion(commits, config, bumpOptions);
     if (!newVersion) {
@@ -48,11 +52,16 @@ export default async function defaultMain(args: Argv) {
     config.newVersion = newVersion;
   }
 
+  // Update package name if performing an edge release
+  if (args.edge) {
+    await updatePackageName(config);
+  }
+
   // Generate markdown
   const markdown = await generateMarkDown(commits, config);
 
   // Show changelog in CLI unless bumping or releasing
-  const displayOnly = !args.bump && !args.release;
+  const displayOnly = (!args.bump && !args.release) || args.edge;
   if (displayOnly) {
     consola.log("\n\n" + markdown + "\n\n");
   }
@@ -81,6 +90,10 @@ export default async function defaultMain(args: Argv) {
     }
 
     await fsp.writeFile(config.output, changelogMD);
+  }
+
+  if (args.publish) {
+    await publishNpmPackage(config);
   }
 
   // Commit and tag changes for release mode

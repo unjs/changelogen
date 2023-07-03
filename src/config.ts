@@ -14,6 +14,10 @@ export interface ChangelogConfig {
   from: string;
   to: string;
   newVersion?: string;
+  publish?: boolean;
+  edge?: boolean;
+  edgeTag?: string;
+  edgePackage?: string;
   output: string | boolean;
   templates: {
     commitMessage?: string;

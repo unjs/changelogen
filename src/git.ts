@@ -1,4 +1,5 @@
 import type { ChangelogConfig } from "./config";
+import { execCommand } from "./exec";
 
 export interface GitCommitAuthor {
   name: string;
@@ -150,10 +151,4 @@ export function parseGitCommit(
     references,
     isBreaking,
   };
-}
-
-async function execCommand(cmd: string, args: string[]) {
-  const { execa } = await import("execa");
-  const res = await execa(cmd, args);
-  return res.stdout;
 }
