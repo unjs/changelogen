@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v0.5.4
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.5.3...v0.5.4)
+
+### 🚀 Enhancements
+
+- Support `--publish` and `--canary` ([#123](https://github.com/unjs/changelogen/pull/123))
+
+### 🩹 Fixes
+
+- **markdown:** Remove unnecessary spaces ([#106](https://github.com/unjs/changelogen/pull/106))
+- Add missing type export to package.json ([#113](https://github.com/unjs/changelogen/pull/113))
+
+### 📖 Documentation
+
+- Add documentation about `--push` flag ([#114](https://github.com/unjs/changelogen/pull/114))
+
+### ❤️  Contributors
+
+- Daniel Roe <daniel@roe.dev>
+- Mazel <me@loicmazuel.com>
+- Waleed Khaled ([@Waleed-KH](http://github.com/Waleed-KH))
+- Thomas Lamant ([@tmlmt](http://github.com/tmlmt))
+
 ## v0.5.3
 
 [compare changes](https://github.com/unjs/changelogen/compare/v0.5.2...v0.5.3)
