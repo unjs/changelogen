@@ -30,7 +30,7 @@ export async function getLastGitTag() {
   const r = await execCommand("git", ["describe", "--tags", "--abbrev=0"])
     .then((r) => r.split("\n"))
     .catch(() => []);
-  return r[r.length - 1];
+  return r.at(-1);
 }
 
 export async function getCurrentGitBranch() {
