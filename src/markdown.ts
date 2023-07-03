@@ -51,11 +51,11 @@ export async function generateMarkDown(
     if (!name || name.includes("[bot]")) {
       continue;
     }
-    if (!_authors.has(name)) {
-      _authors.set(name, { email: new Set([commit.author.email]) });
-    } else {
+    if (_authors.has(name)) {
       const entry = _authors.get(name);
       entry.email.add(commit.author.email);
+    } else {
+      _authors.set(name, { email: new Set([commit.author.email]) });
     }
   }
 
