@@ -80,7 +80,7 @@ export async function bumpVersion(
   }
 
   consola.info(
-    `Bumping version from ${currentVersion} to ${pkg.version} (${originalType})`
+    `Bumping npm package version from \`${currentVersion}\` to \`${pkg.version}\` (${originalType})`
   );
 
   await writePackageJSON(config, pkg);

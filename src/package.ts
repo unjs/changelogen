@@ -28,7 +28,7 @@ export async function renamePackage(config: ChangelogConfig, newName: string) {
     }
     newName = pkg.name + newName;
   }
-  consola.info(`Updating package name from ${pkg.name} to ${newName}`);
+  consola.info(`Renaming npm package from \`${pkg.name}\` to \`${newName}\``);
   pkg.name = newName;
   await writePackageJSON(config, pkg);
 }

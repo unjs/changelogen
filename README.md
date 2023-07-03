@@ -45,7 +45,7 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--publishTag` Use custom npm tag for publishing (Default is `latest`)
 - `--nameSuffix`: Adds suffix to package name (Example: `--nameSuffix canary` renames `foo` to `foo-canary`)
 - `--versionSuffix`: Adds suffix to package version. When set without value or to `true`, uses date + commit hash as commit
-- `--canary`. Shortcut to `--bump --versionSuffix --nameSuffix [name]`.
+- `--canary`. Shortcut to `--bump --versionSuffix` (`--nameSuffix` will be also added if arg has a string value).
 - `-r`: Release as specific version.
 - `--major`: Bump as a semver-major version
 - `--minor`: Bump as a semver-minor version

@@ -40,16 +40,20 @@ export default async function defaultMain(args: Argv) {
 
   // Shortcut for canary releases
   if (args.canary) {
-    const canaryName = typeof args.canary === "string" ? args.canary : "canary";
     if (args.bump === undefined) {
       args.bump = true;
     }
     if (args.versionSuffix === undefined) {
       args.versionSuffix = true;
     }
-    if (args.nameSuffix === undefined) {
-      args.nameSuffix = canaryName;
+    if (args.nameSuffix === undefined && typeof args.canary === "string") {
+      args.nameSuffix = args.canary;
     }
+  }
+
+  // Rename package name optionally
+  if (typeof args.nameSuffix === "string") {
+    await renamePackage(config, `-${args.nameSuffix}`);
   }
 
   // Bump version optionally
@@ -98,16 +102,6 @@ export default async function defaultMain(args: Argv) {
     await fsp.writeFile(config.output, changelogMD);
   }
 
-  if (typeof args.nameSuffix === "string") {
-    await renamePackage(config, `-${args.nameSuffix}`);
-  }
-  if (args.publish) {
-    if (args.publishTag) {
-      config.publish.tag = args.publishTag;
-    }
-    await npmPublish(config);
-  }
-
   // Commit and tag changes for release mode
   if (args.release) {
     if (args.commit !== false) {
@@ -141,6 +135,14 @@ export default async function defaultMain(args: Argv) {
         body: markdown.split("\n").slice(2).join("\n"),
       });
     }
+  }
+
+  // Publish package optionally
+  if (args.publish) {
+    if (args.publishTag) {
+      config.publish.tag = args.publishTag;
+    }
+    await npmPublish(config);
   }
 }
 
