@@ -1,8 +1,7 @@
 import { resolve } from "node:path";
 import { loadConfig, setupDotenv } from "c12";
-import { readPackageJSON } from "pkg-types";
 import { getLastGitTag, getCurrentGitRef } from "./git";
-import { getRepoConfig, RepoProvider } from "./repo";
+import { resolveRepoConfig, RepoProvider } from "./repo";
 import type { SemverBumpType } from "./semver";
 import type { RepoConfig } from "./repo";
 
@@ -16,6 +15,16 @@ export interface ChangelogConfig {
   to: string;
   newVersion?: string;
   output: string | boolean;
+  publish: {
+    args?: string[];
+    tag?: string;
+    private?: boolean;
+  };
+  templates: {
+    commitMessage?: string;
+    tagMessage?: string;
+    tagBody?: string;
+  };
 }
 
 const getDefaultConfig = () =>
@@ -45,6 +54,16 @@ const getDefaultConfig = () =>
         process.env.GITHUB_TOKEN ||
         process.env.GH_TOKEN,
     },
+    publish: {
+      private: false,
+      tag: "latest",
+      args: [],
+    },
+    templates: {
+      commitMessage: "chore(release): v{{newVersion}}",
+      tagMessage: "v{{newVersion}}",
+      tagBody: "v{{newVersion}}",
+    },
   };
 
 export async function loadChangelogConfig(
@@ -56,6 +75,7 @@ export async function loadChangelogConfig(
   const { config } = await loadConfig<ChangelogConfig>({
     cwd,
     name: "changelog",
+    packageJson: true,
     defaults,
     overrides: {
       cwd,
@@ -79,14 +99,7 @@ export async function loadChangelogConfig(
   }
 
   if (!config.repo) {
-    const pkg = await readPackageJSON(cwd).catch(() => {});
-    if (pkg && pkg.repository) {
-      const repoUrl =
-        typeof pkg.repository === "string"
-          ? pkg.repository
-          : pkg.repository.url;
-      config.repo = getRepoConfig(repoUrl);
-    }
+    config.repo = await resolveRepoConfig(cwd);
   }
 
   return config;

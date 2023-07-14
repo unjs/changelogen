@@ -10,7 +10,9 @@ import {
   bumpVersion,
   generateMarkDown,
   filterCommits,
+  BumpVersionOptions,
 } from "..";
+import { npmPublish, renamePackage } from "../package";
 import { githubRelease } from "./github";
 
 export default async function defaultMain(args: Argv) {
@@ -22,11 +24,11 @@ export default async function defaultMain(args: Argv) {
     from: args.from,
     to: args.to,
     output: args.output,
-    newVersion: args.r,
+    newVersion: typeof args.r === "string" ? args.r : undefined,
   });
 
   const logger = consola.create({ stdout: process.stderr });
-  logger.info(`Generating changelog for ${config.from}...${config.to}`);
+  logger.info(`Generating changelog for ${config.from || ""}...${config.to}`);
 
   const rawCommits = await getGitDiff(config.from, config.to);
 
@@ -38,17 +40,28 @@ export default async function defaultMain(args: Argv) {
   );
   const filteredCommits = filterCommits(commits, config);
 
+  // Shortcut for canary releases
+  if (args.canary) {
+    if (args.bump === undefined) {
+      args.bump = true;
+    }
+    if (args.versionSuffix === undefined) {
+      args.versionSuffix = true;
+    }
+    if (args.nameSuffix === undefined && typeof args.canary === "string") {
+      args.nameSuffix = args.canary;
+    }
+  }
+
+  // Rename package name optionally
+  if (typeof args.nameSuffix === "string") {
+    await renamePackage(config, `-${args.nameSuffix}`);
+  }
+
   // Bump version optionally
   if (args.bump || args.release) {
-    let type;
-    if (args.major) {
-      type = "major";
-    } else if (args.minor) {
-      type = "minor";
-    } else if (args.patch) {
-      type = "patch";
-    }
-    const newVersion = await bumpVersion(filteredCommits, config, { type });
+    const bumpOptions = _getBumpVersionOptions(args);
+    const newVersion = await bumpVersion(filteredCommits, config, bumpOptions);
     if (!newVersion) {
       consola.error("Unable to bump version based on changes.");
       process.exit(1);
@@ -98,27 +111,70 @@ export default async function defaultMain(args: Argv) {
         (f) => f && typeof f === "string"
       ) as string[];
       await execa("git", ["add", ...filesToAdd], { cwd });
-      await execa(
-        "git",
-        ["commit", "-m", `chore(release): v${config.newVersion}`],
-        { cwd }
+      const msg = config.templates.commitMessage.replaceAll(
+        "{{newVersion}}",
+        config.newVersion
       );
+      await execa("git", ["commit", "-m", msg], { cwd });
     }
     if (args.tag !== false) {
-      await execa(
-        "git",
-        ["tag", "-am", "v" + config.newVersion, "v" + config.newVersion],
-        { cwd }
+      const msg = config.templates.tagMessage.replaceAll(
+        "{{newVersion}}",
+        config.newVersion
       );
+      const body = config.templates.tagBody.replaceAll(
+        "{{newVersion}}",
+        config.newVersion
+      );
+      await execa("git", ["tag", "-am", msg, body], { cwd });
     }
     if (args.push === true) {
       await execa("git", ["push", "--follow-tags"], { cwd });
     }
-    if (args.github !== false && config.repo.provider === "github") {
+    if (args.github !== false && config.repo?.provider === "github") {
       await githubRelease(config, {
         version: config.newVersion,
         body: markdown.split("\n").slice(2).join("\n"),
       });
+    }
+  }
+
+  // Publish package optionally
+  if (args.publish) {
+    if (args.publishTag) {
+      config.publish.tag = args.publishTag;
+    }
+    await npmPublish(config);
+  }
+}
+
+function _getBumpVersionOptions(args: Argv): BumpVersionOptions {
+  if (args.versionSuffix) {
+    return {
+      suffix: args.versionSuffix,
+    };
+  }
+
+  for (const type of [
+    "major",
+    "premajor",
+    "minor",
+    "preminor",
+    "patch",
+    "prepatch",
+    "prerelease",
+  ] as const) {
+    const value = args[type];
+    if (value) {
+      if (type.startsWith("pre")) {
+        return {
+          type,
+          preid: typeof value === "string" ? value : "",
+        };
+      }
+      return {
+        type,
+      };
     }
   }
 }

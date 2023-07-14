@@ -1,5 +1,7 @@
+import { readPackageJSON } from "pkg-types";
 import type { Reference } from "./git";
 import type { ChangelogConfig } from "./config";
+import { getGitRemoteURL } from "./git";
 
 export type RepoProvider = "github" | "gitlab" | "bitbucket";
 
@@ -59,6 +61,21 @@ export function formatCompareChanges(v: string, config: ChangelogConfig) {
   return `[compare changes](${baseUrl(config.repo)}/${part}/${config.from}...${
     v || config.to
   })`;
+}
+
+export async function resolveRepoConfig(cwd: string) {
+  // Try closest package.json
+  const pkg = await readPackageJSON(cwd).catch(() => {});
+  if (pkg && pkg.repository) {
+    const url =
+      typeof pkg.repository === "string" ? pkg.repository : pkg.repository.url;
+    return getRepoConfig(url);
+  }
+
+  const gitRemote = await getGitRemoteURL(cwd).catch(() => {});
+  if (gitRemote) {
+    return getRepoConfig(gitRemote);
+  }
 }
 
 export function getRepoConfig(repoUrl = ""): RepoConfig {

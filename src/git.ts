@@ -1,4 +1,5 @@
 import type { ChangelogConfig } from "./config";
+import { execCommand } from "./exec";
 
 export interface GitCommitAuthor {
   name: string;
@@ -33,10 +34,10 @@ export interface RevertPair {
 }
 
 export async function getLastGitTag() {
-  const r = await execCommand("git", ["describe", "--tags", "--abbrev=0"]).then(
-    (r) => r.split("\n")
-  );
-  return r[r.length - 1];
+  const r = await execCommand("git", ["describe", "--tags", "--abbrev=0"])
+    .then((r) => r.split("\n"))
+    .catch(() => []);
+  return r.at(-1);
 }
 
 export async function getCurrentGitBranch() {
@@ -49,6 +50,15 @@ export async function getCurrentGitTag() {
 
 export async function getCurrentGitRef() {
   return (await getCurrentGitTag()) || (await getCurrentGitBranch());
+}
+
+export async function getGitRemoteURL(cwd: string, remote = "origin") {
+  return await execCommand("git", [
+    `--work-tree=${cwd}`,
+    "remote",
+    "get-url",
+    remote,
+  ]);
 }
 
 export async function getGitDiff(
@@ -208,10 +218,4 @@ export function filterCommits(
   }
 
   return resolvedCommits;
-}
-
-async function execCommand(cmd: string, args: string[]) {
-  const { execa } = await import("execa");
-  const res = await execa(cmd, args);
-  return res.stdout;
 }

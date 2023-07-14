@@ -2,26 +2,26 @@
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
-[![Github Actions][github-actions-src]][github-actions-href]
 [![Codecov][codecov-src]][codecov-href]
+[![License][license-src]][license-href]
 
-> Generate Beautiful Changelogs using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+Generate Beautiful Changelogs using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 
 ## Quick Start
 
-Generate changelog in markdown format and show in console:
+Generate a changelog in Markdown format and display in the console:
 
 ```sh
 npx changelogen@latest
 ```
 
-Generate changelog, bump version in `package.json` automatically and update `CHANGELOG.md` (without commit)
+Generate a changelog, bump the version in `package.json` and update `CHANGELOG.md` (without commit):
 
 ```sh
 npx changelogen@latest --bump
 ```
 
-Bump version, update `CHANGELOG.md` and make a git commit and tag:
+Bump the version, update `CHANGELOG.md` and make a git commit and tag:
 
 ```sh
 npx changelogen@latest --release
@@ -40,15 +40,24 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--dir`: Path to git repository. When not provided, **current working directory** will be used as as default.
 - `--output`: Changelog file name to create or update. Defaults to `CHANGELOG.md` and resolved relative to dir. Use `--no-output` to write to console only.
 - `--bump`: Determine semver change and update version in `package.json`.
-- `--release`. Bumps version in `package.json` and creates commit and git tags using local `git`. You can disable commit using `--no-commit` and tag using `--no-tag`.
+- `--release`. Bumps version in `package.json` and creates commit and git tags using local `git`. You can disable commit using `--no-commit` and tag using `--no-tag`. You can enable the automatic push of the new tag and release commit to your git repository by adding `--push`.
+- `--publish`. Publishes package as a new version on `npm`. You will need to set authorisation tokens separately via `.npmrc` or environment variables.
+- `--publishTag` Use custom npm tag for publishing (Default is `latest`)
+- `--nameSuffix`: Adds suffix to package name (Example: `--nameSuffix canary` renames `foo` to `foo-canary`)
+- `--versionSuffix`: Adds suffix to package version. When set without value or to `true`, uses date + commit hash as commit
+- `--canary`. Shortcut to `--bump --versionSuffix` (`--nameSuffix` will be also added if arg has a string value).
 - `-r`: Release as specific version.
 - `--major`: Bump as a semver-major version
 - `--minor`: Bump as a semver-minor version
 - `--patch`: Bump as a semver-patch version
+- `--premajor`: Bump as a semver-premajor version, can set id with string.
+- `--preminor`: Bump as a semver-preminor version, can set id with string.
+- `--prepatch`: Bump as a semver-prepatch version, can set id with string.
+- `--prerelease`: Bump as a semver-prerelease version, can set id with string.
 
 ### `changelogen gh release`
 
-Changelogen has built-in functionality to sync with with Github releases!
+Changelogen has built-in functionality to sync with with Github releases.
 
 In order to manually sync a release, you can use `changelogen gh release`. It will parse current `CHANGELOG.md` from current repository (local, then remote) and create or update releases.
 
@@ -69,7 +78,7 @@ By default in unauthenticated mode, changelogen will open a browser link to make
 
 ## Configuration
 
-Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `changelog.json`, `changelog.{ts,js,mjs,cjs}`, `.changelogrc` or use the `changelog` field in `package.json`.
+Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `changelog.config.json`, `changelog.config.{ts,js,mjs,cjs}`, `.changelogrc` or use the `changelog` field in `package.json`.
 
 See [./src/config.ts](./src/config.ts) for available options and defaults.
 
@@ -88,11 +97,11 @@ Published under [MIT License](./LICENSE).
 
 <!-- Badges -->
 
-[npm-version-src]: https://img.shields.io/npm/v/changelogen?style=flat-square
+[npm-version-src]: https://img.shields.io/npm/v/changelogen?style=flat&colorA=18181B&colorB=F0DB4F
 [npm-version-href]: https://npmjs.com/package/changelogen
-[npm-downloads-src]: https://img.shields.io/npm/dm/changelogen?style=flat-square
+[npm-downloads-src]: https://img.shields.io/npm/dm/changelogen?style=flat&colorA=18181B&colorB=F0DB4F
 [npm-downloads-href]: https://npmjs.com/package/changelogen
-[github-actions-src]: https://img.shields.io/github/workflow/status/unjs/changelogen/ci/main?style=flat-square
-[github-actions-href]: https://github.com/unjs/changelogen/actions?query=workflow%3Aci
-[codecov-src]: https://img.shields.io/codecov/c/gh/unjs/changelogen/main?style=flat-square
+[codecov-src]: https://img.shields.io/codecov/c/gh/unjs/changelogen/main?style=flat&colorA=18181B&colorB=F0DB4F
 [codecov-href]: https://codecov.io/gh/unjs/changelogen
+[license-src]: https://img.shields.io/github/license/unjs/changelogen.svg?style=flat&colorA=18181B&colorB=F0DB4F
+[license-href]: https://github.com/unjs/changelogen/blob/main/LICENSE

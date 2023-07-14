@@ -2,6 +2,67 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v0.5.4
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.5.3...v0.5.4)
+
+### 🚀 Enhancements
+
+- Support `--publish` and `--canary` ([#123](https://github.com/unjs/changelogen/pull/123))
+
+### 🩹 Fixes
+
+- **markdown:** Remove unnecessary spaces ([#106](https://github.com/unjs/changelogen/pull/106))
+- Add missing type export to package.json ([#113](https://github.com/unjs/changelogen/pull/113))
+
+### 📖 Documentation
+
+- Add documentation about `--push` flag ([#114](https://github.com/unjs/changelogen/pull/114))
+
+### ❤️  Contributors
+
+- Daniel Roe <daniel@roe.dev>
+- Mazel <me@loicmazuel.com>
+- Waleed Khaled ([@Waleed-KH](http://github.com/Waleed-KH))
+- Thomas Lamant ([@tmlmt](http://github.com/tmlmt))
+
+## v0.5.3
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.5.2...v0.5.3)
+
+## v0.5.2
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.5.1...v0.5.2)
+
+
+### 🚀 Enhancements
+
+  - Resolve repository config from git remote ([8401f91](https://github.com/unjs/changelogen/commit/8401f91))
+  - Load config from `changelog` field in `package.json` ([#88](https://github.com/unjs/changelogen/pull/88))
+  - Bump pre version ([#70](https://github.com/unjs/changelogen/pull/70))
+  - Support templates for commit and tag messages ([#68](https://github.com/unjs/changelogen/pull/68))
+
+### 🩹 Fixes
+
+  - Handle unset value for `config.repo` ([#72](https://github.com/unjs/changelogen/pull/72))
+  - **getLastGitTag:** Handle when there are no git tags ([#77](https://github.com/unjs/changelogen/pull/77))
+
+### 💅 Refactors
+
+  - Upgrade to `open` v9 ([315cbd0](https://github.com/unjs/changelogen/commit/315cbd0))
+
+### 🏡 Chore
+
+  - Update badges and small improvements ([146d1d4](https://github.com/unjs/changelogen/commit/146d1d4))
+  - Update dev dependencies ([0f44ee9](https://github.com/unjs/changelogen/commit/0f44ee9))
+
+### ❤️  Contributors
+
+- Zhong666 ([@aa900031](http://github.com/aa900031))
+- Donald Shtjefni ([@dnldsht](http://github.com/dnldsht))
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Sébastien Chopin <seb@nuxtjs.com>
+
 ## v0.5.1
 
 [compare changes](https://github.com/unjs/changelogen/compare/v0.5.0...v0.5.1)
