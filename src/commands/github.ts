@@ -9,7 +9,7 @@ import {
   syncGithubRelease,
 } from "../github";
 import {
-  ChangelogConfig,
+  ResolvedChangelogConfig,
   loadChangelogConfig,
   parseChangelogMarkdown,
 } from "..";
@@ -93,7 +93,7 @@ export default async function githubMain(args: Argv) {
 }
 
 export async function githubRelease(
-  config: ChangelogConfig,
+  config: ResolvedChangelogConfig,
   release: { version: string; body: string }
 ) {
   if (!config.tokens.github) {

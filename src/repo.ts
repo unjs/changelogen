@@ -1,6 +1,6 @@
 import { readPackageJSON } from "pkg-types";
 import type { Reference } from "./git";
-import type { ChangelogConfig } from "./config";
+import type { ResolvedChangelogConfig } from "./config";
 import { getGitRemoteURL } from "./git";
 
 export type RepoProvider = "github" | "gitlab" | "bitbucket";
@@ -55,7 +55,10 @@ export function formatReference(ref: Reference, repo?: RepoConfig) {
   }/${ref.value.replace(/^#/, "")})`;
 }
 
-export function formatCompareChanges(v: string, config: ChangelogConfig) {
+export function formatCompareChanges(
+  v: string,
+  config: ResolvedChangelogConfig
+) {
   const part =
     config.repo.provider === "bitbucket" ? "branches/compare" : "compare";
   return `[compare changes](${baseUrl(config.repo)}/${part}/${config.from}...${

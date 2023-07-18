@@ -2,7 +2,7 @@ import { existsSync, promises as fsp } from "node:fs";
 import { homedir } from "node:os";
 import { $fetch, FetchOptions } from "ofetch";
 import { join } from "pathe";
-import { ChangelogConfig } from "./config";
+import { ResolvedChangelogConfig } from "./config";
 
 export interface GithubOptions {
   repo: string;
@@ -19,7 +19,7 @@ export interface GithubRelease {
 }
 
 export async function listGithubReleases(
-  config: ChangelogConfig
+  config: ResolvedChangelogConfig
 ): Promise<GithubRelease[]> {
   return await githubFetch(config, `/repos/${config.repo.repo}/releases`, {
     query: { per_page: 100 },
@@ -27,7 +27,7 @@ export async function listGithubReleases(
 }
 
 export async function getGithubReleaseByTag(
-  config: ChangelogConfig,
+  config: ResolvedChangelogConfig,
   tag: string
 ): Promise<GithubRelease> {
   return await githubFetch(
@@ -37,7 +37,7 @@ export async function getGithubReleaseByTag(
   );
 }
 
-export async function getGithubChangelog(config: ChangelogConfig) {
+export async function getGithubChangelog(config: ResolvedChangelogConfig) {
   return await githubFetch(
     config,
     `https://raw.githubusercontent.com/${config.repo.repo}/main/CHANGELOG.md`
@@ -45,7 +45,7 @@ export async function getGithubChangelog(config: ChangelogConfig) {
 }
 
 export async function createGithubRelease(
-  config: ChangelogConfig,
+  config: ResolvedChangelogConfig,
   body: GithubRelease
 ) {
   return await githubFetch(config, `/repos/${config.repo.repo}/releases`, {
@@ -55,7 +55,7 @@ export async function createGithubRelease(
 }
 
 export async function updateGithubRelease(
-  config: ChangelogConfig,
+  config: ResolvedChangelogConfig,
   id: string,
   body: GithubRelease
 ) {
@@ -70,7 +70,7 @@ export async function updateGithubRelease(
 }
 
 export async function syncGithubRelease(
-  config: ChangelogConfig,
+  config: ResolvedChangelogConfig,
   release: { version: string; body: string }
 ) {
   const currentGhRelease = await getGithubReleaseByTag(
@@ -109,7 +109,7 @@ export async function syncGithubRelease(
 }
 
 export function githubNewReleaseURL(
-  config: ChangelogConfig,
+  config: ResolvedChangelogConfig,
   release: { version: string; body: string }
 ) {
   return `https://${config.repo.domain}/${config.repo.repo}/releases/new?tag=v${
@@ -117,7 +117,7 @@ export function githubNewReleaseURL(
   }&title=v${release.version}&body=${encodeURIComponent(release.body)}`;
 }
 
-export async function resolveGithubToken(config: ChangelogConfig) {
+export async function resolveGithubToken(config: ResolvedChangelogConfig) {
   const env =
     process.env.CHANGELOGEN_TOKENS_GITHUB ||
     process.env.GITHUB_TOKEN ||
@@ -140,7 +140,7 @@ export async function resolveGithubToken(config: ChangelogConfig) {
 
 // --- Internal utils ---
 async function githubFetch(
-  config: ChangelogConfig,
+  config: ResolvedChangelogConfig,
   url: string,
   opts: FetchOptions = {}
 ) {
