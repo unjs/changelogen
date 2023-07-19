@@ -20,6 +20,9 @@ dependencies:
   execa:
     specifier: ^7.1.1
     version: 7.1.1
+  jsonc-parser:
+    specifier: ^3.2.0
+    version: 3.2.0
   mri:
     specifier: ^1.2.0
     version: 1.2.0

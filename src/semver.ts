@@ -2,7 +2,7 @@ import semver from "semver";
 import consola from "consola";
 import type { ChangelogConfig } from "./config";
 import type { GitCommit } from "./git";
-import { readPackageJSON, writePackageJSON } from "./package";
+import { readPackageJSON, updatePackageVersion } from "./package";
 
 export type SemverBumpType =
   | "major"
@@ -82,7 +82,7 @@ export async function bumpVersion(
     `Bumping npm package version from \`${currentVersion}\` to \`${pkg.version}\` (${originalType})`
   );
 
-  await writePackageJSON(config, pkg);
+  await updatePackageVersion(config, pkg.version);
 
   return pkg.version;
 }
