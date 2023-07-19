@@ -1,13 +1,10 @@
+import { promises as fsp } from "node:fs";
 import { resolve } from "pathe";
 import consola from "consola";
-import {
-  PackageJson,
-  readPackageJSON as _readPackageJSON,
-  writePackageJSON as _writePackageJSON,
-} from "pkg-types";
+import { readPackageJSON as _readPackageJSON } from "pkg-types";
 import { isCI, provider } from "std-env";
+import { modify, applyEdits } from "jsonc-parser";
 import type { ChangelogConfig } from "./config";
-
 import { execCommand } from "./exec";
 
 export function readPackageJSON(config: ChangelogConfig) {
@@ -15,9 +12,10 @@ export function readPackageJSON(config: ChangelogConfig) {
   return _readPackageJSON(path);
 }
 
-export function writePackageJSON(config: ChangelogConfig, pkg: PackageJson) {
-  const path = resolve(config.cwd, "package.json");
-  return _writePackageJSON(path, pkg);
+async function updatePackageFile(cwd: string, prop: string, value: any) {
+  const path = resolve(cwd, "package.json");
+  const blob = await fsp.readFile(path, "utf8");
+  await fsp.writeFile(path, applyEdits(blob, modify(blob, [prop], value, {})));
 }
 
 export async function renamePackage(config: ChangelogConfig, newName: string) {
@@ -30,7 +28,14 @@ export async function renamePackage(config: ChangelogConfig, newName: string) {
   }
   consola.info(`Renaming npm package from \`${pkg.name}\` to \`${newName}\``);
   pkg.name = newName;
-  await writePackageJSON(config, pkg);
+  await updatePackageFile(config.cwd, "name", pkg.name);
+}
+
+export async function updatePackageVersion(
+  config: ChangelogConfig,
+  newVersion: string
+) {
+  await updatePackageFile(config.cwd, "version", newVersion);
 }
 
 export async function npmPublish(config: ChangelogConfig) {
