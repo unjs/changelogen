@@ -19,7 +19,7 @@ export async function generateMarkDown(
   markdown.push("", "## " + (v || `${config.from || ""}...${config.to}`), "");
 
   if (config.repo && config.from) {
-    markdown.push(formatCompareChanges(v, config), "");
+    markdown.push(formatCompareChanges(v, config));
   }
 
   for (const type in config.types) {
@@ -51,11 +51,11 @@ export async function generateMarkDown(
     if (!name || name.includes("[bot]")) {
       continue;
     }
-    if (!_authors.has(name)) {
-      _authors.set(name, { email: new Set([commit.author.email]) });
-    } else {
+    if (_authors.has(name)) {
       const entry = _authors.get(name);
       entry.email.add(commit.author.email);
+    } else {
+      _authors.set(name, { email: new Set([commit.author.email]) });
     }
   }
 
@@ -128,7 +128,7 @@ export function parseChangelogMarkdown(contents: string) {
 
 function formatCommit(commit: GitCommit, config: ChangelogConfig) {
   return (
-    "  - " +
+    "- " +
     (commit.scope ? `**${commit.scope.trim()}:** ` : "") +
     (commit.isBreaking ? "⚠️  " : "") +
     upperFirst(commit.description) +
