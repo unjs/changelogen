@@ -4,6 +4,7 @@ import { getLastGitTag, getCurrentGitRef } from "./git";
 import { resolveRepoConfig, RepoProvider } from "./repo";
 import type { SemverBumpType } from "./semver";
 import type { RepoConfig } from "./repo";
+import { getTagMessagePattern } from "./template";
 
 export interface ChangelogConfig {
   cwd: string;
@@ -84,7 +85,7 @@ export async function loadChangelogConfig(
   });
 
   if (!config.from) {
-    config.from = await getLastGitTag();
+    config.from = await getLastGitTag(getTagMessagePattern(config));
   }
 
   if (!config.to) {

@@ -27,8 +27,13 @@ export interface GitCommit extends RawGitCommit {
   isBreaking: boolean;
 }
 
-export async function getLastGitTag() {
-  const r = await execCommand("git", ["describe", "--tags", "--abbrev=0"])
+export async function getLastGitTag(pattern?: string) {
+  const args = ["describe", "--tags", "--abbrev=0"];
+  if (pattern) {
+    args.push("--match", pattern);
+  }
+
+  const r = await execCommand("git", args)
     .then((r) => r.split("\n"))
     .catch(() => []);
   return r.at(-1);
