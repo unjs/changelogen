@@ -9,6 +9,14 @@ export interface GithubOptions {
   token: string;
 }
 
+export interface GithubPullRequest {
+  title: string,
+  head: string,
+  base: string,
+  body: string,
+  draft?: boolean,
+}
+
 export interface GithubRelease {
   id?: string;
   tag_name: string;
@@ -41,7 +49,30 @@ export async function getGithubChangelog(config: ChangelogConfig) {
   return await githubFetch(
     config,
     `https://raw.githubusercontent.com/${config.repo.repo}/main/CHANGELOG.md`
-  );
+  ) as { number: number, [key: string]: any }[];
+}
+
+export async function getGithubPullRequest(config: ChangelogConfig) {
+  const owner = config.repo.repo.split("/")[0];
+  return await githubFetch(config, `/repos/${config.repo.repo}/pulls?head=${owner}=${config.newVersion}`);
+}
+
+export async function createGithubPullRequest(config: ChangelogConfig, body: GithubPullRequest){
+  return await githubFetch(config, `/repos/${config.repo.repo}/pulls`, {
+    method: "POST",
+    body: {
+      ...body
+    }
+  })
+}
+
+export async function updateGithubPullRequest(config: ChangelogConfig, currentPR: string, body: GithubPullRequest["body"]){
+  return await githubFetch(config, `/repos/${config.repo.repo}/pulls/${currentPR}`, {
+    method: "PATCH",
+    body: {
+      body
+    }
+  })
 }
 
 export async function createGithubRelease(
