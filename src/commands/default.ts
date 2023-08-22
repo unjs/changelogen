@@ -6,6 +6,7 @@ import { execa } from "execa";
 import {
   loadChangelogConfig,
   getGitDiff,
+  getCurrentGitStatus,
   parseCommits,
   bumpVersion,
   generateMarkDown,
@@ -25,6 +26,14 @@ export default async function defaultMain(args: Argv) {
     output: args.output,
     newVersion: typeof args.r === "string" ? args.r : undefined,
   });
+
+  if (args.clean) {
+    const dirty = await getCurrentGitStatus();
+    if (dirty) {
+      consola.error("Working directory is not clean.");
+      process.exit(1);
+    }
+  }
 
   const logger = consola.create({ stdout: process.stderr });
   logger.info(`Generating changelog for ${config.from || ""}...${config.to}`);
