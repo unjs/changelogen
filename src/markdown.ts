@@ -1,13 +1,13 @@
 import { upperFirst } from "scule";
 import { convert } from "convert-gitmoji";
 import { fetch } from "node-fetch-native";
-import type { ChangelogConfig } from "./config";
+import type { ResolvedChangelogConfig } from "./config";
 import type { GitCommit, Reference } from "./git";
 import { formatReference, formatCompareChanges } from "./repo";
 
 export async function generateMarkDown(
   commits: GitCommit[],
-  config: ChangelogConfig
+  config: ResolvedChangelogConfig
 ) {
   const typeGroups = groupBy(commits, "type");
 
@@ -126,7 +126,7 @@ export function parseChangelogMarkdown(contents: string) {
 
 // --- Internal utils ---
 
-function formatCommit(commit: GitCommit, config: ChangelogConfig) {
+function formatCommit(commit: GitCommit, config: ResolvedChangelogConfig) {
   return (
     "- " +
     (commit.scope ? `**${commit.scope.trim()}:** ` : "") +
@@ -136,7 +136,10 @@ function formatCommit(commit: GitCommit, config: ChangelogConfig) {
   );
 }
 
-function formatReferences(references: Reference[], config: ChangelogConfig) {
+function formatReferences(
+  references: Reference[],
+  config: ResolvedChangelogConfig
+) {
   const pr = references.filter((ref) => ref.type === "pull-request");
   const issue = references.filter((ref) => ref.type === "issue");
   if (pr.length > 0 || issue.length > 0) {
