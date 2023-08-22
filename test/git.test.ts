@@ -308,11 +308,11 @@ describe("git", () => {
       - **release:** V0.3.4 ([6fc5087](https://github.com/unjs/changelogen/commit/6fc5087))
       - **release:** V0.3.5 ([3828bda](https://github.com/unjs/changelogen/commit/3828bda))
 
-      #### ⚠️  Breaking Changes
+      #### ⚠️ Breaking Changes
 
       - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
 
-      ### ❤️  Contributors
+      ### ❤️ Contributors
 
       - Pooya Parsa ([@pi0](http://github.com/pi0))"
     `);

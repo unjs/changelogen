@@ -39,7 +39,7 @@ export async function generateMarkDown(
   }
 
   if (breakingChanges.length > 0) {
-    markdown.push("", "#### ⚠️  Breaking Changes", "", ...breakingChanges);
+    markdown.push("", "#### ⚠️ Breaking Changes", "", ...breakingChanges);
   }
 
   const _authors = new Map<string, { email: Set<string>; github?: string }>();
@@ -80,7 +80,7 @@ export async function generateMarkDown(
   if (authors.length > 0) {
     markdown.push(
       "",
-      "### " + "❤️  Contributors",
+      "### " + "❤️ Contributors",
       "",
       ...authors.map((i) => {
         const _email = [...i.email].find(
