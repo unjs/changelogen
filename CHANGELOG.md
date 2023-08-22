@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v0.5.5
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.5.4...v0.5.5)
+
+### 🚀 Enhancements
+
+- `repo` option as string ([#128](https://github.com/unjs/changelogen/pull/128))
+- Add param to require clean working dir ([#92](https://github.com/unjs/changelogen/pull/92), [#93](https://github.com/unjs/changelogen/pull/93))
+- Add excludeAuthors option ([#95](https://github.com/unjs/changelogen/pull/95))
+
+### 🩹 Fixes
+
+- Extra spaces in contributors and breaking changes ([#134](https://github.com/unjs/changelogen/pull/134))
+- Repo name with `-` or `.` ([#127](https://github.com/unjs/changelogen/pull/127))
+
+### 🏡 Chore
+
+- Update dependencies ([81f37bf](https://github.com/unjs/changelogen/commit/81f37bf))
+- Keep prettier compatible ([cb9adf4](https://github.com/unjs/changelogen/commit/cb9adf4))
+- Add autofix ci ([5bfe08e](https://github.com/unjs/changelogen/commit/5bfe08e))
+
+### ❤️ Contributors
+
+- John Campion Jr <john@brightshore.com>
+- Waleed Khaled ([@Waleed-KH](http://github.com/Waleed-KH))
+- Maciej Kasprzyk <kapustka.maciek@gmail.com>
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v0.5.4
 
 [compare changes](https://github.com/unjs/changelogen/compare/v0.5.3...v0.5.4)
