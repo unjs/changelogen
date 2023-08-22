@@ -51,6 +51,14 @@ export async function generateMarkDown(
     if (!name || name.includes("[bot]")) {
       continue;
     }
+    if (
+      config.excludeAuthors &&
+      config.excludeAuthors.some(
+        (v) => name.includes(v) || commit.author.email?.includes(v)
+      )
+    ) {
+      continue;
+    }
     if (_authors.has(name)) {
       const entry = _authors.get(name);
       entry.email.add(commit.author.email);

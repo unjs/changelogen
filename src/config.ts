@@ -25,6 +25,7 @@ export interface ChangelogConfig {
     tagMessage?: string;
     tagBody?: string;
   };
+  excludeAuthors: string[];
 }
 
 export type ResolvedChangelogConfig = Omit<ChangelogConfig, "repo"> & {
@@ -69,6 +70,7 @@ const getDefaultConfig = () =>
       tagMessage: "v{{newVersion}}",
       tagBody: "v{{newVersion}}",
     },
+    excludeAuthors: [],
   };
 
 export async function loadChangelogConfig(
