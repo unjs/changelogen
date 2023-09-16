@@ -33,7 +33,7 @@ export async function generateMarkDown(
       const line = formatCommit(commit, config);
       markdown.push(line);
       if (commit.isBreaking) {
-        breakingChanges.push(line);
+        breakingChanges.push(`-  ${commit.breakingChangeMessage}` ?? line);
       }
     }
   }
@@ -176,8 +176,8 @@ function formatName(name = "") {
     .join(" ");
 }
 
-function groupBy(items: any[], key: string) {
-  const groups = {};
+function groupBy<TItem>(items: TItem[], key: string) {
+  const groups: Record<string, TItem[]> = {};
   for (const item of items) {
     groups[item[key]] = groups[item[key]] || [];
     groups[item[key]].push(item);
