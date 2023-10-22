@@ -345,6 +345,24 @@ describe("git", () => {
           "shortHash": "c210976",
           "type": "chore",
         },
+        {
+          "description": "update all non-major dependencies",
+          "isBreaking": false,
+          "message": "chore(deps): update all non-major dependencies (#42)",
+          "references": [
+            {
+              "type": "pull-request",
+              "value": "#42",
+            },
+            {
+              "type": "hash",
+              "value": "a80e372",
+            },
+          ],
+          "scope": "deps",
+          "shortHash": "a80e372",
+          "type": "chore",
+        },
       ]
     `);
 
@@ -355,36 +373,36 @@ describe("git", () => {
 
       [compare changes](https://github.com/unjs/changelogen/compare/1cb15d5dd93302ebd5ff912079ed584efcc6703b...3828bda8c45933396ddfa869d671473231ce3c95)
 
-
       ### 🚀 Enhancements
 
-        - Expose \`determineSemverChange\` and \`bumpVersion\` ([5451f18](https://github.com/unjs/changelogen/commit/5451f18))
-        - Infer github config from package.json ([#37](https://github.com/unjs/changelogen/pull/37))
+      - Expose \`determineSemverChange\` and \`bumpVersion\` ([5451f18](https://github.com/unjs/changelogen/commit/5451f18))
+      - Infer github config from package.json ([#37](https://github.com/unjs/changelogen/pull/37))
 
       ### 🩹 Fixes
 
-        - Consider docs and refactor as semver patch for bump ([648ccf1](https://github.com/unjs/changelogen/commit/648ccf1))
-        - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
+      - Consider docs and refactor as semver patch for bump ([648ccf1](https://github.com/unjs/changelogen/commit/648ccf1))
+      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
 
       ### 🏡 Chore
 
-        - Update dependencies ([c210976](https://github.com/unjs/changelogen/commit/c210976))
-        - Fix typecheck ([8796cf1](https://github.com/unjs/changelogen/commit/8796cf1))
-        - **release:** V0.3.3 ([f4f42a3](https://github.com/unjs/changelogen/commit/f4f42a3))
-        - **release:** V0.3.4 ([6fc5087](https://github.com/unjs/changelogen/commit/6fc5087))
-        - **release:** V0.3.5 ([3828bda](https://github.com/unjs/changelogen/commit/3828bda))
+      - **deps:** Update all non-major dependencies ([#42](https://github.com/unjs/changelogen/pull/42))
+      - Update dependencies ([c210976](https://github.com/unjs/changelogen/commit/c210976))
+      - Fix typecheck ([8796cf1](https://github.com/unjs/changelogen/commit/8796cf1))
+      - **release:** V0.3.3 ([f4f42a3](https://github.com/unjs/changelogen/commit/f4f42a3))
+      - **release:** V0.3.4 ([6fc5087](https://github.com/unjs/changelogen/commit/6fc5087))
+      - **release:** V0.3.5 ([3828bda](https://github.com/unjs/changelogen/commit/3828bda))
 
-      #### ⚠️  Breaking Changes
+      #### ⚠️ Breaking Changes
 
-        - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
+      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
 
-      ### ❤️  Contributors
+      ### ❤️ Contributors
 
       - Pooya Parsa ([@pi0](http://github.com/pi0))"
     `);
   });
 
-  test("parse including chore(deps)", async () => {
+  test("parse with excluded types and scopes", async () => {
     const COMMIT_FROM = "1cb15d5dd93302ebd5ff912079ed584efcc6703b";
     const COMMIT_TO = "3828bda8c45933396ddfa869d671473231ce3c95";
 
@@ -396,7 +414,7 @@ describe("git", () => {
     const config = await loadChangelogConfig(process.cwd(), {
       from: COMMIT_FROM,
       to: COMMIT_TO,
-      excludeChoreDeps: false,
+      exclude: ["fix","chore(deps)"],
     });
     const parsed = filterParsedCommits(parseCommits(commits, config), config);
 
@@ -486,20 +504,6 @@ describe("git", () => {
           "type": "chore",
         },
         {
-          "description": "consider docs and refactor as semver patch for bump",
-          "isBreaking": false,
-          "message": "fix: consider docs and refactor as semver patch for bump",
-          "references": [
-            {
-              "type": "hash",
-              "value": "648ccf1",
-            },
-          ],
-          "scope": "",
-          "shortHash": "648ccf1",
-          "type": "fix",
-        },
-        {
           "description": "expose \`determineSemverChange\` and \`bumpVersion\`",
           "isBreaking": false,
           "message": "feat: expose \`determineSemverChange\` and \`bumpVersion\`",
@@ -541,24 +545,6 @@ describe("git", () => {
           "shortHash": "c210976",
           "type": "chore",
         },
-        {
-          "description": "update all non-major dependencies",
-          "isBreaking": false,
-          "message": "chore(deps): update all non-major dependencies (#42)",
-          "references": [
-            {
-              "type": "pull-request",
-              "value": "#42",
-            },
-            {
-              "type": "hash",
-              "value": "a80e372",
-            },
-          ],
-          "scope": "deps",
-          "shortHash": "a80e372",
-          "type": "chore",
-        },
       ]
     `);
 
@@ -576,12 +562,10 @@ describe("git", () => {
 
       ### 🩹 Fixes
 
-      - Consider docs and refactor as semver patch for bump ([648ccf1](https://github.com/unjs/changelogen/commit/648ccf1))
       - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
 
       ### 🏡 Chore
 
-      - **deps:** Update all non-major dependencies ([#42](https://github.com/unjs/changelogen/pull/42))
       - Update dependencies ([c210976](https://github.com/unjs/changelogen/commit/c210976))
       - Fix typecheck ([8796cf1](https://github.com/unjs/changelogen/commit/8796cf1))
       - **release:** V0.3.3 ([f4f42a3](https://github.com/unjs/changelogen/commit/f4f42a3))

@@ -25,6 +25,8 @@ export default async function defaultMain(args: Argv) {
     from: args.from,
     to: args.to,
     output: args.output,
+    exclude:
+      typeof args.exclude === "string" ? args.exclude.split(",") : (args.exclude === 0 ? [""] : undefined),
     newVersion: typeof args.r === "string" ? args.r : undefined,
   });
 
