@@ -14,7 +14,7 @@ export interface ChangelogConfig {
   from: string;
   to: string;
   newVersion?: string;
-  excludeChoreDeps: boolean;
+  exclude?: string[];
   output: string | boolean;
   publish: {
     args?: string[];
@@ -53,7 +53,7 @@ const getDefaultConfig = () =>
     cwd: null,
     from: "",
     to: "",
-    excludeChoreDeps: true,
+    exclude: [],
     output: defaultOutput,
     scopeMap: {},
     tokens: {

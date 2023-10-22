@@ -1,4 +1,4 @@
-import type { ChangelogConfig } from "./config";
+import type { ResolvedChangelogConfig } from "./config";
 import { execCommand } from "./exec";
 
 export interface GitCommitAuthor {
@@ -90,7 +90,7 @@ export async function getGitDiff(
 
 export function parseCommits(
   commits: RawGitCommit[],
-  config: ChangelogConfig
+  config: ResolvedChangelogConfig
 ): GitCommit[] {
   return commits
     .map((commit) => parseGitCommit(commit, config))
@@ -99,17 +99,21 @@ export function parseCommits(
 
 export function filterParsedCommits(
   commits: GitCommit[],
-  config: ChangelogConfig
+  config: ResolvedChangelogConfig
 ): GitCommit[] {
-  return commits.filter(
-    (c) =>
-      config.types[c.type] &&
-      !(
-        c.type === "chore" &&
-        config.excludeChoreDeps &&
-        c.scope === "deps" &&
-        !c.isBreaking
-      )
+  // parsing the exclude parameter ('chore(deps)' => ['chore(deps)','chore','(deps)','deps'])
+  const excludes: RegExpMatchArray[] = config.exclude
+  ? config.exclude.map((excludeString) =>
+      excludeString.match(/(\*|[a-z]+)(\((.+)\))?/)
+    )
+  : [];
+  console.log(excludes)
+  return commits.filter((c) => 
+    config.types[c.type] && !excludes.some((e) => 
+        e &&
+        (e[1] === "*" || c.type === e[1]) &&
+        (c.scope === e[3] || !e[3]) &&
+        !c.isBreaking)
   );
 }
 
@@ -123,7 +127,7 @@ const IssueRE = /(#\d+)/gm;
 
 export function parseGitCommit(
   commit: RawGitCommit,
-  config: ChangelogConfig
+  config: ResolvedChangelogConfig
 ): GitCommit | null {
   const match = commit.message.match(ConventionalCommitRegex);
   if (!match) {
