@@ -54,7 +54,7 @@ const getDefaultConfig = () =>
     cwd: null,
     from: "",
     to: "",
-    exclude: [],
+    exclude: [""],
     output: defaultOutput,
     scopeMap: {},
     tokens: {
