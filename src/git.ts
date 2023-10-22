@@ -103,17 +103,20 @@ export function filterParsedCommits(
 ): GitCommit[] {
   // parsing the exclude parameter ('chore(deps)' => ['chore(deps)','chore','(deps)','deps'])
   const excludes: RegExpMatchArray[] = config.exclude
-  ? config.exclude.map((excludeString) =>
-      excludeString.match(/(\*|[a-z]+)(\((.+)\))?/)
-    )
-  : [];
-  console.log(excludes)
-  return commits.filter((c) => 
-    config.types[c.type] && !excludes.some((e) => 
-        e &&
-        (e[1] === "*" || c.type === e[1]) &&
-        (c.scope === e[3] || !e[3]) &&
-        !c.isBreaking)
+    ? config.exclude.map((excludeString) =>
+        excludeString.match(/(\*|[a-z]+)(\((.+)\))?/)
+      )
+    : [];
+  return commits.filter(
+    (c) =>
+      config.types[c.type] &&
+      !excludes.some(
+        (e) =>
+          e &&
+          (e[1] === "*" || c.type === e[1]) &&
+          (c.scope === e[3] || !e[3]) &&
+          !c.isBreaking
+      )
   );
 }
 
