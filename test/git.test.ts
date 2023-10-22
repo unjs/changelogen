@@ -414,7 +414,7 @@ describe("git", () => {
     const config = await loadChangelogConfig(process.cwd(), {
       from: COMMIT_FROM,
       to: COMMIT_TO,
-      exclude: ["fix","chore(deps)"],
+      exclude: ["fix", "chore(deps)"],
     });
     const parsed = filterParsedCommits(parseCommits(commits, config), config);
 

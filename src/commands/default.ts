@@ -26,7 +26,11 @@ export default async function defaultMain(args: Argv) {
     to: args.to,
     output: args.output,
     exclude:
-      typeof args.exclude === "string" ? args.exclude.split(",") : (args.exclude === 0 ? [""] : undefined),
+      typeof args.exclude === "string"
+        ? args.exclude.split(",")
+        : args.exclude === 0 // eslint-disable-line unicorn/no-nested-ternary
+        ? [""]
+        : undefined,
     newVersion: typeof args.r === "string" ? args.r : undefined,
   });
 
