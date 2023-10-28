@@ -97,6 +97,13 @@ export async function resolveAuthors(
       return false;
     }
     if (i.github) {
+      if (
+        config.excludeAuthors &&
+        config.excludeAuthors.some((v) => i.github.includes(v))
+      ) {
+        return false;
+      }
+
       loginSet.add(i.github);
     }
     return true;
