@@ -3,7 +3,7 @@ import { ResolvedChangelogConfig } from "./config";
 import { GitCommit } from "./git";
 import { getGithubLoginByCommit } from "./github";
 
-export interface GithubAuthor {
+export interface CommitAuthor {
   commits: string[];
   github?: string;
   email: Set<string>;
@@ -12,8 +12,8 @@ export interface GithubAuthor {
 
 export async function resolveAuthorInfo(
   config: ResolvedChangelogConfig,
-  info: GithubAuthor
-) {
+  info: CommitAuthor
+): Promise<CommitAuthor> {
   if (info.github) {
     return info;
   }
@@ -39,9 +39,12 @@ export async function resolveAuthorInfo(
     return info;
   }
 
-  if (info.commits.length > 0) {
+  for (const commit in info.commits) {
     try {
-      info.github = await getGithubLoginByCommit(config, info.commits[0]);
+      info.github = await getGithubLoginByCommit(config, commit);
+      if (info.github) {
+        break;
+      }
     } catch {}
   }
 
@@ -51,8 +54,8 @@ export async function resolveAuthorInfo(
 export async function resolveAuthors(
   commits: GitCommit[],
   config: ResolvedChangelogConfig
-) {
-  const _authors = new Map<string, GithubAuthor>();
+): Promise<CommitAuthor[]> {
+  const _authors = new Map<string, CommitAuthor>();
   for (const commit of commits) {
     if (!commit.author) {
       continue;
@@ -83,9 +86,8 @@ export async function resolveAuthors(
   }
 
   // Try to map authors to github usernames
-  const authors = [..._authors.values()];
   const resolved = await Promise.all(
-    authors.map((info) => resolveAuthorInfo(config, info))
+    [..._authors.values()].map((info) => resolveAuthorInfo(config, info))
   );
 
   // check for duplicate logins
