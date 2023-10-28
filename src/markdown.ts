@@ -128,13 +128,6 @@ function formatReferences(
 //   return title.length <= 3 ? title.toUpperCase() : upperFirst(title)
 // }
 
-function formatName(name = "") {
-  return name
-    .split(" ")
-    .map((p) => upperFirst(p.trim()))
-    .join(" ");
-}
-
 function groupBy(items: any[], key: string) {
   const groups = {};
   for (const item of items) {
