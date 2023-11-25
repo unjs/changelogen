@@ -1,4 +1,16 @@
 
+## v1.0.1
+
+[compare changes](https://github.com/phojie/changegear/compare/v0.6.0...v1.0.1)
+
+### 🏡 Chore
+
+- Package version ([4254b80](https://github.com/phojie/changegear/commit/4254b80))
+
+### ❤️ Contributors
+
+- Phojie Rengel ([@phojie](http://github.com/phojie))
+
 ## v0.6.0
 
 
