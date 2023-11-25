@@ -1,6 +1,6 @@
 {
   "name": "changegear",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Generate Beautiful Changelogs using Conventional Commits",
   "repository": "phojie/changegear",
   "license": "MIT",

@@ -1,4 +1,16 @@
 
+## v1.0.3
+
+[compare changes](https://github.com/phojie/changegear/compare/v1.0.2...v1.0.3)
+
+### 🏡 Chore
+
+- Fix scripts config ([d86b01d](https://github.com/phojie/changegear/commit/d86b01d))
+
+### ❤️ Contributors
+
+- Phojie Rengel ([@phojie](http://github.com/phojie))
+
 ## v1.0.2
 
 [compare changes](https://github.com/phojie/changegear/compare/v1.0.1...v1.0.2)
