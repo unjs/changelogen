@@ -20,7 +20,7 @@ const providerToRefSpec: Record<
   gitlab: { "pull-request": "merge_requests", hash: "commit", issue: "issues" },
   bitbucket: {
     "pull-request": "pull-requests",
-    hash: "commit",
+    hash: "commits",
     issue: "issues",
   },
 };
@@ -61,9 +61,13 @@ export function formatCompareChanges(
 ) {
   const part =
     config.repo.provider === "bitbucket" ? "branches/compare" : "compare";
-  return `[compare changes](${baseUrl(config.repo)}/${part}/${config.from}...${
-    v || config.to
-  })`;
+
+  const url =
+    config.repo.provider === "bitbucket"
+      ? `${baseUrl(config.repo)}/${part}/${config.to}..${v || config.from}#diff`
+      : `${baseUrl(config.repo)}/${part}/${config.from}...${v || config.to}`;
+
+  return `[compare changes](${url})`;
 }
 
 export async function resolveRepoConfig(cwd: string) {
