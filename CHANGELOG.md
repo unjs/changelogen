@@ -1,4 +1,19 @@
 
+## v1.0.2
+
+[compare changes](https://github.com/phojie/changegear/compare/v1.0.1...v1.0.2)
+
+### 🏡 Chore
+
+- Init ([81a9c54](https://github.com/phojie/changegear/commit/81a9c54))
+- Reconfig linter ([ca05eb5](https://github.com/phojie/changegear/commit/ca05eb5))
+- Lint ([30f7360](https://github.com/phojie/changegear/commit/30f7360))
+- Config pre-commits ([647c972](https://github.com/phojie/changegear/commit/647c972))
+
+### ❤️ Contributors
+
+- Phojie Rengel ([@phojie](http://github.com/phojie))
+
 ## v1.0.1
 
 [compare changes](https://github.com/phojie/changegear/compare/v0.6.0...v1.0.1)
