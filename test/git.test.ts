@@ -285,32 +285,32 @@ describe("git", () => {
     const md = await generateMarkDown(parsed, config);
 
     expect(md).toMatchInlineSnapshot(`
-      "## 1cb15d5dd93302ebd5ff912079ed584efcc6703b...3828bda8c45933396ddfa869d671473231ce3c95
+      "## 3828bda8c45933396ddfa869d671473231ce3c95
 
-      [compare changes](https://github.com/unjs/changelogen/compare/1cb15d5dd93302ebd5ff912079ed584efcc6703b...3828bda8c45933396ddfa869d671473231ce3c95)
+      [compare changes](https://github.com/phojie/changegear/compare/1cb15d5dd93302ebd5ff912079ed584efcc6703b...3828bda8c45933396ddfa869d671473231ce3c95)
 
       ### 🚀 Enhancements
 
-      - Expose \`determineSemverChange\` and \`bumpVersion\` ([5451f18](https://github.com/unjs/changelogen/commit/5451f18))
-      - Infer github config from package.json ([#37](https://github.com/unjs/changelogen/pull/37))
+      - Expose \`determineSemverChange\` and \`bumpVersion\` ([5451f18](https://github.com/phojie/changegear/commit/5451f18))
+      - Infer github config from package.json ([#37](https://github.com/phojie/changegear/pull/37))
 
       ### 🩹 Fixes
 
-      - Consider docs and refactor as semver patch for bump ([648ccf1](https://github.com/unjs/changelogen/commit/648ccf1))
-      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
+      - Consider docs and refactor as semver patch for bump ([648ccf1](https://github.com/phojie/changegear/commit/648ccf1))
+      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/phojie/changegear/pull/134), [#123](https://github.com/phojie/changegear/issues/123))
 
       ### 🏡 Chore
 
-      - **deps:** Update all non-major dependencies ([#42](https://github.com/unjs/changelogen/pull/42))
-      - Update dependencies ([c210976](https://github.com/unjs/changelogen/commit/c210976))
-      - Fix typecheck ([8796cf1](https://github.com/unjs/changelogen/commit/8796cf1))
-      - **release:** V0.3.3 ([f4f42a3](https://github.com/unjs/changelogen/commit/f4f42a3))
-      - **release:** V0.3.4 ([6fc5087](https://github.com/unjs/changelogen/commit/6fc5087))
-      - **release:** V0.3.5 ([3828bda](https://github.com/unjs/changelogen/commit/3828bda))
+      - **deps:** Update all non-major dependencies ([#42](https://github.com/phojie/changegear/pull/42))
+      - Update dependencies ([c210976](https://github.com/phojie/changegear/commit/c210976))
+      - Fix typecheck ([8796cf1](https://github.com/phojie/changegear/commit/8796cf1))
+      - **release:** V0.3.3 ([f4f42a3](https://github.com/phojie/changegear/commit/f4f42a3))
+      - **release:** V0.3.4 ([6fc5087](https://github.com/phojie/changegear/commit/6fc5087))
+      - **release:** V0.3.5 ([3828bda](https://github.com/phojie/changegear/commit/3828bda))
 
       #### ⚠️ Breaking Changes
 
-      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
+      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/phojie/changegear/pull/134), [#123](https://github.com/phojie/changegear/issues/123))
 
       ### ❤️ Contributors
 
@@ -325,83 +325,83 @@ describe("git", () => {
 
     const github = {
       provider: "github",
-      repo: "unjs/changelogen",
+      repo: "phojie/changegear",
       domain: "github.com",
     };
-    expect(getRepoConfig("unjs/changelogen")).toStrictEqual(github);
-    expect(getRepoConfig("github:unjs/changelogen")).toStrictEqual(github);
-    expect(getRepoConfig("https://github.com/unjs/changelogen")).toStrictEqual(
+    expect(getRepoConfig("phojie/changegear")).toStrictEqual(github);
+    expect(getRepoConfig("github:phojie/changegear")).toStrictEqual(github);
+    expect(getRepoConfig("https://github.com/phojie/changegear")).toStrictEqual(
       github
     );
     expect(
-      getRepoConfig("https://github.com/unjs/changelogen.git")
+      getRepoConfig("https://github.com/phojie/changegear.git")
     ).toStrictEqual(github);
-    expect(getRepoConfig("git@github.com:unjs/changelogen.git")).toStrictEqual(
+    expect(getRepoConfig("git@github.com:phojie/changegear.git")).toStrictEqual(
       github
     );
 
     const gitlab = {
       provider: "gitlab",
-      repo: "unjs/changelogen",
+      repo: "phojie/changegear",
       domain: "gitlab.com",
     };
 
-    expect(getRepoConfig("gitlab:unjs/changelogen")).toStrictEqual(gitlab);
-    expect(getRepoConfig("https://gitlab.com/unjs/changelogen")).toStrictEqual(
+    expect(getRepoConfig("gitlab:phojie/changegear")).toStrictEqual(gitlab);
+    expect(getRepoConfig("https://gitlab.com/phojie/changegear")).toStrictEqual(
       gitlab
     );
     expect(
-      getRepoConfig("https://gitlab.com/unjs/changelogen.git")
+      getRepoConfig("https://gitlab.com/phojie/changegear.git")
     ).toStrictEqual(gitlab);
-    expect(getRepoConfig("git@gitlab.com:unjs/changelogen.git")).toStrictEqual(
+    expect(getRepoConfig("git@gitlab.com:phojie/changegear.git")).toStrictEqual(
       gitlab
     );
 
     const bitbucket = {
       provider: "bitbucket",
-      repo: "unjs/changelogen",
+      repo: "phojie/changegear",
       domain: "bitbucket.org",
     };
 
-    expect(getRepoConfig("bitbucket:unjs/changelogen")).toStrictEqual(
+    expect(getRepoConfig("bitbucket:phojie/changegear")).toStrictEqual(
       bitbucket
     );
     expect(
-      getRepoConfig("https://bitbucket.org/unjs/changelogen")
+      getRepoConfig("https://bitbucket.org/phojie/changegear")
     ).toStrictEqual(bitbucket);
     expect(
-      getRepoConfig("https://bitbucket.org/unjs/changelogen.git")
+      getRepoConfig("https://bitbucket.org/phojie/changegear.git")
     ).toStrictEqual(bitbucket);
     expect(
-      getRepoConfig("https://donaldsh@bitbucket.org/unjs/changelogen.git")
+      getRepoConfig("https://donaldsh@bitbucket.org/phojie/changegear.git")
     ).toStrictEqual(bitbucket);
     expect(
-      getRepoConfig("git@bitbucket.org:unjs/changelogen.git")
+      getRepoConfig("git@bitbucket.org:phojie/changegear.git")
     ).toStrictEqual(bitbucket);
 
     const selfhosted = {
-      repo: "unjs/changelogen",
+      repo: "phojie/changegear",
       domain: "git.unjs.io",
     };
 
-    expect(getRepoConfig("selfhosted:unjs/changelogen")).toMatchObject({
+    expect(getRepoConfig("selfhosted:phojie/changegear")).toMatchObject({
       provider: "selfhosted",
-      repo: "unjs/changelogen",
+      repo: "phojie/changegear",
     });
 
-    expect(getRepoConfig("https://git.unjs.io/unjs/changelogen")).toMatchObject(
-      selfhosted
-    );
+    expect(
+      getRepoConfig("https://git.unjs.io/phojie/changegear")
+    ).toMatchObject(selfhosted);
 
     expect(
-      getRepoConfig("https://git.unjs.io/unjs/changelogen.git")
+      getRepoConfig("https://git.unjs.io/phojie/changegear.git")
     ).toMatchObject(selfhosted);
     expect(
-      getRepoConfig("https://donaldsh@git.unjs.io/unjs/changelogen.git")
+      getRepoConfig("https://donaldsh@git.unjs.io/phojie/changegear.git")
     ).toMatchObject(selfhosted);
-    expect(getRepoConfig("git@git.unjs.io:unjs/changelogen.git")).toMatchObject(
-      selfhosted
-    );
+    expect(
+      getRepoConfig("git@git.unjs.io:phojie/changegear.git")
+    ).toMatchObject(selfhosted);
   });
 
   test("format reference", () => {
@@ -413,54 +413,54 @@ describe("git", () => {
 
     const github: RepoConfig = {
       provider: "github",
-      repo: "unjs/changelogen",
+      repo: "phojie/changegear",
       domain: "github.com",
     };
 
     expect(formatReference({ type: "hash", value: "3828bda" }, github)).toBe(
-      "[3828bda](https://github.com/unjs/changelogen/commit/3828bda)"
+      "[3828bda](https://github.com/phojie/changegear/commit/3828bda)"
     );
     expect(
       formatReference({ type: "pull-request", value: "#123" }, github)
-    ).toBe("[#123](https://github.com/unjs/changelogen/pull/123)");
+    ).toBe("[#123](https://github.com/phojie/changegear/pull/123)");
     expect(formatReference({ type: "issue", value: "#14" }, github)).toBe(
-      "[#14](https://github.com/unjs/changelogen/issues/14)"
+      "[#14](https://github.com/phojie/changegear/issues/14)"
     );
 
     const gitlab: RepoConfig = {
       provider: "gitlab",
-      repo: "unjs/changelogen",
+      repo: "phojie/changegear",
       domain: "gitlab.com",
     };
 
     expect(formatReference({ type: "hash", value: "3828bda" }, gitlab)).toBe(
-      "[3828bda](https://gitlab.com/unjs/changelogen/commit/3828bda)"
+      "[3828bda](https://gitlab.com/phojie/changegear/commit/3828bda)"
     );
     expect(
       formatReference({ type: "pull-request", value: "#123" }, gitlab)
-    ).toBe("[#123](https://gitlab.com/unjs/changelogen/merge_requests/123)");
+    ).toBe("[#123](https://gitlab.com/phojie/changegear/merge_requests/123)");
     expect(formatReference({ type: "issue", value: "#14" }, gitlab)).toBe(
-      "[#14](https://gitlab.com/unjs/changelogen/issues/14)"
+      "[#14](https://gitlab.com/phojie/changegear/issues/14)"
     );
 
     const bitbucket: RepoConfig = {
       provider: "bitbucket",
-      repo: "unjs/changelogen",
+      repo: "phojie/changegear",
       domain: "bitbucket.org",
     };
 
     expect(formatReference({ type: "hash", value: "3828bda" }, bitbucket)).toBe(
-      "[3828bda](https://bitbucket.org/unjs/changelogen/commit/3828bda)"
+      "[3828bda](https://bitbucket.org/phojie/changegear/commits/3828bda)"
     );
     expect(
       formatReference({ type: "pull-request", value: "#123" }, bitbucket)
-    ).toBe("[#123](https://bitbucket.org/unjs/changelogen/pull-requests/123)");
+    ).toBe("[#123](https://bitbucket.org/phojie/changegear/pull-requests/123)");
     expect(formatReference({ type: "issue", value: "#14" }, bitbucket)).toBe(
-      "[#14](https://bitbucket.org/unjs/changelogen/issues/14)"
+      "[#14](https://bitbucket.org/phojie/changegear/issues/14)"
     );
 
     const unkown: RepoConfig = {
-      repo: "unjs/changelogen",
+      repo: "phojie/changegear",
       domain: "git.unjs.io",
     };
 

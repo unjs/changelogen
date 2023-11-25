@@ -1,8 +1,8 @@
 {
-  "name": "changelogen",
+  "name": "@phojie/changegear",
   "version": "0.5.5",
   "description": "Generate Beautiful Changelogs using Conventional Commits",
-  "repository": "unjs/changelogen",
+  "repository": "phojie/changegear",
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
@@ -14,7 +14,7 @@
     }
   },
   "bin": {
-    "changelogen": "./dist/cli.mjs"
+    "changegear": "./dist/cli.mjs"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -24,12 +24,12 @@
   ],
   "scripts": {
     "build": "unbuild",
-    "changelogen": "jiti ./src/cli.ts",
+    "changegear": "jiti ./src/cli.ts",
     "dev": "vitest dev",
     "lint": "eslint --ext .ts,.js,.mjs,.cjs . && prettier -c src test",
     "lint:fix": "eslint --fix --ext .ts,.js,.mjs,.cjs . && prettier -w src test",
     "prepack": "unbuild",
-    "release": "pnpm test && pnpm changelogen --release --push && pnpm publish",
+    "release": "pnpm test && pnpm changegear --release --push && pnpm publish",
     "test": "pnpm lint && vitest run --coverage"
   },
   "dependencies": {

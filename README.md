@@ -1,4 +1,4 @@
-# changelogen
+# changegear
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
@@ -12,25 +12,25 @@ Generate Beautiful Changelogs using [Conventional Commits](https://www.conventio
 Generate a changelog in Markdown format and display in the console:
 
 ```sh
-npx changelogen@latest
+npx changegear@latest
 ```
 
 Generate a changelog, bump the version in `package.json` and update `CHANGELOG.md` (without commit):
 
 ```sh
-npx changelogen@latest --bump
+npx changegear@latest --bump
 ```
 
 Bump the version, update `CHANGELOG.md` and make a git commit and tag:
 
 ```sh
-npx changelogen@latest --release
+npx changegear@latest --release
 ```
 
 ## CLI Usage
 
 ```sh
-npx changelogen@latest [...args] [--dir <dir>]
+npx changegear@latest [...args] [--dir <dir>]
 ```
 
 **Arguments:**
@@ -56,21 +56,21 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--prepatch`: Bump as a semver-prepatch version, can set id with string.
 - `--prerelease`: Bump as a semver-prerelease version, can set id with string.
 
-### `changelogen gh release`
+### `changegear gh release`
 
 Changelogen has built-in functionality to sync with with Github releases.
 
-In order to manually sync a release, you can use `changelogen gh release`. It will parse current `CHANGELOG.md` from current repository (local, then remote) and create or update releases.
+In order to manually sync a release, you can use `changegear gh release`. It will parse current `CHANGELOG.md` from current repository (local, then remote) and create or update releases.
 
 Usage:
 
 ```sh
-npx changelogen@latest gh release [all|versions...] [--dir] [--token]
+npx changegear@latest gh release [all|versions...] [--dir] [--token]
 ```
 
 To enable this integration, make sure there is a valid `repository` field in `package.json` or `repo` is set in `.changelogenrc`.
 
-By default in unauthenticated mode, changelogen will open a browser link to make manual release. By providing github token, it can be automated.
+By default in unauthenticated mode, changegear will open a browser link to make manual release. By providing github token, it can be automated.
 
 - Using environment variables or `.env`, use `CHANGELOGEN_TOKENS_GITHUB` or `GITHUB_TOKEN` or `GH_TOKEN`
 - Using CLI args, use `--token <token>`
@@ -98,11 +98,11 @@ Published under [MIT License](./LICENSE).
 
 <!-- Badges -->
 
-[npm-version-src]: https://img.shields.io/npm/v/changelogen?style=flat&colorA=18181B&colorB=F0DB4F
-[npm-version-href]: https://npmjs.com/package/changelogen
-[npm-downloads-src]: https://img.shields.io/npm/dm/changelogen?style=flat&colorA=18181B&colorB=F0DB4F
-[npm-downloads-href]: https://npmjs.com/package/changelogen
-[codecov-src]: https://img.shields.io/codecov/c/gh/unjs/changelogen/main?style=flat&colorA=18181B&colorB=F0DB4F
-[codecov-href]: https://codecov.io/gh/unjs/changelogen
-[license-src]: https://img.shields.io/github/license/unjs/changelogen.svg?style=flat&colorA=18181B&colorB=F0DB4F
-[license-href]: https://github.com/unjs/changelogen/blob/main/LICENSE
+[npm-version-src]: https://img.shields.io/npm/v/changegear?style=flat&colorA=18181B&colorB=F0DB4F
+[npm-version-href]: https://npmjs.com/package/changegear
+[npm-downloads-src]: https://img.shields.io/npm/dm/changegear?style=flat&colorA=18181B&colorB=F0DB4F
+[npm-downloads-href]: https://npmjs.com/package/changegear
+[codecov-src]: https://img.shields.io/codecov/c/gh/phojie/changegear/main?style=flat&colorA=18181B&colorB=F0DB4F
+[codecov-href]: https://codecov.io/gh/phojie/changegear
+[license-src]: https://img.shields.io/github/license/phojie/changegear.svg?style=flat&colorA=18181B&colorB=F0DB4F
+[license-href]: https://github.com/phojie/changegear/blob/main/LICENSE

@@ -21,7 +21,7 @@ export default async function githubMain(args: Argv) {
   const [subCommand, ..._versions] = args._;
   if (subCommand !== "release") {
     consola.log(
-      "Usage: changelogen gh release [all|versions...] [--dir] [--token]"
+      "Usage: changegear gh release [all|versions...] [--dir] [--token]"
     );
     process.exit(1);
   }
