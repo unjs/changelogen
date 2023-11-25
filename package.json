@@ -28,6 +28,7 @@
     "dev": "vitest dev",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
+    "postinstall": "npx simple-git-hooks",
     "prepack": "unbuild",
     "release": "pnpm test && pnpm changegear --release --push && pnpm publish",
     "test": "pnpm lint && vitest run --coverage"
@@ -56,6 +57,8 @@
     "@vitest/coverage-v8": "^0.34.6",
     "eslint": "^8.54.0",
     "jiti": "^1.21.0",
+    "lint-staged": "^15.1.0",
+    "simple-git-hooks": "^2.9.0",
     "standard-version": "^9.5.0",
     "typescript": "^5.3.2",
     "unbuild": "^2.0.0",
@@ -64,5 +67,11 @@
   "packageManager": "pnpm@8.10.5",
   "publishConfig": {
     "access": "public"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
   }
 }
