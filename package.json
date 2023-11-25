@@ -26,8 +26,8 @@
     "build": "unbuild",
     "changegear": "jiti ./src/cli.ts",
     "dev": "vitest dev",
-    "lint": "eslint --ext .ts,.js,.mjs,.cjs . && prettier -c src test",
-    "lint:fix": "eslint --fix --ext .ts,.js,.mjs,.cjs . && prettier -w src test",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "prepack": "unbuild",
     "release": "pnpm test && pnpm changegear --release --push && pnpm publish",
     "test": "pnpm lint && vitest run --coverage"
@@ -50,13 +50,12 @@
     "yaml": "^2.3.4"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^2.1.0",
     "@types/node": "^20.9.2",
     "@types/semver": "^7.5.5",
     "@vitest/coverage-v8": "^0.34.6",
     "eslint": "^8.54.0",
-    "eslint-config-unjs": "^0.2.1",
     "jiti": "^1.21.0",
-    "prettier": "^3.1.0",
     "standard-version": "^9.5.0",
     "typescript": "^5.3.2",
     "unbuild": "^2.0.0",

@@ -1,126 +1,128 @@
-import { readPackageJSON } from "pkg-types";
-import type { Reference } from "./git";
-import type { ResolvedChangelogConfig } from "./config";
-import { getGitRemoteURL } from "./git";
+import { readPackageJSON } from 'pkg-types'
+import type { Reference } from './git'
+import type { ResolvedChangelogConfig } from './config'
+import { getGitRemoteURL } from './git'
 
-export type RepoProvider = "github" | "gitlab" | "bitbucket";
+export type RepoProvider = 'github' | 'gitlab' | 'bitbucket'
 
-export type RepoConfig = {
-  domain?: string;
-  repo?: string;
-  provider?: RepoProvider;
-  token?: string;
-};
+export interface RepoConfig {
+  domain?: string
+  repo?: string
+  provider?: RepoProvider
+  token?: string
+}
 
 const providerToRefSpec: Record<
   RepoProvider,
-  Record<Reference["type"], string>
+  Record<Reference['type'], string>
 > = {
-  github: { "pull-request": "pull", hash: "commit", issue: "issues" },
-  gitlab: { "pull-request": "merge_requests", hash: "commit", issue: "issues" },
+  github: { 'pull-request': 'pull', 'hash': 'commit', 'issue': 'issues' },
+  gitlab: { 'pull-request': 'merge_requests', 'hash': 'commit', 'issue': 'issues' },
   bitbucket: {
-    "pull-request": "pull-requests",
-    hash: "commits",
-    issue: "issues",
+    'pull-request': 'pull-requests',
+    'hash': 'commits',
+    'issue': 'issues',
   },
-};
+}
 
 const providerToDomain: Record<RepoProvider, string> = {
-  github: "github.com",
-  gitlab: "gitlab.com",
-  bitbucket: "bitbucket.org",
-};
+  github: 'github.com',
+  gitlab: 'gitlab.com',
+  bitbucket: 'bitbucket.org',
+}
 
 const domainToProvider: Record<string, RepoProvider> = {
-  "github.com": "github",
-  "gitlab.com": "gitlab",
-  "bitbucket.org": "bitbucket",
-};
+  'github.com': 'github',
+  'gitlab.com': 'gitlab',
+  'bitbucket.org': 'bitbucket',
+}
 
 // https://regex101.com/r/NA4Io6/1
-const providerURLRegex =
-  /^(?:(?<user>[\w-]+)@)?(?:(?<provider>[^/:]+):)?(?<repo>[\w-]+\/(?:\w|\.(?!git$)|-)+)(?:\.git)?$/;
+const providerURLRegex
+  = /^(?:(?<user>[\w-]+)@)?(?:(?<provider>[^/:]+):)?(?<repo>[\w-]+\/(?:\w|\.(?!git$)|-)+)(?:\.git)?$/
 
 function baseUrl(config: RepoConfig) {
-  return `https://${config.domain}/${config.repo}`;
+  return `https://${config.domain}/${config.repo}`
 }
 
 export function formatReference(ref: Reference, repo?: RepoConfig) {
-  if (!repo || !(repo.provider in providerToRefSpec)) {
-    return ref.value;
-  }
-  const refSpec = providerToRefSpec[repo.provider];
+  if (!repo || !(repo.provider in providerToRefSpec))
+    return ref.value
+
+  const refSpec = providerToRefSpec[repo.provider]
   return `[${ref.value}](${baseUrl(repo)}/${
     refSpec[ref.type]
-  }/${ref.value.replace(/^#/, "")})`;
+  }/${ref.value.replace(/^#/, '')})`
 }
 
 export function formatCompareChanges(
   v: string,
-  config: ResolvedChangelogConfig
+  config: ResolvedChangelogConfig,
 ) {
-  const part =
-    config.repo.provider === "bitbucket" ? "branches/compare" : "compare";
+  const part
+    = config.repo.provider === 'bitbucket' ? 'branches/compare' : 'compare'
 
-  const url =
-    config.repo.provider === "bitbucket"
+  const url
+    = config.repo.provider === 'bitbucket'
       ? `${baseUrl(config.repo)}/${part}/${config.from}..${v || config.to}#diff`
-      : `${baseUrl(config.repo)}/${part}/${config.from}...${v || config.to}`;
+      : `${baseUrl(config.repo)}/${part}/${config.from}...${v || config.to}`
 
-  return `[compare changes](${url})`;
+  return `[compare changes](${url})`
 }
 
 export async function resolveRepoConfig(cwd: string) {
   // Try closest package.json
-  const pkg = await readPackageJSON(cwd).catch(() => {});
+  const pkg = await readPackageJSON(cwd).catch(() => {})
   if (pkg && pkg.repository) {
-    const url =
-      typeof pkg.repository === "string" ? pkg.repository : pkg.repository.url;
-    return getRepoConfig(url);
+    const url
+      = typeof pkg.repository === 'string' ? pkg.repository : pkg.repository.url
+    return getRepoConfig(url)
   }
 
-  const gitRemote = await getGitRemoteURL(cwd).catch(() => {});
-  if (gitRemote) {
-    return getRepoConfig(gitRemote);
-  }
+  const gitRemote = await getGitRemoteURL(cwd).catch(() => {})
+  if (gitRemote)
+    return getRepoConfig(gitRemote)
 }
 
-export function getRepoConfig(repoUrl = ""): RepoConfig {
-  let provider;
-  let repo;
-  let domain;
+export function getRepoConfig(repoUrl = ''): RepoConfig {
+  let provider
+  let repo
+  let domain
 
-  let url;
+  let url
   try {
-    url = new URL(repoUrl);
-  } catch {}
+    url = new URL(repoUrl)
+  }
+  catch {}
 
-  const m = repoUrl.match(providerURLRegex)?.groups ?? {};
+  const m = repoUrl.match(providerURLRegex)?.groups ?? {}
   if (m.repo && m.provider) {
-    repo = m.repo;
-    provider =
-      m.provider in domainToProvider
+    repo = m.repo
+    provider
+      = m.provider in domainToProvider
         ? domainToProvider[m.provider]
-        : m.provider;
-    domain =
-      provider in providerToDomain ? providerToDomain[provider] : provider;
-  } else if (url) {
-    domain = url.hostname;
+        : m.provider
+    domain
+      = provider in providerToDomain ? providerToDomain[provider] : provider
+  }
+  else if (url) {
+    domain = url.hostname
     repo = url.pathname
-      .split("/")
+      .split('/')
       .slice(1, 3)
-      .join("/")
-      .replace(/\.git$/, "");
-    provider = domainToProvider[domain];
-  } else if (m.repo) {
-    repo = m.repo;
-    provider = "github";
-    domain = providerToDomain[provider];
+      .join('/')
+      .replace(/\.git$/, '')
+    provider = domainToProvider[domain]
+  }
+  else if (m.repo) {
+    repo = m.repo
+    provider = 'github'
+    domain = providerToDomain[provider]
   }
 
   return {
     provider,
     repo,
     domain,
-  };
+  }
 }

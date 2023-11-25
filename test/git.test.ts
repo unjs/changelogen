@@ -1,34 +1,33 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, it } from 'vitest'
 import {
+  formatReference,
   generateMarkDown,
   getGitDiff,
+  getRepoConfig,
   loadChangelogConfig,
   parseCommits,
-  getRepoConfig,
-  formatReference,
-} from "../src";
-import { RepoConfig } from "./../src/repo";
+} from '../src'
+import type { RepoConfig } from './../src/repo'
 
-describe("git", () => {
-  test("getGitDiff should work", async () => {
-    const COMMIT_INITIAL = "4554fc49265ac532b14c89cec15e7d21bb55d48b";
-    const COMMIT_VER002 = "38d7ba15dccc3a44931bf8bf0abaa0d4d96603eb";
-    expect((await getGitDiff(COMMIT_INITIAL, COMMIT_VER002)).length).toBe(2);
+describe('git', () => {
+  it('getGitDiff should work', async () => {
+    const COMMIT_INITIAL = '4554fc49265ac532b14c89cec15e7d21bb55d48b'
+    const COMMIT_VER002 = '38d7ba15dccc3a44931bf8bf0abaa0d4d96603eb'
+    expect((await getGitDiff(COMMIT_INITIAL, COMMIT_VER002)).length).toBe(2)
 
-    const all = await getGitDiff(undefined);
-    expect((await getGitDiff(COMMIT_INITIAL, "HEAD")).length + 1).toBe(
-      all.length
-    );
-  });
+    const all = await getGitDiff(undefined)
+    expect((await getGitDiff(COMMIT_INITIAL, 'HEAD')).length + 1).toBe(
+      all.length,
+    )
+  })
 
-  test("parse", async () => {
-    const COMMIT_FROM = "1cb15d5dd93302ebd5ff912079ed584efcc6703b";
-    const COMMIT_TO = "3828bda8c45933396ddfa869d671473231ce3c95";
+  it('parse', async () => {
+    const COMMIT_FROM = '1cb15d5dd93302ebd5ff912079ed584efcc6703b'
+    const COMMIT_TO = '3828bda8c45933396ddfa869d671473231ce3c95'
 
-    const commits = await getGitDiff(COMMIT_FROM, COMMIT_TO);
-    commits[1].message =
-      "fix(scope)!: breaking change example, close #123 (#134)";
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const commits = await getGitDiff(COMMIT_FROM, COMMIT_TO)
+    commits[1].message
+      = 'fix(scope)!: breaking change example, close #123 (#134)'
     expect(commits.map(({ body: _, ...rest }) => rest)).toMatchInlineSnapshot(`
       [
         {
@@ -112,14 +111,13 @@ describe("git", () => {
           "shortHash": "a80e372",
         },
       ]
-    `);
+    `)
     const config = await loadChangelogConfig(process.cwd(), {
       from: COMMIT_FROM,
       to: COMMIT_TO,
-    });
-    const parsed = parseCommits(commits, config);
+    })
+    const parsed = parseCommits(commits, config)
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     expect(parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest))
       .toMatchInlineSnapshot(`
       [
@@ -280,9 +278,9 @@ describe("git", () => {
           "type": "chore",
         },
       ]
-    `);
+    `)
 
-    const md = await generateMarkDown(parsed, config);
+    const md = await generateMarkDown(parsed, config)
 
     expect(md).toMatchInlineSnapshot(`
       "## 3828bda8c45933396ddfa869d671473231ce3c95
@@ -315,163 +313,163 @@ describe("git", () => {
       ### ❤️ Contributors
 
       - Pooya Parsa ([@pi0](http://github.com/pi0))"
-    `);
-  });
+    `)
+  })
 
-  test("parse host config", () => {
-    expect(getRepoConfig(undefined)).toMatchObject({});
-    expect(getRepoConfig("")).toMatchObject({});
-    expect(getRepoConfig("unjs")).toMatchObject({});
+  it('parse host config', () => {
+    expect(getRepoConfig(undefined)).toMatchObject({})
+    expect(getRepoConfig('')).toMatchObject({})
+    expect(getRepoConfig('unjs')).toMatchObject({})
 
     const github = {
-      provider: "github",
-      repo: "phojie/changegear",
-      domain: "github.com",
-    };
-    expect(getRepoConfig("phojie/changegear")).toStrictEqual(github);
-    expect(getRepoConfig("github:phojie/changegear")).toStrictEqual(github);
-    expect(getRepoConfig("https://github.com/phojie/changegear")).toStrictEqual(
-      github
-    );
+      provider: 'github',
+      repo: 'phojie/changegear',
+      domain: 'github.com',
+    }
+    expect(getRepoConfig('phojie/changegear')).toStrictEqual(github)
+    expect(getRepoConfig('github:phojie/changegear')).toStrictEqual(github)
+    expect(getRepoConfig('https://github.com/phojie/changegear')).toStrictEqual(
+      github,
+    )
     expect(
-      getRepoConfig("https://github.com/phojie/changegear.git")
-    ).toStrictEqual(github);
-    expect(getRepoConfig("git@github.com:phojie/changegear.git")).toStrictEqual(
-      github
-    );
+      getRepoConfig('https://github.com/phojie/changegear.git'),
+    ).toStrictEqual(github)
+    expect(getRepoConfig('git@github.com:phojie/changegear.git')).toStrictEqual(
+      github,
+    )
 
     const gitlab = {
-      provider: "gitlab",
-      repo: "phojie/changegear",
-      domain: "gitlab.com",
-    };
+      provider: 'gitlab',
+      repo: 'phojie/changegear',
+      domain: 'gitlab.com',
+    }
 
-    expect(getRepoConfig("gitlab:phojie/changegear")).toStrictEqual(gitlab);
-    expect(getRepoConfig("https://gitlab.com/phojie/changegear")).toStrictEqual(
-      gitlab
-    );
+    expect(getRepoConfig('gitlab:phojie/changegear')).toStrictEqual(gitlab)
+    expect(getRepoConfig('https://gitlab.com/phojie/changegear')).toStrictEqual(
+      gitlab,
+    )
     expect(
-      getRepoConfig("https://gitlab.com/phojie/changegear.git")
-    ).toStrictEqual(gitlab);
-    expect(getRepoConfig("git@gitlab.com:phojie/changegear.git")).toStrictEqual(
-      gitlab
-    );
+      getRepoConfig('https://gitlab.com/phojie/changegear.git'),
+    ).toStrictEqual(gitlab)
+    expect(getRepoConfig('git@gitlab.com:phojie/changegear.git')).toStrictEqual(
+      gitlab,
+    )
 
     const bitbucket = {
-      provider: "bitbucket",
-      repo: "phojie/changegear",
-      domain: "bitbucket.org",
-    };
+      provider: 'bitbucket',
+      repo: 'phojie/changegear',
+      domain: 'bitbucket.org',
+    }
 
-    expect(getRepoConfig("bitbucket:phojie/changegear")).toStrictEqual(
-      bitbucket
-    );
+    expect(getRepoConfig('bitbucket:phojie/changegear')).toStrictEqual(
+      bitbucket,
+    )
     expect(
-      getRepoConfig("https://bitbucket.org/phojie/changegear")
-    ).toStrictEqual(bitbucket);
+      getRepoConfig('https://bitbucket.org/phojie/changegear'),
+    ).toStrictEqual(bitbucket)
     expect(
-      getRepoConfig("https://bitbucket.org/phojie/changegear.git")
-    ).toStrictEqual(bitbucket);
+      getRepoConfig('https://bitbucket.org/phojie/changegear.git'),
+    ).toStrictEqual(bitbucket)
     expect(
-      getRepoConfig("https://donaldsh@bitbucket.org/phojie/changegear.git")
-    ).toStrictEqual(bitbucket);
+      getRepoConfig('https://donaldsh@bitbucket.org/phojie/changegear.git'),
+    ).toStrictEqual(bitbucket)
     expect(
-      getRepoConfig("git@bitbucket.org:phojie/changegear.git")
-    ).toStrictEqual(bitbucket);
+      getRepoConfig('git@bitbucket.org:phojie/changegear.git'),
+    ).toStrictEqual(bitbucket)
 
     const selfhosted = {
-      repo: "phojie/changegear",
-      domain: "git.unjs.io",
-    };
+      repo: 'phojie/changegear',
+      domain: 'git.unjs.io',
+    }
 
-    expect(getRepoConfig("selfhosted:phojie/changegear")).toMatchObject({
-      provider: "selfhosted",
-      repo: "phojie/changegear",
-    });
-
-    expect(
-      getRepoConfig("https://git.unjs.io/phojie/changegear")
-    ).toMatchObject(selfhosted);
+    expect(getRepoConfig('selfhosted:phojie/changegear')).toMatchObject({
+      provider: 'selfhosted',
+      repo: 'phojie/changegear',
+    })
 
     expect(
-      getRepoConfig("https://git.unjs.io/phojie/changegear.git")
-    ).toMatchObject(selfhosted);
-    expect(
-      getRepoConfig("https://donaldsh@git.unjs.io/phojie/changegear.git")
-    ).toMatchObject(selfhosted);
-    expect(
-      getRepoConfig("git@git.unjs.io:phojie/changegear.git")
-    ).toMatchObject(selfhosted);
-  });
+      getRepoConfig('https://git.unjs.io/phojie/changegear'),
+    ).toMatchObject(selfhosted)
 
-  test("format reference", () => {
-    expect(formatReference({ type: "hash", value: "3828bda" })).toBe("3828bda");
-    expect(formatReference({ type: "pull-request", value: "#123" })).toBe(
-      "#123"
-    );
-    expect(formatReference({ type: "issue", value: "#14" })).toBe("#14");
+    expect(
+      getRepoConfig('https://git.unjs.io/phojie/changegear.git'),
+    ).toMatchObject(selfhosted)
+    expect(
+      getRepoConfig('https://donaldsh@git.unjs.io/phojie/changegear.git'),
+    ).toMatchObject(selfhosted)
+    expect(
+      getRepoConfig('git@git.unjs.io:phojie/changegear.git'),
+    ).toMatchObject(selfhosted)
+  })
+
+  it('format reference', () => {
+    expect(formatReference({ type: 'hash', value: '3828bda' })).toBe('3828bda')
+    expect(formatReference({ type: 'pull-request', value: '#123' })).toBe(
+      '#123',
+    )
+    expect(formatReference({ type: 'issue', value: '#14' })).toBe('#14')
 
     const github: RepoConfig = {
-      provider: "github",
-      repo: "phojie/changegear",
-      domain: "github.com",
-    };
+      provider: 'github',
+      repo: 'phojie/changegear',
+      domain: 'github.com',
+    }
 
-    expect(formatReference({ type: "hash", value: "3828bda" }, github)).toBe(
-      "[3828bda](https://github.com/phojie/changegear/commit/3828bda)"
-    );
+    expect(formatReference({ type: 'hash', value: '3828bda' }, github)).toBe(
+      '[3828bda](https://github.com/phojie/changegear/commit/3828bda)',
+    )
     expect(
-      formatReference({ type: "pull-request", value: "#123" }, github)
-    ).toBe("[#123](https://github.com/phojie/changegear/pull/123)");
-    expect(formatReference({ type: "issue", value: "#14" }, github)).toBe(
-      "[#14](https://github.com/phojie/changegear/issues/14)"
-    );
+      formatReference({ type: 'pull-request', value: '#123' }, github),
+    ).toBe('[#123](https://github.com/phojie/changegear/pull/123)')
+    expect(formatReference({ type: 'issue', value: '#14' }, github)).toBe(
+      '[#14](https://github.com/phojie/changegear/issues/14)',
+    )
 
     const gitlab: RepoConfig = {
-      provider: "gitlab",
-      repo: "phojie/changegear",
-      domain: "gitlab.com",
-    };
+      provider: 'gitlab',
+      repo: 'phojie/changegear',
+      domain: 'gitlab.com',
+    }
 
-    expect(formatReference({ type: "hash", value: "3828bda" }, gitlab)).toBe(
-      "[3828bda](https://gitlab.com/phojie/changegear/commit/3828bda)"
-    );
+    expect(formatReference({ type: 'hash', value: '3828bda' }, gitlab)).toBe(
+      '[3828bda](https://gitlab.com/phojie/changegear/commit/3828bda)',
+    )
     expect(
-      formatReference({ type: "pull-request", value: "#123" }, gitlab)
-    ).toBe("[#123](https://gitlab.com/phojie/changegear/merge_requests/123)");
-    expect(formatReference({ type: "issue", value: "#14" }, gitlab)).toBe(
-      "[#14](https://gitlab.com/phojie/changegear/issues/14)"
-    );
+      formatReference({ type: 'pull-request', value: '#123' }, gitlab),
+    ).toBe('[#123](https://gitlab.com/phojie/changegear/merge_requests/123)')
+    expect(formatReference({ type: 'issue', value: '#14' }, gitlab)).toBe(
+      '[#14](https://gitlab.com/phojie/changegear/issues/14)',
+    )
 
     const bitbucket: RepoConfig = {
-      provider: "bitbucket",
-      repo: "phojie/changegear",
-      domain: "bitbucket.org",
-    };
+      provider: 'bitbucket',
+      repo: 'phojie/changegear',
+      domain: 'bitbucket.org',
+    }
 
-    expect(formatReference({ type: "hash", value: "3828bda" }, bitbucket)).toBe(
-      "[3828bda](https://bitbucket.org/phojie/changegear/commits/3828bda)"
-    );
+    expect(formatReference({ type: 'hash', value: '3828bda' }, bitbucket)).toBe(
+      '[3828bda](https://bitbucket.org/phojie/changegear/commits/3828bda)',
+    )
     expect(
-      formatReference({ type: "pull-request", value: "#123" }, bitbucket)
-    ).toBe("[#123](https://bitbucket.org/phojie/changegear/pull-requests/123)");
-    expect(formatReference({ type: "issue", value: "#14" }, bitbucket)).toBe(
-      "[#14](https://bitbucket.org/phojie/changegear/issues/14)"
-    );
+      formatReference({ type: 'pull-request', value: '#123' }, bitbucket),
+    ).toBe('[#123](https://bitbucket.org/phojie/changegear/pull-requests/123)')
+    expect(formatReference({ type: 'issue', value: '#14' }, bitbucket)).toBe(
+      '[#14](https://bitbucket.org/phojie/changegear/issues/14)',
+    )
 
     const unkown: RepoConfig = {
-      repo: "phojie/changegear",
-      domain: "git.unjs.io",
-    };
+      repo: 'phojie/changegear',
+      domain: 'git.unjs.io',
+    }
 
-    expect(formatReference({ type: "hash", value: "3828bda" }, unkown)).toBe(
-      "3828bda"
-    );
+    expect(formatReference({ type: 'hash', value: '3828bda' }, unkown)).toBe(
+      '3828bda',
+    )
     expect(
-      formatReference({ type: "pull-request", value: "#123" }, unkown)
-    ).toBe("#123");
-    expect(formatReference({ type: "issue", value: "#14" }, unkown)).toBe(
-      "#14"
-    );
-  });
-});
+      formatReference({ type: 'pull-request', value: '#123' }, unkown),
+    ).toBe('#123')
+    expect(formatReference({ type: 'issue', value: '#14' }, unkown)).toBe(
+      '#14',
+    )
+  })
+})

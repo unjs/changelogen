@@ -1,157 +1,158 @@
-import { existsSync, promises as fsp } from "node:fs";
-import type { Argv } from "mri";
-import { resolve } from "pathe";
-import consola from "consola";
-import { execa } from "execa";
+import { existsSync, promises as fsp } from 'node:fs'
+import type { Argv } from 'mri'
+import { resolve } from 'pathe'
+import consola from 'consola'
+import { execa } from 'execa'
+import type {
+  BumpVersionOptions,
+} from '..'
 import {
-  loadChangelogConfig,
-  getGitDiff,
-  getCurrentGitStatus,
-  parseCommits,
   bumpVersion,
   generateMarkDown,
-  BumpVersionOptions,
-} from "..";
-import { npmPublish, renamePackage } from "../package";
-import { githubRelease } from "./github";
+  getCurrentGitStatus,
+  getGitDiff,
+  loadChangelogConfig,
+  parseCommits,
+} from '..'
+import { npmPublish, renamePackage } from '../package'
+import { githubRelease } from './github'
 
 export default async function defaultMain(args: Argv) {
-  const cwd = resolve(args._[0] /* bw compat */ || args.dir || "");
-  process.chdir(cwd);
-  consola.wrapConsole();
+  const cwd = resolve(args._[0] /* bw compat */ || args.dir || '')
+  process.chdir(cwd)
+  consola.wrapConsole()
 
   const config = await loadChangelogConfig(cwd, {
     from: args.from,
     to: args.to,
     output: args.output,
-    newVersion: typeof args.r === "string" ? args.r : undefined,
-  });
+    newVersion: typeof args.r === 'string' ? args.r : undefined,
+  })
 
   if (args.clean) {
-    const dirty = await getCurrentGitStatus();
+    const dirty = await getCurrentGitStatus()
     if (dirty) {
-      consola.error("Working directory is not clean.");
-      process.exit(1);
+      consola.error('Working directory is not clean.')
+      process.exit(1)
     }
   }
 
-  const logger = consola.create({ stdout: process.stderr });
-  logger.info(`Generating changelog for ${config.from || ""}...${config.to}`);
+  const logger = consola.create({ stdout: process.stderr })
+  logger.info(`Generating changelog for ${config.from || ''}...${config.to}`)
 
-  const rawCommits = await getGitDiff(config.from, config.to);
+  const rawCommits = await getGitDiff(config.from, config.to)
 
   // Parse commits as conventional commits
   const commits = parseCommits(rawCommits, config).filter(
-    (c) =>
-      config.types[c.type] &&
-      !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
-  );
+    c =>
+      config.types[c.type]
+      && !(c.type === 'chore' && c.scope === 'deps' && !c.isBreaking),
+  )
 
   // Shortcut for canary releases
   if (args.canary) {
-    if (args.bump === undefined) {
-      args.bump = true;
-    }
-    if (args.versionSuffix === undefined) {
-      args.versionSuffix = true;
-    }
-    if (args.nameSuffix === undefined && typeof args.canary === "string") {
-      args.nameSuffix = args.canary;
-    }
+    if (args.bump === undefined)
+      args.bump = true
+
+    if (args.versionSuffix === undefined)
+      args.versionSuffix = true
+
+    if (args.nameSuffix === undefined && typeof args.canary === 'string')
+      args.nameSuffix = args.canary
   }
 
   // Rename package name optionally
-  if (typeof args.nameSuffix === "string") {
-    await renamePackage(config, `-${args.nameSuffix}`);
-  }
+  if (typeof args.nameSuffix === 'string')
+    await renamePackage(config, `-${args.nameSuffix}`)
 
   // Bump version optionally
   if (args.bump || args.release) {
-    const bumpOptions = _getBumpVersionOptions(args);
-    const newVersion = await bumpVersion(commits, config, bumpOptions);
+    const bumpOptions = _getBumpVersionOptions(args)
+    const newVersion = await bumpVersion(commits, config, bumpOptions)
     if (!newVersion) {
-      consola.error("Unable to bump version based on changes.");
-      process.exit(1);
+      consola.error('Unable to bump version based on changes.')
+      process.exit(1)
     }
-    config.newVersion = newVersion;
+    config.newVersion = newVersion
   }
 
   // Generate markdown
-  const markdown = await generateMarkDown(commits, config);
+  const markdown = await generateMarkDown(commits, config)
 
   // Show changelog in CLI unless bumping or releasing
-  const displayOnly = !args.bump && !args.release;
-  if (displayOnly) {
-    consola.log("\n\n" + markdown + "\n\n");
-  }
+  const displayOnly = !args.bump && !args.release
+  if (displayOnly)
+    consola.log(`\n\n${markdown}\n\n`)
 
   // Update changelog file (only when bumping or releasing or when --output is specified as a file)
-  if (typeof config.output === "string" && (args.output || !displayOnly)) {
-    let changelogMD: string;
+  if (typeof config.output === 'string' && (args.output || !displayOnly)) {
+    let changelogMD: string
     if (existsSync(config.output)) {
-      consola.info(`Updating ${config.output}`);
-      changelogMD = await fsp.readFile(config.output, "utf8");
-    } else {
-      consola.info(`Creating  ${config.output}`);
-      changelogMD = "# Changelog\n\n";
+      consola.info(`Updating ${config.output}`)
+      changelogMD = await fsp.readFile(config.output, 'utf8')
+    }
+    else {
+      consola.info(`Creating  ${config.output}`)
+      changelogMD = '# Changelog\n\n'
     }
 
-    const lastEntry = changelogMD.match(/^###?\s+.*$/m);
+    const lastEntry = changelogMD.match(/^###?\s+.*$/m)
 
     if (lastEntry) {
-      changelogMD =
-        changelogMD.slice(0, lastEntry.index) +
-        markdown +
-        "\n\n" +
-        changelogMD.slice(lastEntry.index);
-    } else {
-      changelogMD += "\n" + markdown + "\n\n";
+      changelogMD
+        = `${changelogMD.slice(0, lastEntry.index)
+        + markdown
+         }\n\n${
+         changelogMD.slice(lastEntry.index)}`
+    }
+    else {
+      changelogMD += `\n${markdown}\n\n`
     }
 
-    await fsp.writeFile(config.output, changelogMD);
+    await fsp.writeFile(config.output, changelogMD)
   }
 
   // Commit and tag changes for release mode
   if (args.release) {
     if (args.commit !== false) {
-      const filesToAdd = [config.output, "package.json"].filter(
-        (f) => f && typeof f === "string"
-      ) as string[];
-      await execa("git", ["add", ...filesToAdd], { cwd });
+      const filesToAdd = [config.output, 'package.json'].filter(
+        f => f && typeof f === 'string',
+      ) as string[]
+      await execa('git', ['add', ...filesToAdd], { cwd })
       const msg = config.templates.commitMessage.replaceAll(
-        "{{newVersion}}",
-        config.newVersion
-      );
-      await execa("git", ["commit", "-m", msg], { cwd });
+        '{{newVersion}}',
+        config.newVersion,
+      )
+      await execa('git', ['commit', '-m', msg], { cwd })
     }
     if (args.tag !== false) {
       const msg = config.templates.tagMessage.replaceAll(
-        "{{newVersion}}",
-        config.newVersion
-      );
+        '{{newVersion}}',
+        config.newVersion,
+      )
       const body = config.templates.tagBody.replaceAll(
-        "{{newVersion}}",
-        config.newVersion
-      );
-      await execa("git", ["tag", "-am", msg, body], { cwd });
+        '{{newVersion}}',
+        config.newVersion,
+      )
+      await execa('git', ['tag', '-am', msg, body], { cwd })
     }
-    if (args.push === true) {
-      await execa("git", ["push", "--follow-tags"], { cwd });
-    }
-    if (args.github !== false && config.repo?.provider === "github") {
+    if (args.push === true)
+      await execa('git', ['push', '--follow-tags'], { cwd })
+
+    if (args.github !== false && config.repo?.provider === 'github') {
       await githubRelease(config, {
         version: config.newVersion,
-        body: markdown.split("\n").slice(2).join("\n"),
-      });
+        body: markdown.split('\n').slice(2).join('\n'),
+      })
     }
   }
 
   // Publish package optionally
   if (args.publish) {
-    if (args.publishTag) {
-      config.publish.tag = args.publishTag;
-    }
-    await npmPublish(config);
+    if (args.publishTag)
+      config.publish.tag = args.publishTag
+
+    await npmPublish(config)
   }
 }
 
@@ -159,29 +160,29 @@ function _getBumpVersionOptions(args: Argv): BumpVersionOptions {
   if (args.versionSuffix) {
     return {
       suffix: args.versionSuffix,
-    };
+    }
   }
 
   for (const type of [
-    "major",
-    "premajor",
-    "minor",
-    "preminor",
-    "patch",
-    "prepatch",
-    "prerelease",
+    'major',
+    'premajor',
+    'minor',
+    'preminor',
+    'patch',
+    'prepatch',
+    'prerelease',
   ] as const) {
-    const value = args[type];
+    const value = args[type]
     if (value) {
-      if (type.startsWith("pre")) {
+      if (type.startsWith('pre')) {
         return {
           type,
-          preid: typeof value === "string" ? value : "",
-        };
+          preid: typeof value === 'string' ? value : '',
+        }
       }
       return {
         type,
-      };
+      }
     }
   }
 }
