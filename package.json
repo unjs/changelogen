@@ -28,7 +28,7 @@
     "dev": "vitest dev",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "postinstall": "npx simple-git-hooks",
+    "prepare": "npx simple-git-hooks",
     "prepack": "unbuild",
     "release": "pnpm test && pnpm changegear --release --push && pnpm publish",
     "test": "pnpm lint && vitest run --coverage"
