@@ -98,10 +98,10 @@ Published under [MIT License](./LICENSE).
 
 <!-- Badges -->
 
-[npm-version-src]: https://img.shields.io/npm/v/@phojie/changegear?style=flat&colorA=18181B&colorB=F0DB4F
-[npm-version-href]: https://npmjs.com/package/@phojie/changegear
-[npm-downloads-src]: https://img.shields.io/npm/dm/@phojie/changegear?style=flat&colorA=18181B&colorB=F0DB4F
-[npm-downloads-href]: https://npmjs.com/package/@phojie/changegear
+[npm-version-src]: https://img.shields.io/npm/v/changegear?style=flat&colorA=18181B&colorB=F0DB4F
+[npm-version-href]: https://npmjs.com/package/changegear
+[npm-downloads-src]: https://img.shields.io/npm/dm/changegear?style=flat&colorA=18181B&colorB=F0DB4F
+[npm-downloads-href]: https://npmjs.com/package/changegear
 [codecov-src]: https://img.shields.io/codecov/c/gh/phojie/changegear/main?style=flat&colorA=18181B&colorB=F0DB4F
 [codecov-href]: https://codecov.io/gh/phojie/changegear
 [license-src]: https://img.shields.io/github/license/phojie/changegear.svg?style=flat&colorA=18181B&colorB=F0DB4F
