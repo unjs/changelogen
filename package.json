@@ -44,23 +44,23 @@
     "open": "^9.1.0",
     "pathe": "^1.1.1",
     "pkg-types": "^1.0.3",
-    "scule": "^1.1.0",
+    "scule": "^1.1.1",
     "semver": "^7.5.4",
-    "std-env": "^3.5.0",
+    "std-env": "^3.6.0",
     "yaml": "^2.3.4"
   },
   "devDependencies": {
-    "@types/node": "^20.9.2",
-    "@types/semver": "^7.5.5",
+    "@types/node": "^20.10.4",
+    "@types/semver": "^7.5.6",
     "@vitest/coverage-v8": "^0.34.6",
-    "eslint": "^8.54.0",
+    "eslint": "^8.56.0",
     "eslint-config-unjs": "^0.2.1",
     "jiti": "^1.21.0",
-    "prettier": "^3.1.0",
+    "prettier": "^3.1.1",
     "standard-version": "^9.5.0",
-    "typescript": "^5.3.2",
+    "typescript": "^5.3.3",
     "unbuild": "^2.0.0",
     "vitest": "^0.34.6"
   },
-  "packageManager": "pnpm@8.10.5"
+  "packageManager": "pnpm@8.12.1"
 }
