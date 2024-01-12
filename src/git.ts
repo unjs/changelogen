@@ -102,6 +102,7 @@ export function parseCommits(
 const ConventionalCommitRegex =
   /(?<type>[a-z]+)(\((?<scope>.+)\))?(?<breaking>!)?: (?<description>.+)/i;
 const CoAuthoredByRegex = /co-authored-by:\s*(?<name>.+)(<(?<email>.+)>)/gim;
+const BreakingChangeBodyRegex = /BREAKING[ -]CHANGE: (?<description>.+)/gm;
 const PullRequestRE = /\([ a-z]*(#\d+)\s*\)/gm;
 const IssueRE = /(#\d+)/gm;
 
@@ -119,8 +120,12 @@ export function parseGitCommit(
   let scope = match.groups.scope || "";
   scope = config.scopeMap[scope] || scope;
 
-  const isBreaking = Boolean(match.groups.breaking);
+  const breakingMatch = BreakingChangeBodyRegex.exec(commit.body);
+  const isBreaking = Boolean(match.groups.breaking || breakingMatch);
   let description = match.groups.description;
+  if (breakingMatch) {
+    description = breakingMatch.groups.description;
+  }
 
   // Extract references from message
   const references: Reference[] = [];

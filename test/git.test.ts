@@ -6,6 +6,7 @@ import {
   parseCommits,
   getRepoConfig,
   formatReference,
+  parseGitCommit,
 } from "../src";
 import { RepoConfig } from "./../src/repo";
 
@@ -473,5 +474,39 @@ describe("git", () => {
     expect(formatReference({ type: "issue", value: "#14" }, unkown)).toBe(
       "#14"
     );
+  });
+
+  test("breaking change on body", async () => {
+    const commit = {
+      message: "feat: some breaking change in the footer",
+      shortHash: "c210976",
+      author: {
+        name: "Pooya Parsa",
+        email: "pooya@pi0.io",
+      },
+      body: "\n\nBREAKING-CHANGE: Test footer breaking change.",
+    };
+
+    const config = await loadChangelogConfig(process.cwd());
+    const parsedCommit = parseGitCommit(commit, config);
+    expect(parsedCommit.isBreaking).toBe(true);
+    expect(parsedCommit.description).toBe("Test footer breaking change.");
+  });
+
+  test("breaking change honor commit description", async () => {
+    const commit = {
+      message: "feat!: some breaking change in the footer",
+      shortHash: "c210976",
+      author: {
+        name: "Pooya Parsa",
+        email: "pooya@pi0.io",
+      },
+      body: "\n\nBREAKING-CHANGE: Test footer breaking change.",
+    };
+
+    const config = await loadChangelogConfig(process.cwd());
+    const parsedCommit = parseGitCommit(commit, config);
+    expect(parsedCommit.isBreaking).toBe(true);
+    expect(parsedCommit.description).toBe("some breaking change in the footer");
   });
 });
