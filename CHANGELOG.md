@@ -1,4 +1,24 @@
 
+## v1.1.0 (2024-02-13)
+
+[compare changes](https://github.com/phojie/changegear/compare/v1.0.3...v1.1.0)
+
+### 🚀 Enhancements
+
+- Add date to release title ([726f867](https://github.com/phojie/changegear/commit/726f867))
+
+### 🩹 Fixes
+
+- **bitbucket:** Update `compare` url link ([0f84651](https://github.com/phojie/changegear/commit/0f84651))
+
+### 📖 Documentation
+
+- Fix badges links ([1fe5f92](https://github.com/phojie/changegear/commit/1fe5f92))
+
+### ❤️ Contributors
+
+- Phojie Rengel ([@phojie](http://github.com/phojie))
+
 ## v1.0.3
 
 [compare changes](https://github.com/phojie/changegear/compare/v1.0.2...v1.0.3)
