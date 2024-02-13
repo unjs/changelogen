@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import consola from 'consola'
 import {
   formatReference,
   generateMarkDown,
@@ -281,9 +282,11 @@ describe('git', () => {
     `)
 
     const md = await generateMarkDown(parsed, config)
+    const date = new Date().toISOString().split('T')[0]
+    consola.info(date)
 
     expect(md).toMatchInlineSnapshot(`
-      "## 3828bda8c45933396ddfa869d671473231ce3c95
+      "## 3828bda8c45933396ddfa869d671473231ce3c95 (${date})
 
       [compare changes](https://github.com/phojie/changegear/compare/1cb15d5dd93302ebd5ff912079ed584efcc6703b...3828bda8c45933396ddfa869d671473231ce3c95)
 
