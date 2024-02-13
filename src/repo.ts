@@ -64,7 +64,7 @@ export function formatCompareChanges(
 
   const url
     = config.repo.provider === 'bitbucket'
-      ? `${baseUrl(config.repo)}/${part}/${config.from}..${v || config.to}#diff`
+      ? `${baseUrl(config.repo)}/${part}/${config.to}..${v || config.from}#diff`
       : `${baseUrl(config.repo)}/${part}/${config.from}...${v || config.to}`
 
   return `[compare changes](${url})`
