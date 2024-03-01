@@ -14,6 +14,7 @@ export interface ChangelogConfig {
   from: string;
   to: string;
   newVersion?: string;
+  exclude?: string[];
   output: string | boolean;
   publish: {
     args?: string[];
@@ -52,6 +53,7 @@ const getDefaultConfig = () =>
     cwd: null,
     from: "",
     to: "",
+    exclude: [""],
     output: defaultOutput,
     scopeMap: {},
     tokens: {
