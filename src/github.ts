@@ -32,7 +32,7 @@ export async function getGithubLoginByCommit(
 ): Promise<string> {
   const data = await githubFetch(
     config,
-    `/repos/${config.repo.repo}/commits/${commit}`,
+    `/repos/${config.repo.repo}/commits/${commit}`
   );
   return data?.author?.login;
 }
@@ -43,7 +43,7 @@ export async function getGithubReleaseByTag(
 ): Promise<GithubRelease> {
   return await githubFetch(
     config,
-    `/repos/${config.repo.repo}/releases/tags/${tag}`,
+    `/repos/${config.repo.repo}/releases/tags/${tag}`
   );
 }
 
