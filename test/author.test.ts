@@ -24,74 +24,74 @@ describe("author", () => {
     const authors = await resolveAuthors(parsed, config);
     expect(authors).toMatchInlineSnapshot(
       `
-    [
-      {
-        "commits": [
-          "14fa199",
-          "5bfe08e",
-          "cb9adf4",
-          "81f37bf",
-          "de240e5",
-        ],
-        "email": Set {
-          "pooya@pi0.io",
+      [
+        {
+          "commits": [
+            "14fa199",
+            "5bfe08e",
+            "cb9adf4",
+            "81f37bf",
+            "de240e5",
+          ],
+          "email": Set {
+            "pooya@pi0.io",
+          },
+          "github": "pi0",
+          "name": "Pooya Parsa",
         },
-        "github": "pi0",
-        "name": "Pooya Parsa",
-      },
-      {
-        "commits": [
-          "aa1a650",
-          "6fd8dbb",
-        ],
-        "email": Set {
-          "john@brightshore.com",
+        {
+          "commits": [
+            "aa1a650",
+            "6fd8dbb",
+          ],
+          "email": Set {
+            "john@brightshore.com",
+          },
+          "github": "JohnCampionJr",
+          "name": "John Campion Jr",
         },
-        "github": "JohnCampionJr",
-        "name": "John Campion Jr",
-      },
-      {
-        "commits": [
-          "d0acbfd",
-          "46f60cc",
-        ],
-        "email": Set {
-          "waleed1kh@outlook.com",
+        {
+          "commits": [
+            "d0acbfd",
+            "46f60cc",
+          ],
+          "email": Set {
+            "waleed1kh@outlook.com",
+          },
+          "github": "Waleed-KH",
+          "name": "Waleed Khaled",
         },
-        "github": "Waleed-KH",
-        "name": "Waleed Khaled",
-      },
-      {
-        "commits": [
-          "5b68aed",
-        ],
-        "email": Set {
-          "kapustka.maciek@gmail.com",
+        {
+          "commits": [
+            "5b68aed",
+          ],
+          "email": Set {
+            "kapustka.maciek@gmail.com",
+          },
+          "github": "maciej-ka",
+          "name": "Maciej Kasprzyk",
         },
-        "github": "maciej-ka",
-        "name": "Maciej Kasprzyk",
-      },
-      {
-        "commits": [
-          "1e5f0b7",
-        ],
-        "email": Set {
-          "daniel@roe.dev",
+        {
+          "commits": [
+            "1e5f0b7",
+          ],
+          "email": Set {
+            "daniel@roe.dev",
+          },
+          "github": "danielroe",
+          "name": "Daniel Roe",
         },
-        "github": "danielroe",
-        "name": "Daniel Roe",
-      },
-      {
-        "commits": [
-          "ec858d1",
-        ],
-        "email": Set {
-          "me@loicmazuel.com",
+        {
+          "commits": [
+            "ec858d1",
+          ],
+          "email": Set {
+            "me@loicmazuel.com",
+          },
+          "github": "LouisMazel",
+          "name": "Mazel",
         },
-        "github": "LouisMazel",
-        "name": "Mazel",
-      },
-    ]
+      ]
   `
     );
   });
