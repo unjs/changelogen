@@ -33,7 +33,6 @@ export async function getGithubLoginByCommit(
   const data = await githubFetch(
     config,
     `/repos/${config.repo.repo}/commits/${commit}`,
-    {}
   );
   return data?.author?.login;
 }
@@ -45,7 +44,6 @@ export async function getGithubReleaseByTag(
   return await githubFetch(
     config,
     `/repos/${config.repo.repo}/releases/tags/${tag}`,
-    {}
   );
 }
 
@@ -163,9 +161,10 @@ async function githubFetch(
         ? "https://api.github.com"
         : `https://${config.repo.domain}/api/v3`,
     headers: {
+      "x-github-api-version": "2022-11-28",
       ...opts.headers,
       authorization: config.tokens.github
-        ? `Token ${config.tokens.github}`
+        ? `Bearer ${config.tokens.github}`
         : undefined,
     },
   });
