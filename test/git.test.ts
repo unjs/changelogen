@@ -27,7 +27,10 @@ describe("git", () => {
 
     const commits = await getGitDiff(COMMIT_FROM, COMMIT_TO);
     commits[1].message =
-      "fix(scope)!: breaking change example, close #123 (#134)";
+      `\
+fix(scope)!: breaking change example, close #123 (#134)
+BREAKING CHANGE: Here's a breaking change!\
+`;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     expect(commits.map(({ body: _, ...rest }) => rest)).toMatchInlineSnapshot(`
       [
@@ -44,7 +47,8 @@ describe("git", () => {
             "email": "pooya@pi0.io",
             "name": "Pooya Parsa",
           },
-          "message": "fix(scope)!: breaking change example, close #123 (#134)",
+          "message": "fix(scope)!: breaking change example, close #123 (#134)
+      BREAKING CHANGE: Here's a breaking change!",
           "shortHash": "20e622e",
         },
         {
@@ -122,165 +126,176 @@ describe("git", () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     expect(parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest))
       .toMatchInlineSnapshot(`
-      [
-        {
-          "description": "v0.3.5",
-          "isBreaking": false,
-          "message": "chore(release): v0.3.5",
-          "references": [
-            {
-              "type": "hash",
-              "value": "3828bda",
-            },
-          ],
-          "scope": "release",
-          "shortHash": "3828bda",
-          "type": "chore",
-        },
-        {
-          "description": "breaking change example, close #123",
-          "isBreaking": true,
-          "message": "fix(scope)!: breaking change example, close #123 (#134)",
-          "references": [
-            {
-              "type": "pull-request",
-              "value": "#134",
-            },
-            {
-              "type": "issue",
-              "value": "#123",
-            },
-            {
-              "type": "hash",
-              "value": "20e622e",
-            },
-          ],
-          "scope": "scope",
-          "shortHash": "20e622e",
-          "type": "fix",
-        },
-        {
-          "description": "v0.3.4",
-          "isBreaking": false,
-          "message": "chore(release): v0.3.4",
-          "references": [
-            {
-              "type": "hash",
-              "value": "6fc5087",
-            },
-          ],
-          "scope": "release",
-          "shortHash": "6fc5087",
-          "type": "chore",
-        },
-        {
-          "description": "infer github config from package.json",
-          "isBreaking": false,
-          "message": "feat: infer github config from package.json (resolves #37)",
-          "references": [
-            {
-              "type": "pull-request",
-              "value": "#37",
-            },
-            {
-              "type": "hash",
-              "value": "c0febf1",
-            },
-          ],
-          "scope": "",
-          "shortHash": "c0febf1",
-          "type": "feat",
-        },
-        {
-          "description": "v0.3.3",
-          "isBreaking": false,
-          "message": "chore(release): v0.3.3",
-          "references": [
-            {
-              "type": "hash",
-              "value": "f4f42a3",
-            },
-          ],
-          "scope": "release",
-          "shortHash": "f4f42a3",
-          "type": "chore",
-        },
-        {
-          "description": "consider docs and refactor as semver patch for bump",
-          "isBreaking": false,
-          "message": "fix: consider docs and refactor as semver patch for bump",
-          "references": [
-            {
-              "type": "hash",
-              "value": "648ccf1",
-            },
-          ],
-          "scope": "",
-          "shortHash": "648ccf1",
-          "type": "fix",
-        },
-        {
-          "description": "expose \`determineSemverChange\` and \`bumpVersion\`",
-          "isBreaking": false,
-          "message": "feat: expose \`determineSemverChange\` and \`bumpVersion\`",
-          "references": [
-            {
-              "type": "hash",
-              "value": "5451f18",
-            },
-          ],
-          "scope": "",
-          "shortHash": "5451f18",
-          "type": "feat",
-        },
-        {
-          "description": "fix typecheck",
-          "isBreaking": false,
-          "message": "chore: fix typecheck",
-          "references": [
-            {
-              "type": "hash",
-              "value": "8796cf1",
-            },
-          ],
-          "scope": "",
-          "shortHash": "8796cf1",
-          "type": "chore",
-        },
-        {
-          "description": "update dependencies",
-          "isBreaking": false,
-          "message": "chore: update dependencies",
-          "references": [
-            {
-              "type": "hash",
-              "value": "c210976",
-            },
-          ],
-          "scope": "",
-          "shortHash": "c210976",
-          "type": "chore",
-        },
-        {
-          "description": "update all non-major dependencies",
-          "isBreaking": false,
-          "message": "chore(deps): update all non-major dependencies (#42)",
-          "references": [
-            {
-              "type": "pull-request",
-              "value": "#42",
-            },
-            {
-              "type": "hash",
-              "value": "a80e372",
-            },
-          ],
-          "scope": "deps",
-          "shortHash": "a80e372",
-          "type": "chore",
-        },
-      ]
-    `);
+        [
+          {
+            "breakingChangeMessage": undefined,
+            "description": "v0.3.5",
+            "isBreaking": false,
+            "message": "chore(release): v0.3.5",
+            "references": [
+              {
+                "type": "hash",
+                "value": "3828bda",
+              },
+            ],
+            "scope": "release",
+            "shortHash": "3828bda",
+            "type": "chore",
+          },
+          {
+            "breakingChangeMessage": "Here's a breaking change!",
+            "description": "breaking change example, close #123",
+            "isBreaking": true,
+            "message": "fix(scope)!: breaking change example, close #123 (#134)
+        BREAKING CHANGE: Here's a breaking change!",
+            "references": [
+              {
+                "type": "pull-request",
+                "value": "#134",
+              },
+              {
+                "type": "issue",
+                "value": "#123",
+              },
+              {
+                "type": "hash",
+                "value": "20e622e",
+              },
+            ],
+            "scope": "scope",
+            "shortHash": "20e622e",
+            "type": "fix",
+          },
+          {
+            "breakingChangeMessage": undefined,
+            "description": "v0.3.4",
+            "isBreaking": false,
+            "message": "chore(release): v0.3.4",
+            "references": [
+              {
+                "type": "hash",
+                "value": "6fc5087",
+              },
+            ],
+            "scope": "release",
+            "shortHash": "6fc5087",
+            "type": "chore",
+          },
+          {
+            "breakingChangeMessage": undefined,
+            "description": "infer github config from package.json",
+            "isBreaking": false,
+            "message": "feat: infer github config from package.json (resolves #37)",
+            "references": [
+              {
+                "type": "pull-request",
+                "value": "#37",
+              },
+              {
+                "type": "hash",
+                "value": "c0febf1",
+              },
+            ],
+            "scope": "",
+            "shortHash": "c0febf1",
+            "type": "feat",
+          },
+          {
+            "breakingChangeMessage": undefined,
+            "description": "v0.3.3",
+            "isBreaking": false,
+            "message": "chore(release): v0.3.3",
+            "references": [
+              {
+                "type": "hash",
+                "value": "f4f42a3",
+              },
+            ],
+            "scope": "release",
+            "shortHash": "f4f42a3",
+            "type": "chore",
+          },
+          {
+            "breakingChangeMessage": undefined,
+            "description": "consider docs and refactor as semver patch for bump",
+            "isBreaking": false,
+            "message": "fix: consider docs and refactor as semver patch for bump",
+            "references": [
+              {
+                "type": "hash",
+                "value": "648ccf1",
+              },
+            ],
+            "scope": "",
+            "shortHash": "648ccf1",
+            "type": "fix",
+          },
+          {
+            "breakingChangeMessage": undefined,
+            "description": "expose \`determineSemverChange\` and \`bumpVersion\`",
+            "isBreaking": false,
+            "message": "feat: expose \`determineSemverChange\` and \`bumpVersion\`",
+            "references": [
+              {
+                "type": "hash",
+                "value": "5451f18",
+              },
+            ],
+            "scope": "",
+            "shortHash": "5451f18",
+            "type": "feat",
+          },
+          {
+            "breakingChangeMessage": undefined,
+            "description": "fix typecheck",
+            "isBreaking": false,
+            "message": "chore: fix typecheck",
+            "references": [
+              {
+                "type": "hash",
+                "value": "8796cf1",
+              },
+            ],
+            "scope": "",
+            "shortHash": "8796cf1",
+            "type": "chore",
+          },
+          {
+            "breakingChangeMessage": undefined,
+            "description": "update dependencies",
+            "isBreaking": false,
+            "message": "chore: update dependencies",
+            "references": [
+              {
+                "type": "hash",
+                "value": "c210976",
+              },
+            ],
+            "scope": "",
+            "shortHash": "c210976",
+            "type": "chore",
+          },
+          {
+            "breakingChangeMessage": undefined,
+            "description": "update all non-major dependencies",
+            "isBreaking": false,
+            "message": "chore(deps): update all non-major dependencies (#42)",
+            "references": [
+              {
+                "type": "pull-request",
+                "value": "#42",
+              },
+              {
+                "type": "hash",
+                "value": "a80e372",
+              },
+            ],
+            "scope": "deps",
+            "shortHash": "a80e372",
+            "type": "chore",
+          },
+        ]
+      `);
 
     const md = await generateMarkDown(parsed, config);
 
@@ -310,7 +325,7 @@ describe("git", () => {
 
       #### ⚠️ Breaking Changes
 
-      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
+      -  Here's a breaking change!
 
       ### ❤️ Contributors
 

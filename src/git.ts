@@ -25,6 +25,7 @@ export interface GitCommit extends RawGitCommit {
   references: Reference[];
   authors: GitCommitAuthor[];
   isBreaking: boolean;
+  breakingChangeMessage?: string;
 }
 
 export async function getLastGitTag() {
@@ -101,7 +102,8 @@ export function parseCommits(
 // https://regex101.com/r/FSfNvA/1
 const ConventionalCommitRegex =
   /(?<type>[a-z]+)(\((?<scope>.+)\))?(?<breaking>!)?: (?<description>.+)/i;
-const CoAuthoredByRegex = /co-authored-by:\s*(?<name>.+)(<(?<email>.+)>)/gim;
+const CoAuthoredByRegex = /^co-authored-by:\s*(?<name>.+)(<(?<email>.+)>)/gim;
+const BreakingChangeRegex = /^BREAKING CHANGE: (?<message>.+)$/gm;
 const PullRequestRE = /\([ a-z]*(#\d+)\s*\)/gm;
 const IssueRE = /(#\d+)/gm;
 
@@ -146,6 +148,13 @@ export function parseGitCommit(
     });
   }
 
+  // Find breaking change message
+  let breakingChangeMessage: string;
+  if(isBreaking) {
+    const match = BreakingChangeRegex.exec(commit.message);
+    breakingChangeMessage = match.groups?.message
+  }
+
   return {
     ...commit,
     authors,
@@ -154,5 +163,6 @@ export function parseGitCommit(
     scope,
     references,
     isBreaking,
+    breakingChangeMessage,
   };
 }
