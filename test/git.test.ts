@@ -56,7 +56,6 @@ describe("git", () => {
       await loadChangelogConfig(process.cwd(), {})
     );
 
-    console.log(JSON.stringify(parsed));
     expect(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest)
