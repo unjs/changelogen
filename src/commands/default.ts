@@ -133,7 +133,7 @@ export default async function defaultMain(args: Argv) {
         "{{newVersion}}",
         config.newVersion
       );
-      await execa("git", ["tag", "-am", msg, body], { cwd });
+      await execa("git", ["tag", ...(config.signTags ? ["-s"] : []), "-am", msg, body], { cwd });
     }
     if (args.push === true) {
       await execa("git", ["push", "--follow-tags"], { cwd });
