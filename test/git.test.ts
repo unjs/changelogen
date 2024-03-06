@@ -21,6 +21,90 @@ describe("git", () => {
     );
   });
 
+  test("parse commit with emoji", async () => {
+    const rawCommitEmojiList = [
+      {
+        message: "🚀 feat: add emoji support",
+        shortHash: "0000000",
+        body: "this is a emoji commit",
+        author: {
+          email: "jannchie@gmail.com",
+          name: "Jannchie",
+        },
+      },
+      {
+        message: ":bug: fix: this is a text emoji",
+        shortHash: "0000001",
+        body: "this is a emoji commit",
+        author: {
+          email: "jannchie@gmail.com",
+          name: "Jannchie",
+        },
+      },
+      {
+        message: ":bug: fix(scope): this is a text emoji with scope",
+        shortHash: "0000001",
+        body: "this is a emoji commit",
+        author: {
+          email: "jannchie@gmail.com",
+          name: "Jannchie",
+        },
+      },
+    ];
+    const parsed = parseCommits(
+      rawCommitEmojiList,
+      await loadChangelogConfig(process.cwd(), {})
+    );
+
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest)
+    ).toMatchObject([
+      {
+        message: "🚀 feat: add emoji support",
+        shortHash: "0000000",
+        description: "add emoji support",
+        type: "feat",
+        scope: "",
+        references: [
+          {
+            value: "0000000",
+            type: "hash",
+          },
+        ],
+        isBreaking: false,
+      },
+      {
+        message: ":bug: fix: this is a text emoji",
+        shortHash: "0000001",
+        description: "this is a text emoji",
+        type: "fix",
+        scope: "",
+        references: [
+          {
+            value: "0000001",
+            type: "hash",
+          },
+        ],
+        isBreaking: false,
+      },
+      {
+        message: ":bug: fix(scope): this is a text emoji with scope",
+        shortHash: "0000001",
+        description: "this is a text emoji with scope",
+        type: "fix",
+        scope: "scope",
+        references: [
+          {
+            value: "0000001",
+            type: "hash",
+          },
+        ],
+        isBreaking: false,
+      },
+    ]);
+  });
+
   test("parse", async () => {
     const COMMIT_FROM = "1cb15d5dd93302ebd5ff912079ed584efcc6703b";
     const COMMIT_TO = "3828bda8c45933396ddfa869d671473231ce3c95";
