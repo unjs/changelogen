@@ -40,6 +40,7 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--dir`: Path to git repository. When not provided, **current working directory** will be used as as default.
 - `--clean`: Determine if the working directory is clean and if it is not clean, exit.
 - `--output`: Changelog file name to create or update. Defaults to `CHANGELOG.md` and resolved relative to dir. Use `--no-output` to write to console only.
+- `skipAuthors`: Skip contributors section in changelog.
 - `--bump`: Determine semver change and update version in `package.json`.
 - `--release`. Bumps version in `package.json` and creates commit and git tags using local `git`. You can disable commit using `--no-commit` and tag using `--no-tag`. You can enable the automatic push of the new tag and release commit to your git repository by adding `--push`.
 - `--publish`. Publishes package as a new version on `npm`. You will need to set authorisation tokens separately via `.npmrc` or environment variables.
