@@ -25,6 +25,12 @@ export interface GitCommit extends RawGitCommit {
   references: Reference[];
   authors: GitCommitAuthor[];
   isBreaking: boolean;
+  revertedHashes: string[];
+}
+
+export interface RevertPair {
+  shortRevertingHash: string;
+  revertedHash: string;
 }
 
 export async function getLastGitTag() {
@@ -104,6 +110,7 @@ const ConventionalCommitRegex =
 const CoAuthoredByRegex = /co-authored-by:\s*(?<name>.+)(<(?<email>.+)>)/gim;
 const PullRequestRE = /\([ a-z]*(#\d+)\s*\)/gm;
 const IssueRE = /(#\d+)/gm;
+const RevertHashRE = /This reverts commit (?<hash>[\da-f]{40})./gm;
 
 export function parseGitCommit(
   commit: RawGitCommit,
@@ -137,6 +144,13 @@ export function parseGitCommit(
   // Remove references and normalize
   description = description.replace(PullRequestRE, "").trim();
 
+  // Extract the reverted hashes.
+  const revertedHashes = [];
+  const matchedHashes = commit.body.matchAll(RevertHashRE);
+  for (const matchedHash of matchedHashes) {
+    revertedHashes.push(matchedHash.groups.hash);
+  }
+
   // Find all authors
   const authors: GitCommitAuthor[] = [commit.author];
   for (const match of commit.body.matchAll(CoAuthoredByRegex)) {
@@ -154,5 +168,58 @@ export function parseGitCommit(
     scope,
     references,
     isBreaking,
+    revertedHashes,
   };
+}
+
+export function filterCommits(
+  commits: GitCommit[],
+  config: ChangelogConfig
+): GitCommit[] {
+  const commitsWithNoDeps = commits.filter(
+    (c) =>
+      config.types[c.type] &&
+      !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
+  );
+
+  let resolvedCommits: GitCommit[] = [];
+  let revertWatchList: RevertPair[] = [];
+  for (const commit of commitsWithNoDeps) {
+    // Include the reverted hashes in the watch list
+    if (commit.revertedHashes.length > 0) {
+      revertWatchList.push(
+        ...commit.revertedHashes.map(
+          (revertedHash) =>
+            ({
+              revertedHash,
+              shortRevertingHash: commit.shortHash,
+            } as RevertPair)
+        )
+      );
+    }
+
+    // Find the commits which revert the current commit being evaluated
+    const shortRevertingHashes = revertWatchList
+      .filter((pair) => pair.revertedHash.startsWith(commit.shortHash))
+      .map((pair) => pair.shortRevertingHash);
+
+    if (shortRevertingHashes.length > 0) {
+      // Remove commits that reverts this current commit
+      resolvedCommits = resolvedCommits.filter(
+        (resolvedCommit) =>
+          !shortRevertingHashes.includes(resolvedCommit.shortHash)
+      );
+
+      // Unwatch reverting hashes that has been resolved
+      revertWatchList = revertWatchList.filter(
+        (watchedRevert) =>
+          !shortRevertingHashes.includes(watchedRevert.shortRevertingHash)
+      );
+    } else {
+      // If the current commit is known not to have been reverted, put it to resolved commits.
+      resolvedCommits = [...resolvedCommits, commit];
+    }
+  }
+
+  return resolvedCommits;
 }
