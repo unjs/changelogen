@@ -65,15 +65,17 @@ export default async function defaultMain(args: Argv) {
     await renamePackage(config, `-${args.nameSuffix}`);
   }
 
+  let changedFiles = [];
   // Bump version optionally
   if (args.bump || args.release) {
     const bumpOptions = _getBumpVersionOptions(args);
-    const newVersion = await bumpVersion(commits, config, bumpOptions);
-    if (!newVersion) {
+    const bumpVersionInfo = await bumpVersion(commits, config, bumpOptions);
+    if (!bumpVersionInfo) {
       consola.error("Unable to bump version based on changes.");
       process.exit(1);
     }
-    config.newVersion = newVersion;
+    config.newVersion = bumpVersionInfo.newVersion;
+    changedFiles = bumpVersionInfo.changedFiles;
   }
 
   // Generate markdown
@@ -114,7 +116,7 @@ export default async function defaultMain(args: Argv) {
   // Commit and tag changes for release mode
   if (args.release) {
     if (args.commit !== false) {
-      const filesToAdd = [config.output, "package.json"].filter(
+      const filesToAdd = [config.output, ...changedFiles].filter(
         (f) => f && typeof f === "string"
       ) as string[];
       await execa("git", ["add", ...filesToAdd], { cwd });

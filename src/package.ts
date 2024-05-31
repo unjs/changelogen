@@ -1,3 +1,5 @@
+import { constants, promises as fsp } from "node:fs";
+
 import { resolve } from "pathe";
 import consola from "consola";
 import {
@@ -6,6 +8,8 @@ import {
   writePackageJSON as _writePackageJSON,
 } from "pkg-types";
 import { isCI, provider } from "std-env";
+import { parseJSON, stringifyJSON } from "confbox";
+
 import type { ChangelogConfig } from "./config";
 
 import { execCommand } from "./exec";
@@ -55,4 +59,35 @@ export async function npmPublish(config: ChangelogConfig) {
   }
 
   return await execCommand("npm", ["publish", ...args]);
+}
+
+export async function existsPackageLockJSON(
+  config: ChangelogConfig,
+  file: "package-lock.json" | "npm-shrinkwrap.json"
+) {
+  const path = resolve(config.cwd, file);
+  try {
+    await fsp.access(path, constants.W_OK);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function readPackageLockJSON(
+  config: ChangelogConfig,
+  file: "package-lock.json" | "npm-shrinkwrap.json"
+) {
+  const path = resolve(config.cwd, file);
+  const blob = await fsp.readFile(path, "utf8");
+  return parseJSON<any>(blob);
+}
+
+export function writePackageLockJSON(
+  config: ChangelogConfig,
+  pkg: Record<string, any>,
+  file: "package-lock.json" | "npm-shrinkwrap.json"
+) {
+  const path = resolve(config.cwd, file);
+  return fsp.writeFile(path, stringifyJSON(pkg));
 }
