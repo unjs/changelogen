@@ -2,7 +2,13 @@ import semver from "semver";
 import consola from "consola";
 import type { ChangelogConfig } from "./config";
 import type { GitCommit } from "./git";
-import { readPackageJSON, writePackageJSON } from "./package";
+import {
+  existsPackageLockJSON,
+  readPackageJSON,
+  readPackageLockJSON,
+  writePackageJSON,
+  writePackageLockJSON,
+} from "./package";
 
 export type SemverBumpType =
   | "major"
@@ -43,7 +49,7 @@ export async function bumpVersion(
   commits: GitCommit[],
   config: ChangelogConfig,
   opts: BumpVersionOptions = {}
-): Promise<string | false> {
+): Promise<{ newVersion: string; changedFiles: string[] } | undefined> {
   let type = opts.type || determineSemverChange(commits, config) || "patch";
   const originalType = type;
 
@@ -75,7 +81,7 @@ export async function bumpVersion(
   }
 
   if (pkg.version === currentVersion) {
-    return false;
+    return undefined;
   }
 
   consola.info(
@@ -83,6 +89,21 @@ export async function bumpVersion(
   );
 
   await writePackageJSON(config, pkg);
+  const changedFiles = ["package.json"];
 
-  return pkg.version;
+  for (const file of ["package-lock.json", "npm-shrinkwrap.json"] as const) {
+    if (await existsPackageLockJSON(config, file)) {
+      const pkgLock = await readPackageLockJSON(config, file);
+      pkgLock.version = pkg.version;
+
+      if (pkgLock.packages && pkgLock.packages[""]) {
+        pkgLock.packages[""].version = pkg.version;
+      }
+
+      await writePackageLockJSON(config, pkgLock, file);
+      changedFiles.push(file);
+    }
+  }
+
+  return { newVersion: pkg.version, changedFiles };
 }
