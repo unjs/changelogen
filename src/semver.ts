@@ -61,7 +61,6 @@ export async function bumpVersion(
   if (config.newVersion) {
     pkg.version = config.newVersion;
   } else if (type || opts.preid) {
-    // eslint-disable-next-line import/no-named-as-default-member
     pkg.version = semver.inc(currentVersion, type, opts.preid);
     config.newVersion = pkg.version;
   }

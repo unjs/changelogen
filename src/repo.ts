@@ -89,7 +89,9 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
   let url;
   try {
     url = new URL(repoUrl);
-  } catch {}
+  } catch {
+    // Ignore error
+  }
 
   const m = repoUrl.match(providerURLRegex)?.groups ?? {};
   if (m.repo && m.provider) {

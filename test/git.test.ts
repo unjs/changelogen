@@ -57,7 +57,7 @@ describe("git", () => {
     );
 
     expect(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest)
     ).toMatchObject([
       {
@@ -112,7 +112,7 @@ describe("git", () => {
     const commits = await getGitDiff(COMMIT_FROM, COMMIT_TO);
     commits[1].message =
       "fix(scope)!: breaking change example, close #123 (#134)";
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     expect(commits.map(({ body: _, ...rest }) => rest)).toMatchInlineSnapshot(`
       [
         {
@@ -203,7 +203,7 @@ describe("git", () => {
     });
     const parsed = parseCommits(commits, config);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     expect(parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest))
       .toMatchInlineSnapshot(`
       [
