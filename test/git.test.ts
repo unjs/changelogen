@@ -57,7 +57,6 @@ describe("git", () => {
     );
 
     expect(
-       
       parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest)
     ).toMatchObject([
       {
@@ -112,7 +111,7 @@ describe("git", () => {
     const commits = await getGitDiff(COMMIT_FROM, COMMIT_TO);
     commits[1].message =
       "fix(scope)!: breaking change example, close #123 (#134)";
-     
+
     expect(commits.map(({ body: _, ...rest }) => rest)).toMatchInlineSnapshot(`
       [
         {
@@ -203,7 +202,6 @@ describe("git", () => {
     });
     const parsed = parseCommits(commits, config);
 
-     
     expect(parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest))
       .toMatchInlineSnapshot(`
       [
