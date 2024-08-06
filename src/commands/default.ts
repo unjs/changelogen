@@ -41,11 +41,13 @@ export default async function defaultMain(args: Argv) {
   const rawCommits = await getGitDiff(config.from, config.to);
 
   // Parse commits as conventional commits
-  const commits = parseCommits(rawCommits, config).filter(
-    (c) =>
-      config.types[c.type] &&
-      !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
-  );
+  const commits = parseCommits(rawCommits, config)
+    .map((c) => ({ ...c, type: c.type.toLowerCase() }))
+    .filter(
+      (c) =>
+        config.types[c.type] &&
+        !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
+    );
 
   // Shortcut for canary releases
   if (args.canary) {
