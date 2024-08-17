@@ -50,14 +50,6 @@ export async function bumpVersion(
   const pkg = await readPackageJSON(config);
   const currentVersion = pkg.version || "0.0.0";
 
-  if (currentVersion.startsWith("0.")) {
-    if (type === "major") {
-      type = "minor";
-    } else if (type === "minor") {
-      type = "patch";
-    }
-  }
-
   if (config.newVersion) {
     pkg.version = config.newVersion;
   } else if (type || opts.preid) {
