@@ -203,7 +203,6 @@ describe("git", () => {
     });
     const parsed = filterParsedCommits(parseCommits(commits, config), config);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     expect(parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest))
       .toMatchInlineSnapshot(`
       [
@@ -409,7 +408,6 @@ describe("git", () => {
     const commits = await getGitDiff(COMMIT_FROM, COMMIT_TO);
     commits[1].message =
       "fix(scope)!: breaking change example, close #123 (#134)";
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
     const config = await loadChangelogConfig(process.cwd(), {
       from: COMMIT_FROM,
