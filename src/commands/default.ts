@@ -8,6 +8,7 @@ import {
   getGitDiff,
   getCurrentGitStatus,
   parseCommits,
+  filterParsedCommits,
   bumpVersion,
   generateMarkDown,
   BumpVersionOptions,
@@ -24,6 +25,12 @@ export default async function defaultMain(args: Argv) {
     from: args.from,
     to: args.to,
     output: args.output,
+    exclude:
+      typeof args.exclude === "string"
+        ? args.exclude.split(",")
+        : args.exclude === 0 // eslint-disable-line unicorn/no-nested-ternary
+          ? [""]
+          : undefined,
     newVersion: typeof args.r === "string" ? args.r : undefined,
   });
 
@@ -41,11 +48,7 @@ export default async function defaultMain(args: Argv) {
   const rawCommits = await getGitDiff(config.from, config.to);
 
   // Parse commits as conventional commits
-  const commits = parseCommits(rawCommits, config).filter(
-    (c) =>
-      config.types[c.type] &&
-      !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
-  );
+  const commits = filterParsedCommits(parseCommits(rawCommits, config), config);
 
   // Shortcut for canary releases
   if (args.canary) {

@@ -4,6 +4,7 @@ import {
   getGitDiff,
   loadChangelogConfig,
   parseCommits,
+  filterParsedCommits,
   getRepoConfig,
   formatReference,
 } from "../src";
@@ -104,7 +105,7 @@ describe("git", () => {
     ]);
   });
 
-  test("parse", async () => {
+  test("parse with default config", async () => {
     const COMMIT_FROM = "1cb15d5dd93302ebd5ff912079ed584efcc6703b";
     const COMMIT_TO = "3828bda8c45933396ddfa869d671473231ce3c95";
 
@@ -200,7 +201,7 @@ describe("git", () => {
       from: COMMIT_FROM,
       to: COMMIT_TO,
     });
-    const parsed = parseCommits(commits, config);
+    const parsed = filterParsedCommits(parseCommits(commits, config), config);
 
     expect(parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest))
       .toMatchInlineSnapshot(`
@@ -384,6 +385,185 @@ describe("git", () => {
       ### 🏡 Chore
 
       - **deps:** Update all non-major dependencies ([#42](https://github.com/unjs/changelogen/pull/42))
+      - Update dependencies ([c210976](https://github.com/unjs/changelogen/commit/c210976))
+      - Fix typecheck ([8796cf1](https://github.com/unjs/changelogen/commit/8796cf1))
+      - **release:** V0.3.3 ([f4f42a3](https://github.com/unjs/changelogen/commit/f4f42a3))
+      - **release:** V0.3.4 ([6fc5087](https://github.com/unjs/changelogen/commit/6fc5087))
+      - **release:** V0.3.5 ([3828bda](https://github.com/unjs/changelogen/commit/3828bda))
+
+      #### ⚠️ Breaking Changes
+
+      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
+
+      ### ❤️ Contributors
+
+      - Pooya Parsa ([@pi0](http://github.com/pi0))"
+    `);
+  });
+
+  test("parse with excluded types and scopes", async () => {
+    const COMMIT_FROM = "1cb15d5dd93302ebd5ff912079ed584efcc6703b";
+    const COMMIT_TO = "3828bda8c45933396ddfa869d671473231ce3c95";
+
+    const commits = await getGitDiff(COMMIT_FROM, COMMIT_TO);
+    commits[1].message =
+      "fix(scope)!: breaking change example, close #123 (#134)";
+
+    const config = await loadChangelogConfig(process.cwd(), {
+      from: COMMIT_FROM,
+      to: COMMIT_TO,
+      exclude: ["fix", "chore(deps)"],
+    });
+    const parsed = filterParsedCommits(parseCommits(commits, config), config);
+
+    expect(parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest))
+      .toMatchInlineSnapshot(`
+      [
+        {
+          "description": "v0.3.5",
+          "isBreaking": false,
+          "message": "chore(release): v0.3.5",
+          "references": [
+            {
+              "type": "hash",
+              "value": "3828bda",
+            },
+          ],
+          "scope": "release",
+          "shortHash": "3828bda",
+          "type": "chore",
+        },
+        {
+          "description": "breaking change example, close #123",
+          "isBreaking": true,
+          "message": "fix(scope)!: breaking change example, close #123 (#134)",
+          "references": [
+            {
+              "type": "pull-request",
+              "value": "#134",
+            },
+            {
+              "type": "issue",
+              "value": "#123",
+            },
+            {
+              "type": "hash",
+              "value": "20e622e",
+            },
+          ],
+          "scope": "scope",
+          "shortHash": "20e622e",
+          "type": "fix",
+        },
+        {
+          "description": "v0.3.4",
+          "isBreaking": false,
+          "message": "chore(release): v0.3.4",
+          "references": [
+            {
+              "type": "hash",
+              "value": "6fc5087",
+            },
+          ],
+          "scope": "release",
+          "shortHash": "6fc5087",
+          "type": "chore",
+        },
+        {
+          "description": "infer github config from package.json",
+          "isBreaking": false,
+          "message": "feat: infer github config from package.json (resolves #37)",
+          "references": [
+            {
+              "type": "pull-request",
+              "value": "#37",
+            },
+            {
+              "type": "hash",
+              "value": "c0febf1",
+            },
+          ],
+          "scope": "",
+          "shortHash": "c0febf1",
+          "type": "feat",
+        },
+        {
+          "description": "v0.3.3",
+          "isBreaking": false,
+          "message": "chore(release): v0.3.3",
+          "references": [
+            {
+              "type": "hash",
+              "value": "f4f42a3",
+            },
+          ],
+          "scope": "release",
+          "shortHash": "f4f42a3",
+          "type": "chore",
+        },
+        {
+          "description": "expose \`determineSemverChange\` and \`bumpVersion\`",
+          "isBreaking": false,
+          "message": "feat: expose \`determineSemverChange\` and \`bumpVersion\`",
+          "references": [
+            {
+              "type": "hash",
+              "value": "5451f18",
+            },
+          ],
+          "scope": "",
+          "shortHash": "5451f18",
+          "type": "feat",
+        },
+        {
+          "description": "fix typecheck",
+          "isBreaking": false,
+          "message": "chore: fix typecheck",
+          "references": [
+            {
+              "type": "hash",
+              "value": "8796cf1",
+            },
+          ],
+          "scope": "",
+          "shortHash": "8796cf1",
+          "type": "chore",
+        },
+        {
+          "description": "update dependencies",
+          "isBreaking": false,
+          "message": "chore: update dependencies",
+          "references": [
+            {
+              "type": "hash",
+              "value": "c210976",
+            },
+          ],
+          "scope": "",
+          "shortHash": "c210976",
+          "type": "chore",
+        },
+      ]
+    `);
+
+    const md = await generateMarkDown(parsed, config);
+
+    expect(md).toMatchInlineSnapshot(`
+      "## 1cb15d5dd93302ebd5ff912079ed584efcc6703b...3828bda8c45933396ddfa869d671473231ce3c95
+
+      [compare changes](https://github.com/unjs/changelogen/compare/1cb15d5dd93302ebd5ff912079ed584efcc6703b...3828bda8c45933396ddfa869d671473231ce3c95)
+
+      ### 🚀 Enhancements
+
+      - Expose \`determineSemverChange\` and \`bumpVersion\` ([5451f18](https://github.com/unjs/changelogen/commit/5451f18))
+      - Infer github config from package.json ([#37](https://github.com/unjs/changelogen/pull/37))
+
+      ### 🩹 Fixes
+
+      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
+
+      ### 🏡 Chore
+
       - Update dependencies ([c210976](https://github.com/unjs/changelogen/commit/c210976))
       - Fix typecheck ([8796cf1](https://github.com/unjs/changelogen/commit/8796cf1))
       - **release:** V0.3.3 ([f4f42a3](https://github.com/unjs/changelogen/commit/f4f42a3))
