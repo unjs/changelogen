@@ -10,6 +10,7 @@ import {
   parseCommits,
   bumpVersion,
   generateMarkDown,
+  filterCommits,
   BumpVersionOptions,
 } from "..";
 import { npmPublish, renamePackage } from "../package";
@@ -46,6 +47,7 @@ export default async function defaultMain(args: Argv) {
       config.types[c.type] &&
       !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
   );
+  const filteredCommits = filterCommits(commits, config);
 
   // Shortcut for canary releases
   if (args.canary) {
@@ -68,7 +70,7 @@ export default async function defaultMain(args: Argv) {
   // Bump version optionally
   if (args.bump || args.release) {
     const bumpOptions = _getBumpVersionOptions(args);
-    const newVersion = await bumpVersion(commits, config, bumpOptions);
+    const newVersion = await bumpVersion(filteredCommits, config, bumpOptions);
     if (!newVersion) {
       consola.error("Unable to bump version based on changes.");
       process.exit(1);
@@ -77,7 +79,7 @@ export default async function defaultMain(args: Argv) {
   }
 
   // Generate markdown
-  const markdown = await generateMarkDown(commits, config);
+  const markdown = await generateMarkDown(filteredCommits, config);
 
   // Show changelog in CLI unless bumping or releasing
   const displayOnly = !args.bump && !args.release;
