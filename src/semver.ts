@@ -87,7 +87,7 @@ export async function bumpVersion(
 }
 
 function fmtDate(d: Date): string {
-  // YYMMDD-HHMMSS: 2024819-135530
+  // YYMMDD-HHMMSS: 20240919-140954
   const date = joinNumbers([d.getFullYear(), d.getMonth() + 1, d.getDate()]);
   const time = joinNumbers([d.getHours(), d.getMinutes(), d.getSeconds()]);
   return `${date}-${time}`;
