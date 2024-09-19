@@ -66,10 +66,13 @@ export async function bumpVersion(
   }
 
   if (opts.suffix) {
+    const date = new Date();
+    // YYMMDD-HHMMSS: 2024819-135530
+    const dateStr = `${date.getFullYear()}${date.getMonth()}${date.getDate()}-${date.getHours()}${date.getMinutes()}${date.getSeconds()}`;
     const suffix =
       typeof opts.suffix === "string"
         ? `-${opts.suffix}`
-        : `-${Math.round(Date.now() / 1000)}.${commits[0].shortHash}`;
+        : `+${dateStr}-${commits[0].shortHash}`;
     pkg.version = config.newVersion = config.newVersion.split("-")[0] + suffix;
   }
 
