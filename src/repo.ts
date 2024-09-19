@@ -90,7 +90,7 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
   let repo;
   let domain;
 
-  let url;
+  let url: URL;
   try {
     url = new URL(repoUrl);
   } catch {
@@ -108,9 +108,9 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
       provider in providerToDomain ? providerToDomain[provider] : provider;
   } else if (url) {
     domain = url.hostname;
-    repo = url.pathname
-      .split("/")
-      .slice(1, 3)
+    const paths = url.pathname.split("/");
+    repo = paths
+      .slice(1, paths.length)
       .join("/")
       .replace(/\.git$/, "");
     provider = domainToProvider[domain];
