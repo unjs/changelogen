@@ -1,12 +1,5 @@
-import {
-  execSync,
-  type ExecOptionsWithStringEncoding,
-} from "node:child_process";
+import { execSync } from "node:child_process";
 
-export function execCommand(
-  cmd: string,
-  args: string[],
-  opts?: Omit<ExecOptionsWithStringEncoding, "encoding">
-) {
-  return execSync(`${cmd} ${args.join(" ")}`, { encoding: "utf8", ...opts });
+export function execCommand(cmd: string, cwd?: string) {
+  return execSync(cmd, { encoding: "utf8", cwd }).trim();
 }

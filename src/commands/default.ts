@@ -119,12 +119,12 @@ export default async function defaultMain(args: Argv) {
       const filesToAdd = [config.output, "package.json"].filter(
         (f) => f && typeof f === "string"
       ) as string[];
-      execCommand("git", ["add", ...filesToAdd], { cwd });
+      execCommand(`git add ${filesToAdd.map((f) => `"${f}"`).join(" ")}`, cwd);
       const msg = config.templates.commitMessage.replaceAll(
         "{{newVersion}}",
         config.newVersion
       );
-      execCommand("git", ["commit", "-m", msg], { cwd });
+      execCommand(`git commit -m "${msg}"`, cwd);
     }
     if (args.tag !== false) {
       const msg = config.templates.tagMessage.replaceAll(
@@ -136,13 +136,12 @@ export default async function defaultMain(args: Argv) {
         config.newVersion
       );
       execCommand(
-        "git",
-        ["tag", ...(config.signTags ? ["-s"] : []), "-am", msg, body],
-        { cwd }
+        `git tag ${config.signTags ? "-s" : ""} -am "${msg}" "${body}"`,
+        cwd
       );
     }
     if (args.push === true) {
-      execCommand("git", ["push", "--follow-tags"], { cwd });
+      execCommand("git push --follow-tags", cwd);
     }
     if (args.github !== false && config.repo?.provider === "github") {
       await githubRelease(config, {

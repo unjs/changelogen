@@ -29,20 +29,18 @@ export interface GitCommit extends RawGitCommit {
 
 export async function getLastGitTag() {
   try {
-    return execCommand("git", ["describe", "--tags", "--abbrev=0"])
-      ?.split("\n")
-      .at(-1);
+    return execCommand("git describe --tags --abbrev=0")?.split("\n").at(-1);
   } catch {
     // Ignore
   }
 }
 
 export function getCurrentGitBranch() {
-  return execCommand("git", ["rev-parse", "--abbrev-ref", "HEAD"]);
+  return execCommand("git rev-parse --abbrev-ref HEAD");
 }
 
 export function getCurrentGitTag() {
-  return execCommand("git", ["tag", "--points-at", "HEAD"]);
+  return execCommand("git tag --points-at HEAD");
 }
 
 export function getCurrentGitRef() {
@@ -50,16 +48,11 @@ export function getCurrentGitRef() {
 }
 
 export function getGitRemoteURL(cwd: string, remote = "origin") {
-  return execCommand("git", [
-    `--work-tree=${cwd}`,
-    "remote",
-    "get-url",
-    remote,
-  ]);
+  return execCommand(`git --work-tree="${cwd}" remote get-url "${remote}"`);
 }
 
 export async function getCurrentGitStatus() {
-  return execCommand("git", ["status", "--porcelain"]);
+  return execCommand("git status --porcelain");
 }
 
 export async function getGitDiff(
@@ -67,13 +60,9 @@ export async function getGitDiff(
   to = "HEAD"
 ): Promise<RawGitCommit[]> {
   // https://git-scm.com/docs/pretty-formats
-  const r = execCommand("git", [
-    "--no-pager",
-    "log",
-    `${from ? `${from}...` : ""}${to}`,
-    '--pretty="----%n%s|%h|%an|%ae%n%b"',
-    "--name-status",
-  ]);
+  const r = execCommand(
+    `git --no-pager log "${from ? `${from}...` : ""}${to}" --pretty="----%n%s|%h|%an|%ae%n%b" --name-status`
+  );
   return r
     .split("----\n")
     .splice(1)

@@ -43,7 +43,7 @@ export async function npmPublish(config: ChangelogConfig) {
   }
 
   if (config.publish.tag) {
-    args.push("--tag", config.publish.tag);
+    args.push("--tag", `"${config.publish.tag}"`);
   }
 
   if (
@@ -54,5 +54,5 @@ export async function npmPublish(config: ChangelogConfig) {
     args.push("--provenance");
   }
 
-  return execCommand("npm", ["publish", ...args]);
+  return execCommand(`npm publish ${args.join(" ")}`);
 }
