@@ -96,7 +96,7 @@ export async function generateMarkDown(
         );
         const email = _email ? `<${_email}>` : "";
         const github = i.github
-          ? `([@${i.github}](http://github.com/${i.github}))`
+          ? `([@${i.github}](https://github.com/${i.github}))`
           : "";
         return `- ${i.name} ${github || email}`;
       })
