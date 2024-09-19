@@ -20,9 +20,6 @@ importers:
       convert-gitmoji:
         specifier: ^0.1.5
         version: 0.1.5
-      execa:
-        specifier: ^8.0.1
-        version: 8.0.1
       mri:
         specifier: ^1.2.0
         version: 1.2.0

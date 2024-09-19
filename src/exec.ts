@@ -1,11 +1,12 @@
-import type { Options } from "execa";
+import {
+  execSync,
+  type ExecOptionsWithStringEncoding,
+} from "node:child_process";
 
-export async function execCommand(
+export function execCommand(
   cmd: string,
   args: string[],
-  options?: Options<string>
+  opts?: Omit<ExecOptionsWithStringEncoding, "encoding">
 ) {
-  const { execa } = await import("execa");
-  const res = await execa(cmd, args, options);
-  return res.stdout;
+  return execSync(`${cmd} ${args.join(" ")}`, { encoding: "utf8", ...opts });
 }
