@@ -42,7 +42,7 @@ export default async function defaultMain(args: Argv) {
 
   // Parse commits as conventional commits
   const commits = parseCommits(rawCommits, config)
-    .map((c) => ({ ...c, type: c.type.toLowerCase() }))
+    .map((c) => ({ ...c, type: c.type.toLowerCase() /* #198 */ }))
     .filter(
       (c) =>
         config.types[c.type] &&
