@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v0.5.7
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.5.6...v0.5.7)
+
+### 🩹 Fixes
+
+- **bump:** Avoid using `+` for canary suffix ([#224](https://github.com/unjs/changelogen/pull/224))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v0.5.6
 
 [compare changes](https://github.com/unjs/changelogen/compare/v0.5.5...v0.5.6)
