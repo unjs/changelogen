@@ -41,4 +41,4 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### ❤️ Contributors
 
-- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Pooya Parsa ([@pi0](https://github.com/pi0))
