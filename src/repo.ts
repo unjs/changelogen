@@ -75,9 +75,13 @@ export async function resolveRepoConfig(cwd: string) {
     return getRepoConfig(url);
   }
 
-  const gitRemote = await getGitRemoteURL(cwd).catch(() => {});
-  if (gitRemote) {
-    return getRepoConfig(gitRemote);
+  try {
+    const gitRemote = getGitRemoteURL(cwd);
+    if (gitRemote) {
+      return getRepoConfig(gitRemote);
+    }
+  } catch {
+    // Ignore
   }
 }
 
