@@ -104,7 +104,7 @@ describe("git", () => {
     ]);
   });
 
-  test("parse commit with breaking body", async () =>{
+  test("parse commit with breaking body", async () => {
     const rawCommitEmojiList = [
       {
         message: "💥 feat: added a breaking change",
@@ -139,7 +139,7 @@ describe("git", () => {
         isBreaking: true,
       },
     ]);
-  })
+  });
 
   test("parse", async () => {
     const COMMIT_FROM = "1cb15d5dd93302ebd5ff912079ed584efcc6703b";
