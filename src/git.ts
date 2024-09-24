@@ -107,11 +107,12 @@ export function parseGitCommit(
   }
 
   const type = match.groups.type;
+  const hasBreakingBody = /breaking change:/i.test(commit.body);
 
   let scope = match.groups.scope || "";
   scope = config.scopeMap[scope] || scope;
 
-  const isBreaking = Boolean(match.groups.breaking);
+  const isBreaking = Boolean(match.groups.breaking || hasBreakingBody);
   let description = match.groups.description;
 
   // Extract references from message
