@@ -110,7 +110,7 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
     domain = url.hostname;
     const paths = url.pathname.split("/");
     repo = paths
-      .slice(1, paths.length)
+      .slice(1)
       .join("/")
       .replace(/\.git$/, "");
     provider = domainToProvider[domain];
