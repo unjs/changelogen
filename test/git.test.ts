@@ -104,6 +104,53 @@ describe("git", () => {
     ]);
   });
 
+  test("parse commit with co-authors", async () => {
+    const rawCommitEmojiList = [
+      {
+        message: "🚀 feat: add emoji support",
+        shortHash: "0000000",
+        body: "Co-authored-by: Pooya Parsa <pooya@pi0.io>",
+        author: {
+          email: "jannchie@gmail.com",
+          name: "Jannchie",
+        },
+      },
+    ];
+    const parsed = parseCommits(
+      rawCommitEmojiList,
+      await loadChangelogConfig(process.cwd(), {})
+    );
+
+    expect(
+      parsed.map(({ body: _, author: __, ...rest }) => rest)
+    ).toMatchObject([
+      {
+        message: "🚀 feat: add emoji support",
+        shortHash: "0000000",
+        description: "add emoji support",
+        type: "feat",
+        scope: "",
+        authors: [
+          {
+            name: "Jannchie",
+            email: "jannchie@gmail.com",
+          },
+          {
+            name: "Pooya Parsa",
+            email: "pooya@pi0.io",
+          },
+        ],
+        references: [
+          {
+            value: "0000000",
+            type: "hash",
+          },
+        ],
+        isBreaking: false,
+      },
+    ]);
+  });
+
   test("parse commit with breaking body", async () => {
     const rawCommitEmojiList = [
       {
