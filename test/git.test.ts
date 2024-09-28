@@ -151,6 +151,43 @@ describe("git", () => {
     ]);
   });
 
+  test("parse commit with breaking body", async () => {
+    const rawCommitEmojiList = [
+      {
+        message: "💥 feat: added a breaking change",
+        shortHash: "0000000",
+        body: "BREAKING CHANGE: added a breaking change.",
+        author: {
+          email: "jannchie@gmail.com",
+          name: "Jannchie",
+        },
+      },
+    ];
+    const parsed = parseCommits(
+      rawCommitEmojiList,
+      await loadChangelogConfig(process.cwd(), {})
+    );
+
+    expect(
+      parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest)
+    ).toMatchObject([
+      {
+        message: "💥 feat: added a breaking change",
+        shortHash: "0000000",
+        description: "added a breaking change",
+        type: "feat",
+        scope: "",
+        references: [
+          {
+            value: "0000000",
+            type: "hash",
+          },
+        ],
+        isBreaking: true,
+      },
+    ]);
+  });
+
   test("parse", async () => {
     const COMMIT_FROM = "1cb15d5dd93302ebd5ff912079ed584efcc6703b";
     const COMMIT_TO = "3828bda8c45933396ddfa869d671473231ce3c95";
