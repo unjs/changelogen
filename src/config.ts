@@ -27,6 +27,7 @@ export interface ChangelogConfig {
     tagBody?: string;
   };
   excludeAuthors: string[];
+  skipAuthors: boolean;
 }
 
 export type ResolvedChangelogConfig = Omit<ChangelogConfig, "repo"> & {
@@ -72,6 +73,7 @@ const getDefaultConfig = () =>
       tagBody: "v{{newVersion}}",
     },
     excludeAuthors: [],
+    skipAuthors: false,
   };
 
 export async function loadChangelogConfig(
