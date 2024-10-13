@@ -26,6 +26,17 @@ export async function listGithubReleases(
   });
 }
 
+export async function getGithubLoginByCommit(
+  config: ResolvedChangelogConfig,
+  commit: string
+): Promise<string> {
+  const data = await githubFetch(
+    config,
+    `/repos/${config.repo.repo}/commits/${commit}`
+  );
+  return data?.author?.login;
+}
+
 export async function getGithubReleaseByTag(
   config: ResolvedChangelogConfig,
   tag: string
