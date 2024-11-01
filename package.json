@@ -49,12 +49,12 @@
     "yaml": "^2.6.0"
   },
   "devDependencies": {
-    "@types/node": "^22.8.4",
+    "@types/node": "^22.8.6",
     "@types/semver": "^7.5.8",
     "@vitest/coverage-v8": "^2.1.4",
-    "eslint": "^9.13.0",
+    "eslint": "^9.14.0",
     "eslint-config-unjs": "^0.4.1",
-    "jiti": "^2.3.3",
+    "jiti": "^2.4.0",
     "prettier": "^3.3.3",
     "standard-version": "^9.5.0",
     "typescript": "^5.6.3",
