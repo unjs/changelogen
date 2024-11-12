@@ -42,6 +42,8 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--output`: Changelog file name to create or update. Defaults to `CHANGELOG.md` and resolved relative to dir. Use `--no-output` to write to console only.
 - `--bump`: Determine semver change and update version in `package.json`.
 - `--release`. Bumps version in `package.json` and creates commit and git tags using local `git`. You can disable commit using `--no-commit` and tag using `--no-tag`. You can enable the automatic push of the new tag and release commit to your git repository by adding `--push`.
+- `--onlyMerges`: Use merge commits in changelog.
+- `--noMerges`: Exclude merge commits in changelog.
 - `--publish`. Publishes package as a new version on `npm`. You will need to set authorisation tokens separately via `.npmrc` or environment variables.
 - `--publishTag` Use custom npm tag for publishing (Default is `latest`)
 - `--nameSuffix`: Adds suffix to package name (Example: `--nameSuffix canary` renames `foo` to `foo-canary`)
