@@ -6,6 +6,8 @@ const spec = {
   r: { type: "string", short: "r" },
   bump: { type: "boolean" },
   commit: { type: "boolean" },
+  onlyMerges: { type: "boolean" },
+  noMerges: { type: "boolean" },
   output: { type: "optional" },
   canary: { type: "optional" },
 } as const satisfies ArgsSpec;
@@ -36,6 +38,8 @@ describe("parseCliArgs", () => {
       expected: { _: ["release", "1.0.0"], dir: "." },
     },
     { args: ["--", "--bump"], expected: { _: ["--bump"] } },
+    { args: ["--onlyMerges"], expected: { _: [], onlyMerges: true } },
+    { args: ["--noMerges"], expected: { _: [], noMerges: true } },
   ])("$args", ({ args, expected }) => {
     expect(parseCliArgs(args, spec)).toEqual(expected);
   });
