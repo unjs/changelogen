@@ -7,7 +7,7 @@ describe("contributors", () => {
     const config = await loadChangelogConfig(process.cwd(), {
       newVersion: "1.0.0",
     });
-    const contents = await generateMarkDown(testCommits, config)
+    const contents = await generateMarkDown(testCommits, config);
 
     expect(contents).toMatchInlineSnapshot(`
       "## v1.0.0
@@ -35,15 +35,15 @@ describe("contributors", () => {
       - Jane Smith <jane@smith.com>
       - Alice Johnson <alice@johnson.com>
       - Bob Williams <bob@williams.com>"
-    `)
-  })
-  
+    `);
+  });
+
   test("should skip authors", async () => {
     const config = await loadChangelogConfig(process.cwd(), {
       newVersion: "1.0.0",
       skipAuthors: true,
     });
-    const contents = await generateMarkDown(testCommits, config)
+    const contents = await generateMarkDown(testCommits, config);
 
     expect(contents).toMatchInlineSnapshot(`
       "## v1.0.0
@@ -64,6 +64,6 @@ describe("contributors", () => {
       ### 🏡 Chore
 
       - **scope:** Update dependencies"
-    `)
-  })
+    `);
+  });
 });
