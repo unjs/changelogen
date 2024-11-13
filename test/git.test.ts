@@ -57,7 +57,6 @@ describe("git", () => {
     );
 
     expect(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest)
     ).toMatchObject([
       {
@@ -105,6 +104,90 @@ describe("git", () => {
     ]);
   });
 
+  test("parse commit with co-authors", async () => {
+    const rawCommitEmojiList = [
+      {
+        message: "🚀 feat: add emoji support",
+        shortHash: "0000000",
+        body: "Co-authored-by: Pooya Parsa <pooya@pi0.io>",
+        author: {
+          email: "jannchie@gmail.com",
+          name: "Jannchie",
+        },
+      },
+    ];
+    const parsed = parseCommits(
+      rawCommitEmojiList,
+      await loadChangelogConfig(process.cwd(), {})
+    );
+
+    expect(
+      parsed.map(({ body: _, author: __, ...rest }) => rest)
+    ).toMatchObject([
+      {
+        message: "🚀 feat: add emoji support",
+        shortHash: "0000000",
+        description: "add emoji support",
+        type: "feat",
+        scope: "",
+        authors: [
+          {
+            name: "Jannchie",
+            email: "jannchie@gmail.com",
+          },
+          {
+            name: "Pooya Parsa",
+            email: "pooya@pi0.io",
+          },
+        ],
+        references: [
+          {
+            value: "0000000",
+            type: "hash",
+          },
+        ],
+        isBreaking: false,
+      },
+    ]);
+  });
+
+  test("parse commit with breaking body", async () => {
+    const rawCommitEmojiList = [
+      {
+        message: "💥 feat: added a breaking change",
+        shortHash: "0000000",
+        body: "BREAKING CHANGE: added a breaking change.",
+        author: {
+          email: "jannchie@gmail.com",
+          name: "Jannchie",
+        },
+      },
+    ];
+    const parsed = parseCommits(
+      rawCommitEmojiList,
+      await loadChangelogConfig(process.cwd(), {})
+    );
+
+    expect(
+      parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest)
+    ).toMatchObject([
+      {
+        message: "💥 feat: added a breaking change",
+        shortHash: "0000000",
+        description: "added a breaking change",
+        type: "feat",
+        scope: "",
+        references: [
+          {
+            value: "0000000",
+            type: "hash",
+          },
+        ],
+        isBreaking: true,
+      },
+    ]);
+  });
+
   test("parse", async () => {
     const COMMIT_FROM = "1cb15d5dd93302ebd5ff912079ed584efcc6703b";
     const COMMIT_TO = "3828bda8c45933396ddfa869d671473231ce3c95";
@@ -112,7 +195,7 @@ describe("git", () => {
     const commits = await getGitDiff(COMMIT_FROM, COMMIT_TO);
     commits[1].message =
       "fix(scope)!: breaking change example, close #123 (#134)";
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     expect(commits.map(({ body: _, ...rest }) => rest)).toMatchInlineSnapshot(`
       [
         {
@@ -203,7 +286,6 @@ describe("git", () => {
     });
     const parsed = parseCommits(commits, config);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     expect(parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest))
       .toMatchInlineSnapshot(`
       [
@@ -398,7 +480,7 @@ describe("git", () => {
 
       ### ❤️ Contributors
 
-      - Pooya Parsa ([@pi0](http://github.com/pi0))"
+      - Pooya Parsa ([@pi0](https://github.com/pi0))"
     `);
   });
 

@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v0.5.7
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.5.6...v0.5.7)
+
+### 🩹 Fixes
+
+- **bump:** Avoid using `+` for canary suffix ([#224](https://github.com/unjs/changelogen/pull/224))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
+## v0.5.6
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.5.5...v0.5.6)
+
+### 🚀 Enhancements
+
+- Add option to sign git tags ([#117](https://github.com/unjs/changelogen/pull/117))
+- **git:** Support parse git messages that have prefix emoji ([#146](https://github.com/unjs/changelogen/pull/146))
+
+### 🩹 Fixes
+
+- **github:** Use bearer token ([#180](https://github.com/unjs/changelogen/pull/180))
+- Handle repo name with multiple segments ([#219](https://github.com/unjs/changelogen/pull/219))
+- Lowercase scope when filtering ([#199](https://github.com/unjs/changelogen/pull/199))
+
+### 💅 Refactors
+
+- Replace `execa` with `execSync` ([#222](https://github.com/unjs/changelogen/pull/222))
+- Use human readable date for canary versions ([#223](https://github.com/unjs/changelogen/pull/223))
+- Update execCommand ([68127be](https://github.com/unjs/changelogen/commit/68127be))
+
+### 🏡 Chore
+
+- Apply automated lint fixes ([72c407f](https://github.com/unjs/changelogen/commit/72c407f))
+- Update ci ([bcb16cb](https://github.com/unjs/changelogen/commit/bcb16cb))
+- Update non major deps ([7f714c9](https://github.com/unjs/changelogen/commit/7f714c9))
+- Update to eslint v9 ([fd40be9](https://github.com/unjs/changelogen/commit/fd40be9))
+- Apply automated lint fixes ([673255b](https://github.com/unjs/changelogen/commit/673255b))
+- Update deps ([3cfbe27](https://github.com/unjs/changelogen/commit/3cfbe27))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Klein Petr ([@kleinpetr](http://github.com/kleinpetr))
+- Wan Chiu ([@wan54](http://github.com/wan54))
+- Jianqi Pan ([@Jannchie](http://github.com/Jannchie))
+- Vasily Kuzin <exer7um@gmail.com>
+- Daniel Roe ([@danielroe](http://github.com/danielroe))
+
 ## v0.5.5
 
 [compare changes](https://github.com/unjs/changelogen/compare/v0.5.4...v0.5.5)

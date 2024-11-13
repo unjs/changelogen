@@ -28,35 +28,31 @@ export interface GitCommit extends RawGitCommit {
 }
 
 export async function getLastGitTag() {
-  const r = await execCommand("git", ["describe", "--tags", "--abbrev=0"])
-    .then((r) => r.split("\n"))
-    .catch(() => []);
-  return r.at(-1);
+  try {
+    return execCommand("git describe --tags --abbrev=0")?.split("\n").at(-1);
+  } catch {
+    // Ignore
+  }
 }
 
-export async function getCurrentGitBranch() {
-  return await execCommand("git", ["rev-parse", "--abbrev-ref", "HEAD"]);
+export function getCurrentGitBranch() {
+  return execCommand("git rev-parse --abbrev-ref HEAD");
 }
 
-export async function getCurrentGitTag() {
-  return await execCommand("git", ["tag", "--points-at", "HEAD"]);
+export function getCurrentGitTag() {
+  return execCommand("git tag --points-at HEAD");
 }
 
-export async function getCurrentGitRef() {
-  return (await getCurrentGitTag()) || (await getCurrentGitBranch());
+export function getCurrentGitRef() {
+  return getCurrentGitTag() || getCurrentGitBranch();
 }
 
-export async function getGitRemoteURL(cwd: string, remote = "origin") {
-  return await execCommand("git", [
-    `--work-tree=${cwd}`,
-    "remote",
-    "get-url",
-    remote,
-  ]);
+export function getGitRemoteURL(cwd: string, remote = "origin") {
+  return execCommand(`git --work-tree="${cwd}" remote get-url "${remote}"`);
 }
 
 export async function getCurrentGitStatus() {
-  return await execCommand("git", ["status", "--porcelain"]);
+  return execCommand("git status --porcelain");
 }
 
 export async function getGitDiff(
@@ -64,13 +60,9 @@ export async function getGitDiff(
   to = "HEAD"
 ): Promise<RawGitCommit[]> {
   // https://git-scm.com/docs/pretty-formats
-  const r = await execCommand("git", [
-    "--no-pager",
-    "log",
-    `${from ? `${from}...` : ""}${to}`,
-    '--pretty="----%n%s|%h|%an|%ae%n%b"',
-    "--name-status",
-  ]);
+  const r = execCommand(
+    `git --no-pager log "${from ? `${from}...` : ""}${to}" --pretty="----%n%s|%h|%an|%ae%n%b" --name-status`
+  );
   return r
     .split("----\n")
     .splice(1)
@@ -115,11 +107,12 @@ export function parseGitCommit(
   }
 
   const type = match.groups.type;
+  const hasBreakingBody = /breaking change:/i.test(commit.body);
 
   let scope = match.groups.scope || "";
   scope = config.scopeMap[scope] || scope;
 
-  const isBreaking = Boolean(match.groups.breaking);
+  const isBreaking = Boolean(match.groups.breaking || hasBreakingBody);
   let description = match.groups.description;
 
   // Extract references from message

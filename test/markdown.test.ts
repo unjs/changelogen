@@ -49,7 +49,7 @@ describe("markdown", () => {
 
       ### ❤️ Contributors
 
-      - Pooya Parsa ([@pi0](http://github.com/pi0))",
+      - Pooya Parsa ([@pi0](https://github.com/pi0))",
             "version": "0.4.0",
           },
         ],

@@ -75,9 +75,13 @@ export async function resolveRepoConfig(cwd: string) {
     return getRepoConfig(url);
   }
 
-  const gitRemote = await getGitRemoteURL(cwd).catch(() => {});
-  if (gitRemote) {
-    return getRepoConfig(gitRemote);
+  try {
+    const gitRemote = getGitRemoteURL(cwd);
+    if (gitRemote) {
+      return getRepoConfig(gitRemote);
+    }
+  } catch {
+    // Ignore
   }
 }
 
@@ -86,10 +90,12 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
   let repo;
   let domain;
 
-  let url;
+  let url: URL;
   try {
     url = new URL(repoUrl);
-  } catch {}
+  } catch {
+    // Ignore error
+  }
 
   const m = repoUrl.match(providerURLRegex)?.groups ?? {};
   if (m.repo && m.provider) {
@@ -102,9 +108,9 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
       provider in providerToDomain ? providerToDomain[provider] : provider;
   } else if (url) {
     domain = url.hostname;
-    repo = url.pathname
-      .split("/")
-      .slice(1, 3)
+    const paths = url.pathname.split("/");
+    repo = paths
+      .slice(1)
       .join("/")
       .replace(/\.git$/, "");
     provider = domainToProvider[domain];

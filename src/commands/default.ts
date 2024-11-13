@@ -2,7 +2,6 @@ import { existsSync, promises as fsp } from "node:fs";
 import type { Argv } from "mri";
 import { resolve } from "pathe";
 import consola from "consola";
-import { execa } from "execa";
 import {
   loadChangelogConfig,
   getGitDiff,
@@ -14,6 +13,7 @@ import {
 } from "..";
 import { npmPublish, renamePackage } from "../package";
 import { githubRelease } from "./github";
+import { execCommand } from "../exec";
 
 export default async function defaultMain(args: Argv) {
   const cwd = resolve(args._[0] /* bw compat */ || args.dir || "");
@@ -42,11 +42,13 @@ export default async function defaultMain(args: Argv) {
   const rawCommits = await getGitDiff(config.from, config.to);
 
   // Parse commits as conventional commits
-  const commits = parseCommits(rawCommits, config).filter(
-    (c) =>
-      config.types[c.type] &&
-      !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
-  );
+  const commits = parseCommits(rawCommits, config)
+    .map((c) => ({ ...c, type: c.type.toLowerCase() /* #198 */ }))
+    .filter(
+      (c) =>
+        config.types[c.type] &&
+        !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
+    );
 
   // Shortcut for canary releases
   if (args.canary) {
@@ -118,12 +120,12 @@ export default async function defaultMain(args: Argv) {
       const filesToAdd = [config.output, "package.json"].filter(
         (f) => f && typeof f === "string"
       ) as string[];
-      await execa("git", ["add", ...filesToAdd], { cwd });
+      execCommand(`git add ${filesToAdd.map((f) => `"${f}"`).join(" ")}`, cwd);
       const msg = config.templates.commitMessage.replaceAll(
         "{{newVersion}}",
         config.newVersion
       );
-      await execa("git", ["commit", "-m", msg], { cwd });
+      execCommand(`git commit -m "${msg}"`, cwd);
     }
     if (args.tag !== false) {
       const msg = config.templates.tagMessage.replaceAll(
@@ -134,14 +136,13 @@ export default async function defaultMain(args: Argv) {
         "{{newVersion}}",
         config.newVersion
       );
-      await execa(
-        "git",
-        ["tag", ...(config.signTags ? ["-s"] : []), "-am", msg, body],
-        { cwd }
+      execCommand(
+        `git tag ${config.signTags ? "-s" : ""} -am "${msg}" "${body}"`,
+        cwd
       );
     }
     if (args.push === true) {
-      await execa("git", ["push", "--follow-tags"], { cwd });
+      execCommand("git push --follow-tags", cwd);
     }
     if (args.github !== false && config.repo?.provider === "github") {
       await githubRelease(config, {
