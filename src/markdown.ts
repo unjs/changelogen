@@ -1,9 +1,9 @@
 import { upperFirst } from "scule";
 import { convert } from "convert-gitmoji";
-import { fetch } from "node-fetch-native";
 import type { ResolvedChangelogConfig } from "./config";
 import type { GitCommit, Reference } from "./git";
 import { formatReference, formatCompareChanges } from "./repo";
+import { resolveAuthors } from "./author";
 
 export async function generateMarkDown(
   commits: GitCommit[],
@@ -42,48 +42,7 @@ export async function generateMarkDown(
     markdown.push("", "#### ⚠️ Breaking Changes", "", ...breakingChanges);
   }
 
-  const _authors = new Map<string, { email: Set<string>; github?: string }>();
-  for (const commit of commits) {
-    if (!commit.author) {
-      continue;
-    }
-    const name = formatName(commit.author.name);
-    if (!name || name.includes("[bot]")) {
-      continue;
-    }
-    if (
-      config.excludeAuthors &&
-      config.excludeAuthors.some(
-        (v) => name.includes(v) || commit.author.email?.includes(v)
-      )
-    ) {
-      continue;
-    }
-    if (_authors.has(name)) {
-      const entry = _authors.get(name);
-      entry.email.add(commit.author.email);
-    } else {
-      _authors.set(name, { email: new Set([commit.author.email]) });
-    }
-  }
-
-  // Try to map authors to github usernames
-  await Promise.all(
-    [..._authors.keys()].map(async (authorName) => {
-      const meta = _authors.get(authorName);
-      for (const email of meta.email) {
-        const { user } = await fetch(`https://ungh.cc/users/find/${email}`)
-          .then((r) => r.json())
-          .catch(() => ({ user: null }));
-        if (user) {
-          meta.github = user.username;
-          break;
-        }
-      }
-    })
-  );
-
-  const authors = [..._authors.entries()].map((e) => ({ name: e[0], ...e[1] }));
+  const authors = await resolveAuthors(commits, config);
 
   if (authors.length > 0) {
     markdown.push(
@@ -168,13 +127,6 @@ function formatReferences(
 // function formatTitle (title: string = '') {
 //   return title.length <= 3 ? title.toUpperCase() : upperFirst(title)
 // }
-
-function formatName(name = "") {
-  return name
-    .split(" ")
-    .map((p) => upperFirst(p.trim()))
-    .join(" ");
-}
 
 function groupBy(items: any[], key: string) {
   const groups = {};
