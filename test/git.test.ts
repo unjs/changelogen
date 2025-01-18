@@ -21,6 +21,17 @@ describe("git", () => {
     );
   });
 
+  test("getGitDiff should accept paths parameter", async () => {
+    const COMMIT_INITIAL = "4554fc49265ac532b14c89cec15e7d21bb55d48b";
+    const COMMIT_VER002 = "38d7ba15dccc3a44931bf8bf0abaa0d4d96603eb";
+    expect((await getGitDiff(COMMIT_INITIAL, COMMIT_VER002, ['test/index.test.ts'])).length).toBe(1);
+
+    const all = await getGitDiff(undefined);
+    expect((await getGitDiff(COMMIT_INITIAL, "HEAD")).length + 1).toBe(
+      all.length
+    );
+  });
+
   test("parse commit with emoji", async () => {
     const rawCommitEmojiList = [
       {
