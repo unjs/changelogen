@@ -15,7 +15,9 @@ export async function generateMarkDown(
   const breakingChanges = [];
 
   // Version Title
-  const v = config.newVersion && `v${config.newVersion}`;
+  const v =
+    config.newVersion &&
+    config.templates.tagBody.replaceAll("{{newVersion}}", config.newVersion);
   markdown.push("", "## " + (v || `${config.from || ""}...${config.to}`), "");
 
   if (config.repo && config.from) {
