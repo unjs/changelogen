@@ -185,5 +185,5 @@ function groupBy(items: any[], key: string) {
   return groups;
 }
 
-const CHANGELOG_RELEASE_HEAD_RE = /^#{2,}\s+.*(v?(\d+\.\d+\.\d+)).*$/gm;
-const VERSION_RE = /^v?(\d+\.\d+\.\d+)$/;
+const CHANGELOG_RELEASE_HEAD_RE = /^#{2,}\s+.*(v?(\d+\.\d+\.\d+(-(rc\.)?\d+)?)).*$/gm;
+const VERSION_RE = /^v?(\d+\.\d+\.\d+(-(rc\.)?\d+)?)$/;
