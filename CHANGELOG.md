@@ -2,6 +2,60 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v0.6.0
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.5.7...v0.6.0)
+
+### 🚀 Enhancements
+
+- Update jiti to v2 ([6e85d32](https://github.com/unjs/changelogen/commit/6e85d32))
+- Add check for breaking changes in commit body ([#228](https://github.com/unjs/changelogen/pull/228))
+- Hide author email address via flag ([#247](https://github.com/unjs/changelogen/pull/247))
+- Add `noAuthors` option ([#183](https://github.com/unjs/changelogen/pull/183))
+
+### 🩹 Fixes
+
+- Use `https` proto for author's github link ([#225](https://github.com/unjs/changelogen/pull/225))
+- Use `https` proto for author's github link in tests ([#226](https://github.com/unjs/changelogen/pull/226))
+- Release version regex supporting pre versions ([#259](https://github.com/unjs/changelogen/pull/259))
+- Use correct compare changes URL for Bitbucket ([#257](https://github.com/unjs/changelogen/pull/257))
+- Use tag template for version title and compare change link ([#255](https://github.com/unjs/changelogen/pull/255))
+- Render usernames in github changelog ([#265](https://github.com/unjs/changelogen/pull/265))
+
+### 💅 Refactors
+
+- Use consola for colors ([49e0401](https://github.com/unjs/changelogen/commit/49e0401))
+- Use confbox for yaml parsing ([19e940c](https://github.com/unjs/changelogen/commit/19e940c))
+
+### 📦 Build
+
+- ⚠️  Esm-only dist ([4a22de6](https://github.com/unjs/changelogen/commit/4a22de6))
+
+### 🏡 Chore
+
+- Lint ([031cfd6](https://github.com/unjs/changelogen/commit/031cfd6))
+- Update deps ([b184f23](https://github.com/unjs/changelogen/commit/b184f23))
+- Update ci ([8662c4e](https://github.com/unjs/changelogen/commit/8662c4e))
+- Update esm-only deps ([0d5e31d](https://github.com/unjs/changelogen/commit/0d5e31d))
+
+### ✅ Tests
+
+- Add tests for parsing co-authors from commit body ([#229](https://github.com/unjs/changelogen/pull/229))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Esm-only dist ([4a22de6](https://github.com/unjs/changelogen/commit/4a22de6))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](https://github.com/pi0))
+- Klein Petr ([@kleinpetr](https://github.com/kleinpetr))
+- Jasper Zonneveld ([@JaZo](https://github.com/JaZo))
+- Thorsten Seyschab ([@toddeTV](https://github.com/toddeTV))
+- Philipp Kief ([@PKief](https://github.com/PKief))
+- Jan-Henrik Damaschke <jdamaschke@outlook.de>
+- Damian Głowala ([@DamianGlowala](https://github.com/DamianGlowala))
+
 ## v0.5.7
 
 [compare changes](https://github.com/unjs/changelogen/compare/v0.5.6...v0.5.7)
