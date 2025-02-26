@@ -33,7 +33,7 @@
     "test": "pnpm lint && vitest run --coverage"
   },
   "dependencies": {
-    "c12": "^2.0.1",
+    "c12": "^3.0.1",
     "colorette": "^2.0.20",
     "consola": "^3.3.0",
     "convert-gitmoji": "^0.1.5",
