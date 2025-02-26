@@ -101,6 +101,13 @@ export async function githubRelease(
       () => undefined
     );
   }
+
+  // Transform body to be better rendered on Github releases
+  release = {
+    ...release,
+    body: release.body.replaceAll(/\(\[(@.+)\]\(.+\)\)/g, "($1)"),
+  };
+
   const result = await syncGithubRelease(config, release);
   if (result.status === "manual") {
     if (result.error) {
