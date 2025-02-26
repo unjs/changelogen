@@ -39,10 +39,10 @@ describe("contributors", () => {
     `);
   });
 
-  test("should skip authors", async () => {
+  test("should skip authors with noAuthors config", async () => {
     const config = await loadChangelogConfig(process.cwd(), {
       newVersion: "1.0.0",
-      skipAuthors: true,
+      noAuthors: true,
     });
     const contents = await generateMarkDown(testCommits, config);
 
