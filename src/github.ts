@@ -129,7 +129,7 @@ export async function resolveGithubToken(config: ResolvedChangelogConfig) {
   const ghCLIPath = join(configHome, "gh", "hosts.yml");
   if (existsSync(ghCLIPath)) {
     const yamlContents = await fsp.readFile(ghCLIPath, "utf8");
-    const parseYAML = await import("yaml").then((r) => r.parse);
+    const { parseYAML } = await import("confbox/yaml");
     const ghCLIConfig = parseYAML(yamlContents);
     if (ghCLIConfig && ghCLIConfig[config.repo.domain]) {
       return ghCLIConfig["github.com"].oauth_token;
