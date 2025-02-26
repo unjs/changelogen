@@ -31,7 +31,6 @@
   },
   "dependencies": {
     "c12": "3.0.1",
-    "colorette": "^2.0.20",
     "consola": "^3.4.0",
     "convert-gitmoji": "^0.1.5",
     "mri": "^1.2.0",
