@@ -94,7 +94,8 @@ export async function generateMarkDown(
         const _email = [...i.email].find(
           (e) => !e.includes("noreply.github.com")
         );
-        const email = _email ? `<${_email}>` : "";
+        const email =
+          config.hideAuthorEmail !== true && _email ? `<${_email}>` : "";
         const github = i.github
           ? `([@${i.github}](https://github.com/${i.github}))`
           : "";
@@ -185,5 +186,7 @@ function groupBy(items: any[], key: string) {
   return groups;
 }
 
-const CHANGELOG_RELEASE_HEAD_RE = /^#{2,}\s+.*(v?(\d+\.\d+\.\d+)).*$/gm;
-const VERSION_RE = /^v?(\d+\.\d+\.\d+)$/;
+const CHANGELOG_RELEASE_HEAD_RE =
+  /^#{2,}\s+.*(v?(\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?)).*$/gm;
+
+const VERSION_RE = /^v?(\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?)$/;

@@ -55,6 +55,7 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--preminor`: Bump as a semver-preminor version, can set id with string.
 - `--prepatch`: Bump as a semver-prepatch version, can set id with string.
 - `--prerelease`: Bump as a semver-prerelease version, can set id with string.
+- `--hideAuthorEmail`: Do not include author email in changelog if github username cannot be found.
 
 ### `changelogen gh release`
 
