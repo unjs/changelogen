@@ -26,8 +26,9 @@ export interface ChangelogConfig {
     tagMessage?: string;
     tagBody?: string;
   };
-  excludeAuthors: string[];
   skipAuthors: boolean;
+  excludeAuthors: string[];
+  hideAuthorEmail?: boolean;
 }
 
 export type ResolvedChangelogConfig = Omit<ChangelogConfig, "repo"> & {
