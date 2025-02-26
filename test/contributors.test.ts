@@ -12,6 +12,7 @@ describe("contributors", () => {
     expect(contents).toMatchInlineSnapshot(`
       "## v1.0.0
 
+      [compare changes](https://github.com/unjs/changelogen/compare/v0.5.7...v1.0.0)
 
       ### 🚀 Enhancements
 
@@ -48,6 +49,7 @@ describe("contributors", () => {
     expect(contents).toMatchInlineSnapshot(`
       "## v1.0.0
 
+      [compare changes](https://github.com/unjs/changelogen/compare/v0.5.7...v1.0.0)
 
       ### 🚀 Enhancements
 
