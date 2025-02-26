@@ -11,6 +11,9 @@ importers:
       c12:
         specifier: 3.0.1
         version: 3.0.1(magicast@0.3.5)
+      confbox:
+        specifier: ^0.1.8
+        version: 0.1.8
       consola:
         specifier: ^3.4.0
         version: 3.4.0
@@ -44,9 +47,6 @@ importers:
       std-env:
         specifier: ^3.8.0
         version: 3.8.0
-      yaml:
-        specifier: ^2.7.0
-        version: 2.7.0
     devDependencies:
       '@types/node':
         specifier: ^22.13.5
@@ -2693,11 +2693,6 @@ packages:
   yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
 
-  yaml@2.7.0:
-    resolution: {integrity: sha512-+hSoy/QHluxmC9kCIJyL/uyFmLmc+e5CFR5Wa+bpIhIj85LVb9ZH2nVnqrHoSvKogwODv0ClqZkmiSSaIH5LTA==}
-    engines: {node: '>= 14'}
-    hasBin: true
-
   yargs-parser@20.2.9:
     resolution: {integrity: sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==}
     engines: {node: '>=10'}
@@ -5305,8 +5300,6 @@ snapshots:
   yallist@3.1.1: {}
 
   yallist@4.0.0: {}
-
-  yaml@2.7.0: {}
 
   yargs-parser@20.2.9: {}
 
