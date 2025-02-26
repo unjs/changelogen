@@ -24,6 +24,7 @@ export default async function defaultMain(args: Argv) {
     from: args.from,
     to: args.to,
     output: args.output,
+    includePaths: args.paths?.split(' '),
     newVersion: typeof args.r === "string" ? args.r : undefined,
   });
 
@@ -38,7 +39,7 @@ export default async function defaultMain(args: Argv) {
   const logger = consola.create({ stdout: process.stderr });
   logger.info(`Generating changelog for ${config.from || ""}...${config.to}`);
 
-  const rawCommits = await getGitDiff(config.from, config.to);
+  const rawCommits = await getGitDiff(config.from, config.to, config.includePaths);
 
   // Parse commits as conventional commits
   const commits = parseCommits(rawCommits, config)

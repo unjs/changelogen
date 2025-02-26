@@ -26,6 +26,7 @@ export interface ChangelogConfig {
     tagMessage?: string;
     tagBody?: string;
   };
+  includePaths?: string[];
   excludeAuthors: string[];
   hideAuthorEmail?: boolean;
 }
@@ -72,6 +73,7 @@ const getDefaultConfig = () =>
       tagMessage: "v{{newVersion}}",
       tagBody: "v{{newVersion}}",
     },
+    includePaths: [],
     excludeAuthors: [],
   };
 
