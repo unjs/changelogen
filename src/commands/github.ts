@@ -2,7 +2,7 @@ import { promises as fsp } from "node:fs";
 import type { Argv } from "mri";
 import { resolve } from "pathe";
 import consola from "consola";
-import { underline, cyan } from "colorette";
+import { colors } from "consola/utils";
 import {
   getGithubChangelog,
   resolveGithubToken,
@@ -115,13 +115,13 @@ export async function githubRelease(
       .catch(() => {
         consola.info(
           `Open this link to manually create a release: \n` +
-            underline(cyan(result.url)) +
+            colors.underline(colors.cyan(result.url)) +
             "\n"
         );
       });
   } else {
     consola.success(
-      `Synced ${cyan(`v${release.version}`)} to Github releases!`
+      `Synced ${colors.cyan(`v${release.version}`)} to Github releases!`
     );
   }
 }
