@@ -25,6 +25,7 @@ export default async function defaultMain(args: Argv) {
     to: args.to,
     output: args.output,
     newVersion: typeof args.r === "string" ? args.r : undefined,
+    noAuthors: args.noAuthors,
   });
 
   if (args.clean) {

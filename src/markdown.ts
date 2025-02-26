@@ -87,7 +87,7 @@ export async function generateMarkDown(
 
   const authors = [..._authors.entries()].map((e) => ({ name: e[0], ...e[1] }));
 
-  if (authors.length > 0) {
+  if (authors.length > 0 && !config.noAuthors) {
     markdown.push(
       "",
       "### " + "❤️ Contributors",

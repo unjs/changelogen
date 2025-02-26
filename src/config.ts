@@ -26,6 +26,7 @@ export interface ChangelogConfig {
     tagMessage?: string;
     tagBody?: string;
   };
+  noAuthors: boolean;
   excludeAuthors: string[];
   hideAuthorEmail?: boolean;
 }
@@ -73,6 +74,7 @@ const getDefaultConfig = () =>
       tagBody: "v{{newVersion}}",
     },
     excludeAuthors: [],
+    noAuthors: false,
   };
 
 export async function loadChangelogConfig(
