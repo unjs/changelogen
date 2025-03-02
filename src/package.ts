@@ -54,5 +54,5 @@ export async function npmPublish(config: ChangelogConfig) {
     args.push("--provenance");
   }
 
-  return execCommand(`npm publish ${args.join(" ")}`);
+  return execCommand(`npm publish ${args.join(" ")}`, config.cwd);
 }
