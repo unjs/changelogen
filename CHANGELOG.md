@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v0.6.1
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.6.0...v0.6.1)
+
+### 🩹 Fixes
+
+- Pass `cwd` in more places before running commands ([#266](https://github.com/unjs/changelogen/pull/266))
+
+### 🏡 Chore
+
+- Update deps ([f728b52](https://github.com/unjs/changelogen/commit/f728b52))
+- Update tsconfig ([e5dced7](https://github.com/unjs/changelogen/commit/e5dced7))
+
+### ✅ Tests
+
+- Update snapshot ([ec2618f](https://github.com/unjs/changelogen/commit/ec2618f))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](https://github.com/pi0))
+- Daniel Roe ([@danielroe](https://github.com/danielroe))
+
 ## v0.6.0
 
 [compare changes](https://github.com/unjs/changelogen/compare/v0.5.7...v0.6.0)
