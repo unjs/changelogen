@@ -102,11 +102,11 @@ export async function resolveChangelogConfig(
   cwd: string
 ) {
   if (!config.from) {
-    config.from = await getLastGitTag();
+    config.from = await getLastGitTag(cwd);
   }
 
   if (!config.to) {
-    config.to = await getCurrentGitRef();
+    config.to = await getCurrentGitRef(cwd);
   }
 
   if (config.output) {
