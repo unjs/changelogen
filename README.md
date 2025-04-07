@@ -61,7 +61,7 @@ npx changelogen@latest [...args] [--dir <dir>]
 > [!NOTE]
 >According to NPM, version numbers that begin with `0.0` or `0.0.0` follow different semantics. In these cases, the second or third digit may be treated as the major version, rather than following the standard `major.minor.patch` convention.
 >
->To ensure consistent interpretation of semantic versioning (`major.minor.patch`), it is recommended to start versions from `1.0.0`.
+>To ensure consistent interpretation of semantic versioning (`major.minor.patch`), starting versions from `1.0.0` is recommended.
 
 ### `changelogen gh release`
 
