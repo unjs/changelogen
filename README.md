@@ -59,11 +59,11 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--hideAuthorEmail`: Do not include author email in changelog if github username cannot be found.
 
 > [!NOTE]
-> Version numbers that begin with `0.`, `0.0.` follow different semantics.
-> 
-> In these cases, the second or third digit is treated as the major version (`0.major.minor` and `0.0.major`) rather than following the standard `major.minor.patch` convention.
+> Version numbers starting with `0.` or `0.0.` follow different rules.
 >
->To ensure consistent interpretation of semantic versioning (`major.minor.patch`), starting versions from `1.0.0` is recommended.
+> In these cases, the second or third digit is treated as the major version. They use the formats `0.major.minor` and `0.0.major` instead of the standard `major.minor.patch`.
+>
+> To ensure consistent semantic versioning, start version numbering at `1.0.0`.
 
 ### `changelogen gh release`
 
