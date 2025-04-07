@@ -59,7 +59,9 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--hideAuthorEmail`: Do not include author email in changelog if github username cannot be found.
 
 > [!NOTE]
->According to NPM, version numbers that begin with `0.0` or `0.0.0` follow different semantics. In these cases, the second or third digit may be treated as the major version, rather than following the standard `major.minor.patch` convention.
+> Version numbers that begin with `0.`, `0.0.` follow different semantics.
+> 
+> In these cases, the second or third digit is treated as the major version (`0.major.minor` and `0.0.major`) rather than following the standard `major.minor.patch` convention.
 >
 >To ensure consistent interpretation of semantic versioning (`major.minor.patch`), starting versions from `1.0.0` is recommended.
 
