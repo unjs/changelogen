@@ -58,6 +58,11 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--prerelease`: Bump as a semver-prerelease version, can set id with string.
 - `--hideAuthorEmail`: Do not include author email in changelog if github username cannot be found.
 
+> [!NOTE]
+>According to the npm, version numbers that begin with 0.0 or 0.x follow different semantics. In these cases, the second or third digit may be treated as the major version, rather than following the standard major.minor.patch convention.
+>
+>To ensure consistent interpretation of semantic versioning (major.minor.patch), it is recommended to start versions from 1.0.0.
+
 ### `changelogen gh release`
 
 Changelogen has built-in functionality to sync with Github releases.
