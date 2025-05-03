@@ -101,7 +101,8 @@ export async function generateMarkDown(
         const github = i.github
           ? `([@${i.github}](https://github.com/${i.github}))`
           : "";
-        return `- ${i.name} ${github || email}`;
+        const suffix = github || email ? ` ${github || email}` : "";
+        return `- ${i.name}${suffix}`;
       })
     );
   }

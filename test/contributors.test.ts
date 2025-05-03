@@ -70,4 +70,42 @@ describe("contributors", () => {
       - **scope:** Update dependencies"
     `);
   });
+
+  test("should skip author email addresses with hideAuthorEmail config", async () => {
+    const config = await loadChangelogConfig(process.cwd(), {
+      from: "1.0.0",
+      newVersion: "2.0.0",
+      hideAuthorEmail: true,
+    });
+    const contents = await generateMarkDown(testCommits, config);
+
+    expect(contents).toMatchInlineSnapshot(`
+      "## v2.0.0
+
+      [compare changes](https://github.com/unjs/changelogen/compare/1.0.0...v2.0.0)
+
+      ### 🚀 Enhancements
+
+      - **scope:** Add feature
+
+      ### 🩹 Fixes
+
+      - **scope:** Resolve bug
+
+      ### 📖 Documentation
+
+      - **scope:** Update documentation
+
+      ### 🏡 Chore
+
+      - **scope:** Update dependencies
+
+      ### ❤️ Contributors
+
+      - John Doe ([@brainsucker](https://github.com/brainsucker))
+      - Jane Smith
+      - Alice Johnson
+      - Bob Williams"
+    `);
+  });
 });
