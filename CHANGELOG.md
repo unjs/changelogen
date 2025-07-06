@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v0.6.2
+
+[compare changes](https://github.com/unjs/changelogen/compare/v0.6.1...v0.6.2)
+
+### 🩹 Fixes
+
+- **cli:** Accept `hideAuthorEmail` arg ([#275](https://github.com/unjs/changelogen/pull/275))
+
+### 📖 Documentation
+
+- Add note about version number interpretation ([#272](https://github.com/unjs/changelogen/pull/272))
+
+### 🌊 Types
+
+- `config.types` accept `boolean` value ([#278](https://github.com/unjs/changelogen/pull/278))
+
+### 🏡 Chore
+
+- **readme:** Fix typo ([#270](https://github.com/unjs/changelogen/pull/270))
+- Update deps ([037ac74](https://github.com/unjs/changelogen/commit/037ac74))
+
+### ❤️ Contributors
+
+- Philipp Kief ([@PKief](https://github.com/PKief))
+- Pooya Parsa ([@pi0](https://github.com/pi0))
+- Azat S. ([@azat-io](https://github.com/azat-io))
+- Adarsh DK <adarsh.dk24012@gmail.com>
+- B. Jonson ([@who-jonson](https://github.com/who-jonson))
+
 ## v0.6.1
 
 [compare changes](https://github.com/unjs/changelogen/compare/v0.6.0...v0.6.1)
