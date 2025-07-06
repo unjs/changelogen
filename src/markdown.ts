@@ -97,11 +97,11 @@ export async function generateMarkDown(
           (e) => !e.includes("noreply.github.com")
         );
         const email =
-          config.hideAuthorEmail !== true && _email ? `<${_email}>` : "";
+          config.hideAuthorEmail !== true && _email ? ` <${_email}>` : "";
         const github = i.github
-          ? `([@${i.github}](https://github.com/${i.github}))`
+          ? ` ([@${i.github}](https://github.com/${i.github}))`
           : "";
-        return `- ${i.name} ${github || email}`;
+        return `- ${i.name}${github || email || ""}`;
       })
     );
   }

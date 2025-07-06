@@ -26,6 +26,7 @@ export default async function defaultMain(args: Argv) {
     output: args.output,
     newVersion: typeof args.r === "string" ? args.r : undefined,
     noAuthors: args.noAuthors,
+    hideAuthorEmail: args.hideAuthorEmail,
   });
 
   if (args.clean) {
