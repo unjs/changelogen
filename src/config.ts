@@ -7,7 +7,7 @@ import type { RepoConfig, RepoProvider } from "./repo";
 
 export interface ChangelogConfig {
   cwd: string;
-  types: Record<string, { title: string; semver?: SemverBumpType }>;
+  types: Record<string, { title: string; semver?: SemverBumpType } | boolean>;
   scopeMap: Record<string, string>;
   repo?: RepoConfig | string;
   tokens: Partial<Record<RepoProvider, string>>;
