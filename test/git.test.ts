@@ -493,6 +493,7 @@ describe("git", () => {
       provider: "github",
       repo: "unjs/changelogen",
       domain: "github.com",
+      protocol: "https:",
     };
     expect(getRepoConfig("unjs/changelogen")).toStrictEqual(github);
     expect(getRepoConfig("github:unjs/changelogen")).toStrictEqual(github);
@@ -510,6 +511,7 @@ describe("git", () => {
       provider: "gitlab",
       repo: "unjs/changelogen",
       domain: "gitlab.com",
+      protocol: "https:",
     };
 
     expect(getRepoConfig("gitlab:unjs/changelogen")).toStrictEqual(gitlab);
@@ -527,6 +529,7 @@ describe("git", () => {
       provider: "bitbucket",
       repo: "unjs/changelogen",
       domain: "bitbucket.org",
+      protocol: "https:",
     };
 
     expect(getRepoConfig("bitbucket:unjs/changelogen")).toStrictEqual(
@@ -548,6 +551,7 @@ describe("git", () => {
     const selfhosted = {
       repo: "unjs/changelogen",
       domain: "git.unjs.io",
+      protocol: "https:",
     };
 
     expect(getRepoConfig("selfhosted:unjs/changelogen")).toMatchObject({
@@ -581,6 +585,7 @@ describe("git", () => {
       provider: "github",
       repo: "unjs/changelogen",
       domain: "github.com",
+      protocol: "https:",
     };
 
     expect(formatReference({ type: "hash", value: "3828bda" }, github)).toBe(
@@ -597,6 +602,7 @@ describe("git", () => {
       provider: "gitlab",
       repo: "unjs/changelogen",
       domain: "gitlab.com",
+      protocol: "https:",
     };
 
     expect(formatReference({ type: "hash", value: "3828bda" }, gitlab)).toBe(
@@ -613,6 +619,7 @@ describe("git", () => {
       provider: "bitbucket",
       repo: "unjs/changelogen",
       domain: "bitbucket.org",
+      protocol: "https:",
     };
 
     expect(formatReference({ type: "hash", value: "3828bda" }, bitbucket)).toBe(
@@ -628,6 +635,7 @@ describe("git", () => {
     const unkown: RepoConfig = {
       repo: "unjs/changelogen",
       domain: "git.unjs.io",
+      protocol: "https:",
     };
 
     expect(formatReference({ type: "hash", value: "3828bda" }, unkown)).toBe(

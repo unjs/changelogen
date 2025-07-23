@@ -6,6 +6,7 @@ import { getGitRemoteURL } from "./git";
 export type RepoProvider = "github" | "gitlab" | "bitbucket";
 
 export type RepoConfig = {
+  protocol?: string;
   domain?: string;
   repo?: string;
   provider?: RepoProvider;
@@ -42,7 +43,7 @@ const providerURLRegex =
   /^(?:(?<user>[\w-]+)@)?(?:(?<provider>[^/:]+):)?(?<repo>[\w-]+\/(?:\w|\.(?!git$)|-)+)(?:\.git)?$/;
 
 function baseUrl(config: RepoConfig) {
-  return `https://${config.domain}/${config.repo}`;
+  return `${config.protocol}//${config.domain}/${config.repo}`;
 }
 
 export function formatReference(ref: Reference, repo?: RepoConfig) {
@@ -68,29 +69,30 @@ export function formatCompareChanges(
   return `[compare changes](${baseUrl(config.repo)}/${part}/${changes})`;
 }
 
-export async function resolveRepoConfig(cwd: string) {
+export async function resolveRepoConfig(cwd: string, repoType: string) {
   // Try closest package.json
   const pkg = await readPackageJSON(cwd).catch(() => {});
   if (pkg && pkg.repository) {
     const url =
       typeof pkg.repository === "string" ? pkg.repository : pkg.repository.url;
-    return getRepoConfig(url);
+    return getRepoConfig(url, repoType);
   }
 
   try {
     const gitRemote = getGitRemoteURL(cwd);
     if (gitRemote) {
-      return getRepoConfig(gitRemote);
+      return getRepoConfig(gitRemote, repoType);
     }
   } catch {
     // Ignore
   }
 }
 
-export function getRepoConfig(repoUrl = ""): RepoConfig {
+export function getRepoConfig(repoUrl = "", repoType = "github"): RepoConfig {
   let provider;
   let repo;
   let domain;
+  let protocol;
 
   let url: URL;
   try {
@@ -108,23 +110,27 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
         : m.provider;
     domain =
       provider in providerToDomain ? providerToDomain[provider] : provider;
+    protocol = "https:";
   } else if (url) {
-    domain = url.hostname;
+    domain = url.host;
     const paths = url.pathname.split("/");
     repo = paths
       .slice(1)
       .join("/")
       .replace(/\.git$/, "");
-    provider = domainToProvider[domain];
+    provider = domainToProvider[domain] || repoType;
+    protocol = url.protocol;
   } else if (m.repo) {
     repo = m.repo;
-    provider = "github";
+    provider = repoType || "github";
     domain = providerToDomain[provider];
+    protocol = "https:";
   }
 
   return {
     provider,
     repo,
     domain,
+    protocol,
   };
 }
