@@ -15,7 +15,7 @@ export interface ChangelogConfig {
   to: string;
   newVersion?: string;
   signTags?: boolean;
-  output: string | boolean;
+  output: string | false;
   publish: {
     args?: string[];
     tag?: string;
@@ -112,8 +112,7 @@ export async function resolveChangelogConfig(
   }
 
   if (config.output) {
-    config.output =
-      config.output === true ? defaultOutput : resolve(cwd, config.output);
+    config.output = resolve(cwd, config.output);
   } else {
     config.output = false;
   }

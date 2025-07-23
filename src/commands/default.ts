@@ -89,8 +89,8 @@ export default async function defaultMain(args: Argv) {
     consola.log("\n\n" + markdown + "\n\n");
   }
 
-  // Update changelog file (only when bumping or releasing or when --output is specified as a file)
-  if (typeof config.output === "string" && (args.output || !displayOnly)) {
+  // Update changelog file when output is configured and not explicitly disabled
+  if (config.output !== false && !args['no-output']) {
     let changelogMD: string;
     if (existsSync(config.output)) {
       consola.info(`Updating ${config.output}`);
