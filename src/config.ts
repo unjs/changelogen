@@ -29,6 +29,7 @@ export interface ChangelogConfig {
   noAuthors: boolean;
   excludeAuthors: string[];
   hideAuthorEmail?: boolean;
+  repoType?: RepoProvider | (string & {});
 }
 
 export type ResolvedChangelogConfig = Omit<ChangelogConfig, "repo"> & {
@@ -75,6 +76,7 @@ const getDefaultConfig = () =>
     },
     excludeAuthors: [],
     noAuthors: false,
+    repoType: "github",
   };
 
 export async function loadChangelogConfig(
@@ -117,11 +119,11 @@ export async function resolveChangelogConfig(
   }
 
   if (!config.repo) {
-    config.repo = await resolveRepoConfig(cwd);
+    config.repo = await resolveRepoConfig(cwd, config.repoType);
   }
 
   if (typeof config.repo === "string") {
-    config.repo = getRepoConfig(config.repo);
+    config.repo = getRepoConfig(config.repo, config.repoType);
   }
 
   return config as ResolvedChangelogConfig;
