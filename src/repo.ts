@@ -69,7 +69,9 @@ export function formatReference(ref: Reference, repo?: RepoConfig) {
     return ref.value;
   }
   const refSpec = providerToRefSpec[repo.provider];
-  return `[${ref.value}](${baseUrl(repo)}/${
+
+  const shortHash = ref.value.length > 7 ? ref.value.slice(0, 7) : ref.value;
+  return `[${shortHash}](${baseUrl(repo)}/${
     refSpec[ref.type]
   }/${ref.value.replace(/^#/, "")})`;
 }
