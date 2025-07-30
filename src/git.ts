@@ -15,8 +15,9 @@ export interface RawGitCommit {
 }
 
 export interface Reference {
-  type: "hash" | "issue" | "pull-request";
+  type: "hash" | "issue" | "pull-request" | string;
   value: string;
+  url?: string;
 }
 
 export interface GitCommit extends RawGitCommit {
@@ -92,7 +93,7 @@ export async function getGitDiff(
 
 export function parseCommits(
   commits: RawGitCommit[],
-  config: ChangelogConfig
+  config: ResolvedChangelogConfig
 ): GitCommit[] {
   return commits
     .map((commit) => parseGitCommit(commit, config))
