@@ -203,6 +203,7 @@ describe("git", () => {
             "email": "pooya@pi0.io",
             "name": "Pooya Parsa",
           },
+          "fullHash": "3828bda8c45933396ddfa869d671473231ce3c95",
           "message": "chore(release): v0.3.5",
           "shortHash": "3828bda",
         },
@@ -211,6 +212,7 @@ describe("git", () => {
             "email": "pooya@pi0.io",
             "name": "Pooya Parsa",
           },
+          "fullHash": "20e622e5e25a75475af4ce6919458d9b0c13b264",
           "message": "fix(scope)!: breaking change example, close #123 (#134)",
           "shortHash": "20e622e",
         },
@@ -219,6 +221,7 @@ describe("git", () => {
             "email": "pooya@pi0.io",
             "name": "Pooya Parsa",
           },
+          "fullHash": "6fc5087fce8d26022784871672f5ffe75b247dbb",
           "message": "chore(release): v0.3.4",
           "shortHash": "6fc5087",
         },
@@ -227,6 +230,7 @@ describe("git", () => {
             "email": "pooya@pi0.io",
             "name": "Pooya Parsa",
           },
+          "fullHash": "c0febf12821c785fe93f24e3ca97ae3679bf940f",
           "message": "feat: infer github config from package.json (resolves #37)",
           "shortHash": "c0febf1",
         },
@@ -235,6 +239,7 @@ describe("git", () => {
             "email": "pooya@pi0.io",
             "name": "Pooya Parsa",
           },
+          "fullHash": "f4f42a38afc3492c935cce8dd4bc30ec956e75a3",
           "message": "chore(release): v0.3.3",
           "shortHash": "f4f42a3",
         },
@@ -243,6 +248,7 @@ describe("git", () => {
             "email": "pooya@pi0.io",
             "name": "Pooya Parsa",
           },
+          "fullHash": "648ccf19345f9cb5b82af7ee05ed41b31594598b",
           "message": "fix: consider docs and refactor as semver patch for bump",
           "shortHash": "648ccf1",
         },
@@ -251,6 +257,7 @@ describe("git", () => {
             "email": "pooya@pi0.io",
             "name": "Pooya Parsa",
           },
+          "fullHash": "5451f182972ec521176cfdb0c336b6afd54bf150",
           "message": "feat: expose \`determineSemverChange\` and \`bumpVersion\`",
           "shortHash": "5451f18",
         },
@@ -259,6 +266,7 @@ describe("git", () => {
             "email": "pooya@pi0.io",
             "name": "Pooya Parsa",
           },
+          "fullHash": "8796cf12c35e789e697ca88b72aa7ed8fbcaa806",
           "message": "chore: fix typecheck",
           "shortHash": "8796cf1",
         },
@@ -267,6 +275,7 @@ describe("git", () => {
             "email": "pooya@pi0.io",
             "name": "Pooya Parsa",
           },
+          "fullHash": "c21097668bbf7323bb59f24cd1e75714bf0019ba",
           "message": "chore: update dependencies",
           "shortHash": "c210976",
         },
@@ -275,6 +284,7 @@ describe("git", () => {
             "email": "29139614+renovate[bot]@users.noreply.github.com",
             "name": "renovate[bot]",
           },
+          "fullHash": "a80e3727ea990e4527dd9e8af38f3fb136825de3",
           "message": "chore(deps): update all non-major dependencies (#42)",
           "shortHash": "a80e372",
         },
@@ -288,165 +298,175 @@ describe("git", () => {
 
     expect(parsed.map(({ body: _, author: __, authors: ___, ...rest }) => rest))
       .toMatchInlineSnapshot(`
-      [
-        {
-          "description": "v0.3.5",
-          "isBreaking": false,
-          "message": "chore(release): v0.3.5",
-          "references": [
-            {
-              "type": "hash",
-              "value": "3828bda",
-            },
-          ],
-          "scope": "release",
-          "shortHash": "3828bda",
-          "type": "chore",
-        },
-        {
-          "description": "breaking change example, close #123",
-          "isBreaking": true,
-          "message": "fix(scope)!: breaking change example, close #123 (#134)",
-          "references": [
-            {
-              "type": "pull-request",
-              "value": "#134",
-            },
-            {
-              "type": "issue",
-              "value": "#123",
-            },
-            {
-              "type": "hash",
-              "value": "20e622e",
-            },
-          ],
-          "scope": "scope",
-          "shortHash": "20e622e",
-          "type": "fix",
-        },
-        {
-          "description": "v0.3.4",
-          "isBreaking": false,
-          "message": "chore(release): v0.3.4",
-          "references": [
-            {
-              "type": "hash",
-              "value": "6fc5087",
-            },
-          ],
-          "scope": "release",
-          "shortHash": "6fc5087",
-          "type": "chore",
-        },
-        {
-          "description": "infer github config from package.json",
-          "isBreaking": false,
-          "message": "feat: infer github config from package.json (resolves #37)",
-          "references": [
-            {
-              "type": "pull-request",
-              "value": "#37",
-            },
-            {
-              "type": "hash",
-              "value": "c0febf1",
-            },
-          ],
-          "scope": "",
-          "shortHash": "c0febf1",
-          "type": "feat",
-        },
-        {
-          "description": "v0.3.3",
-          "isBreaking": false,
-          "message": "chore(release): v0.3.3",
-          "references": [
-            {
-              "type": "hash",
-              "value": "f4f42a3",
-            },
-          ],
-          "scope": "release",
-          "shortHash": "f4f42a3",
-          "type": "chore",
-        },
-        {
-          "description": "consider docs and refactor as semver patch for bump",
-          "isBreaking": false,
-          "message": "fix: consider docs and refactor as semver patch for bump",
-          "references": [
-            {
-              "type": "hash",
-              "value": "648ccf1",
-            },
-          ],
-          "scope": "",
-          "shortHash": "648ccf1",
-          "type": "fix",
-        },
-        {
-          "description": "expose \`determineSemverChange\` and \`bumpVersion\`",
-          "isBreaking": false,
-          "message": "feat: expose \`determineSemverChange\` and \`bumpVersion\`",
-          "references": [
-            {
-              "type": "hash",
-              "value": "5451f18",
-            },
-          ],
-          "scope": "",
-          "shortHash": "5451f18",
-          "type": "feat",
-        },
-        {
-          "description": "fix typecheck",
-          "isBreaking": false,
-          "message": "chore: fix typecheck",
-          "references": [
-            {
-              "type": "hash",
-              "value": "8796cf1",
-            },
-          ],
-          "scope": "",
-          "shortHash": "8796cf1",
-          "type": "chore",
-        },
-        {
-          "description": "update dependencies",
-          "isBreaking": false,
-          "message": "chore: update dependencies",
-          "references": [
-            {
-              "type": "hash",
-              "value": "c210976",
-            },
-          ],
-          "scope": "",
-          "shortHash": "c210976",
-          "type": "chore",
-        },
-        {
-          "description": "update all non-major dependencies",
-          "isBreaking": false,
-          "message": "chore(deps): update all non-major dependencies (#42)",
-          "references": [
-            {
-              "type": "pull-request",
-              "value": "#42",
-            },
-            {
-              "type": "hash",
-              "value": "a80e372",
-            },
-          ],
-          "scope": "deps",
-          "shortHash": "a80e372",
-          "type": "chore",
-        },
-      ]
-    `);
+        [
+          {
+            "description": "v0.3.5",
+            "fullHash": "3828bda8c45933396ddfa869d671473231ce3c95",
+            "isBreaking": false,
+            "message": "chore(release): v0.3.5",
+            "references": [
+              {
+                "type": "hash",
+                "value": "3828bda",
+              },
+            ],
+            "scope": "release",
+            "shortHash": "3828bda",
+            "type": "chore",
+          },
+          {
+            "description": "breaking change example, close #123",
+            "fullHash": "20e622e5e25a75475af4ce6919458d9b0c13b264",
+            "isBreaking": true,
+            "message": "fix(scope)!: breaking change example, close #123 (#134)",
+            "references": [
+              {
+                "type": "pull-request",
+                "value": "#134",
+              },
+              {
+                "type": "issue",
+                "value": "#123",
+              },
+              {
+                "type": "hash",
+                "value": "20e622e",
+              },
+            ],
+            "scope": "scope",
+            "shortHash": "20e622e",
+            "type": "fix",
+          },
+          {
+            "description": "v0.3.4",
+            "fullHash": "6fc5087fce8d26022784871672f5ffe75b247dbb",
+            "isBreaking": false,
+            "message": "chore(release): v0.3.4",
+            "references": [
+              {
+                "type": "hash",
+                "value": "6fc5087",
+              },
+            ],
+            "scope": "release",
+            "shortHash": "6fc5087",
+            "type": "chore",
+          },
+          {
+            "description": "infer github config from package.json",
+            "fullHash": "c0febf12821c785fe93f24e3ca97ae3679bf940f",
+            "isBreaking": false,
+            "message": "feat: infer github config from package.json (resolves #37)",
+            "references": [
+              {
+                "type": "pull-request",
+                "value": "#37",
+              },
+              {
+                "type": "hash",
+                "value": "c0febf1",
+              },
+            ],
+            "scope": "",
+            "shortHash": "c0febf1",
+            "type": "feat",
+          },
+          {
+            "description": "v0.3.3",
+            "fullHash": "f4f42a38afc3492c935cce8dd4bc30ec956e75a3",
+            "isBreaking": false,
+            "message": "chore(release): v0.3.3",
+            "references": [
+              {
+                "type": "hash",
+                "value": "f4f42a3",
+              },
+            ],
+            "scope": "release",
+            "shortHash": "f4f42a3",
+            "type": "chore",
+          },
+          {
+            "description": "consider docs and refactor as semver patch for bump",
+            "fullHash": "648ccf19345f9cb5b82af7ee05ed41b31594598b",
+            "isBreaking": false,
+            "message": "fix: consider docs and refactor as semver patch for bump",
+            "references": [
+              {
+                "type": "hash",
+                "value": "648ccf1",
+              },
+            ],
+            "scope": "",
+            "shortHash": "648ccf1",
+            "type": "fix",
+          },
+          {
+            "description": "expose \`determineSemverChange\` and \`bumpVersion\`",
+            "fullHash": "5451f182972ec521176cfdb0c336b6afd54bf150",
+            "isBreaking": false,
+            "message": "feat: expose \`determineSemverChange\` and \`bumpVersion\`",
+            "references": [
+              {
+                "type": "hash",
+                "value": "5451f18",
+              },
+            ],
+            "scope": "",
+            "shortHash": "5451f18",
+            "type": "feat",
+          },
+          {
+            "description": "fix typecheck",
+            "fullHash": "8796cf12c35e789e697ca88b72aa7ed8fbcaa806",
+            "isBreaking": false,
+            "message": "chore: fix typecheck",
+            "references": [
+              {
+                "type": "hash",
+                "value": "8796cf1",
+              },
+            ],
+            "scope": "",
+            "shortHash": "8796cf1",
+            "type": "chore",
+          },
+          {
+            "description": "update dependencies",
+            "fullHash": "c21097668bbf7323bb59f24cd1e75714bf0019ba",
+            "isBreaking": false,
+            "message": "chore: update dependencies",
+            "references": [
+              {
+                "type": "hash",
+                "value": "c210976",
+              },
+            ],
+            "scope": "",
+            "shortHash": "c210976",
+            "type": "chore",
+          },
+          {
+            "description": "update all non-major dependencies",
+            "fullHash": "a80e3727ea990e4527dd9e8af38f3fb136825de3",
+            "isBreaking": false,
+            "message": "chore(deps): update all non-major dependencies (#42)",
+            "references": [
+              {
+                "type": "pull-request",
+                "value": "#42",
+              },
+              {
+                "type": "hash",
+                "value": "a80e372",
+              },
+            ],
+            "scope": "deps",
+            "shortHash": "a80e372",
+            "type": "chore",
+          },
+        ]
+      `);
 
     const md = await generateMarkDown(parsed, config);
 
@@ -458,16 +478,16 @@ describe("git", () => {
       ### 🚀 Enhancements
 
       - Expose \`determineSemverChange\` and \`bumpVersion\` ([5451f18](https://github.com/unjs/changelogen/commit/5451f18))
-      - Infer github config from package.json ([#37](https://github.com/unjs/changelogen/pull/37))
+      - Infer github config from package.json ([#37](https://github.com/unjs/changelogen/pull/37), [c0febf1](https://github.com/unjs/changelogen/commit/c0febf1))
 
       ### 🩹 Fixes
 
       - Consider docs and refactor as semver patch for bump ([648ccf1](https://github.com/unjs/changelogen/commit/648ccf1))
-      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
+      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123), [20e622e](https://github.com/unjs/changelogen/commit/20e622e))
 
       ### 🏡 Chore
 
-      - **deps:** Update all non-major dependencies ([#42](https://github.com/unjs/changelogen/pull/42))
+      - **deps:** Update all non-major dependencies ([#42](https://github.com/unjs/changelogen/pull/42), [a80e372](https://github.com/unjs/changelogen/commit/a80e372))
       - Update dependencies ([c210976](https://github.com/unjs/changelogen/commit/c210976))
       - Fix typecheck ([8796cf1](https://github.com/unjs/changelogen/commit/8796cf1))
       - **release:** V0.3.3 ([f4f42a3](https://github.com/unjs/changelogen/commit/f4f42a3))
@@ -476,7 +496,7 @@ describe("git", () => {
 
       #### ⚠️ Breaking Changes
 
-      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
+      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123), [20e622e](https://github.com/unjs/changelogen/commit/20e622e))
 
       ### ❤️ Contributors
 

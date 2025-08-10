@@ -4,3 +4,4 @@ export * from "./markdown";
 export * from "./config";
 export * from "./semver";
 export * from "./repo";
+export * from "./plugins";
