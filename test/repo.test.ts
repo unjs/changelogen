@@ -11,6 +11,7 @@ describe("repo", () => {
             domain: "github.com",
             provider: "github",
             repo: "donaldsh/test",
+            protocol: "https:",
           },
         },
         {
@@ -19,6 +20,7 @@ describe("repo", () => {
             domain: "gitlab.com",
             provider: "gitlab",
             repo: "donaldsh/test",
+            protocol: "https:",
           },
         },
         {
@@ -27,6 +29,7 @@ describe("repo", () => {
             domain: "gitlab.com",
             provider: "gitlab",
             repo: "donaldsh/test",
+            protocol: "https:",
           },
         },
         {
@@ -35,6 +38,7 @@ describe("repo", () => {
             domain: "bitbucket.org",
             provider: "bitbucket",
             repo: "donaldsh/test",
+            protocol: "https:",
           },
         },
         {
@@ -43,6 +47,7 @@ describe("repo", () => {
             domain: "x",
             provider: "x",
             repo: "b/c",
+            protocol: "https:",
           },
         },
       ])("url=$input should return RepoConfig", ({ input, output }) => {
@@ -58,6 +63,7 @@ describe("repo", () => {
             domain: "github.com",
             provider: "github",
             repo: "unjs/changelogen",
+            protocol: "https:",
           },
         },
         {
@@ -66,6 +72,7 @@ describe("repo", () => {
             domain: "github.com",
             provider: "github",
             repo: "unjs/changelogen",
+            protocol: "https:",
           },
         },
         {
@@ -74,6 +81,7 @@ describe("repo", () => {
             domain: "github.com",
             provider: "github",
             repo: "myproject",
+            protocol: "https:",
           },
         },
         {
@@ -82,10 +90,39 @@ describe("repo", () => {
             domain: "github.com",
             provider: "github",
             repo: "account/project/sub1/sub2/myproject",
+            protocol: "https:",
+          },
+        },
+        {
+          input: {
+            repo: "http://192.168.1.10/unjs/changelogen.git",
+            repoType: "gitlab",
+          },
+          output: {
+            domain: "192.168.1.10",
+            provider: "gitlab",
+            repo: "unjs/changelogen",
+            protocol: "http:",
+          },
+        },
+        {
+          input: {
+            repo: "http://192.168.1.10:8888/unjs/changelogen.git",
+            repoType: "gitlab",
+          },
+          output: {
+            domain: "192.168.1.10:8888",
+            provider: "gitlab",
+            repo: "unjs/changelogen",
+            protocol: "http:",
           },
         },
       ])("url=$input should return RepoConfig", ({ input, output }) => {
-        expect(getRepoConfig(input)).toEqual(output);
+        if (typeof input === "string") {
+          expect(getRepoConfig(input)).toEqual(output);
+        } else {
+          expect(getRepoConfig(input.repo, input.repoType)).toEqual(output);
+        }
       });
     });
 
@@ -97,6 +134,7 @@ describe("repo", () => {
             domain: "github.com",
             provider: "github",
             repo: "donaldsh/test",
+            protocol: "https:",
           },
         },
         {
@@ -105,6 +143,7 @@ describe("repo", () => {
             domain: "github.com",
             provider: "github",
             repo: "unjs/changelogen",
+            protocol: "https:",
           },
         },
       ])("url=$input should return RepoConfig", ({ input, output }) => {
