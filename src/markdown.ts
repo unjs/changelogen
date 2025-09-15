@@ -35,7 +35,11 @@ export async function generateMarkDown(
       const line = formatCommit(commit, config);
       markdown.push(line);
       if (commit.isBreaking) {
-        breakingChanges.push(line);
+        const breakingLine =
+          config.breakingChangesIncludeBody && commit.body.trim()
+            ? formatBreakingCommitWithBody(commit)
+            : line;
+        breakingChanges.push(breakingLine);
       }
     }
   }
@@ -144,6 +148,24 @@ function formatCommit(commit: GitCommit, config: ResolvedChangelogConfig) {
     (commit.isBreaking ? "⚠️  " : "") +
     upperFirst(commit.description) +
     formatReferences(commit.references, config)
+  );
+}
+
+function formatBreakingCommitWithBody(commit: GitCommit) {
+  let bodyContent = commit.body.trim();
+
+  // Remove "BREAKING CHANGE:" prefix if it exists
+  bodyContent = bodyContent.replace(/^BREAKING CHANGE:\s*/i, "");
+
+  // Remove git status lines (M, A, D, R followed by filename)
+  bodyContent = bodyContent
+    .split("\n")
+    .filter((line) => !/^[AMDRT]\s+/.test(line))
+    .join("\n")
+    .trim();
+
+  return (
+    "- " + (commit.scope ? `**${commit.scope.trim()}:** ` : "") + bodyContent
   );
 }
 

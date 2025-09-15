@@ -640,4 +640,82 @@ describe("git", () => {
       "#14"
     );
   });
+
+  test("generateMarkDown with breakingChangesIncludeBody", async () => {
+    const commits = [
+      {
+        message: "feat!: add breaking feature",
+        shortHash: "abc1234",
+        body: "BREAKING CHANGE: This feature changes the API and removes legacy support.\nM    tests/utils/drag-simular.ts\nA    new-file.js",
+        author: { name: "Test Author", email: "test@example.com" },
+        description: "add breaking feature",
+        type: "feat",
+        scope: "",
+        references: [{ type: "hash", value: "abc1234" }],
+        authors: [{ name: "Test Author", email: "test@example.com" }],
+        isBreaking: true,
+      },
+      {
+        message: "fix: regular fix",
+        shortHash: "def5678",
+        body: "Some additional context about the fix.",
+        author: { name: "Test Author", email: "test@example.com" },
+        description: "regular fix",
+        type: "fix",
+        scope: "",
+        references: [{ type: "hash", value: "def5678" }],
+        authors: [{ name: "Test Author", email: "test@example.com" }],
+        isBreaking: false,
+      },
+    ];
+
+    const config = await loadChangelogConfig(process.cwd(), {
+      breakingChangesIncludeBody: true,
+      noAuthors: true,
+    });
+
+    const md = await generateMarkDown(commits, config);
+
+    expect(md).toContain("#### ⚠️ Breaking Changes");
+    expect(md).toContain(
+      "- This feature changes the API and removes legacy support."
+    );
+    const breakingSection = md.split("#### ⚠️ Breaking Changes")[1];
+    expect(breakingSection).toContain(
+      "This feature changes the API and removes legacy support."
+    );
+    expect(breakingSection).not.toContain("⚠️  Add breaking feature");
+    expect(breakingSection).not.toContain("M    tests/utils/drag-simular.ts");
+    expect(breakingSection).not.toContain("A    new-file.js");
+  });
+
+  test("generateMarkDown without breakingChangesIncludeBody (default behavior)", async () => {
+    const commits = [
+      {
+        message: "feat!: add breaking feature",
+        shortHash: "abc1234",
+        body: "BREAKING CHANGE: This feature changes the API and removes legacy support.",
+        author: { name: "Test Author", email: "test@example.com" },
+        description: "add breaking feature",
+        type: "feat",
+        scope: "",
+        references: [{ type: "hash", value: "abc1234" }],
+        authors: [{ name: "Test Author", email: "test@example.com" }],
+        isBreaking: true,
+      },
+    ];
+
+    const config = await loadChangelogConfig(process.cwd(), {
+      breakingChangesIncludeBody: false,
+      noAuthors: true,
+    });
+
+    const md = await generateMarkDown(commits, config);
+
+    expect(md).toContain("#### ⚠️ Breaking Changes");
+    expect(md).toContain("- ⚠️  Add breaking feature ([abc1234]");
+    expect(md).not.toContain(
+      "- BREAKING CHANGE: This feature changes the API and removes legacy support."
+    );
+  });
 });

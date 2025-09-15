@@ -29,6 +29,7 @@ export interface ChangelogConfig {
   noAuthors: boolean;
   excludeAuthors: string[];
   hideAuthorEmail?: boolean;
+  breakingChangesIncludeBody?: boolean;
 }
 
 export type ResolvedChangelogConfig = Omit<ChangelogConfig, "repo"> & {
