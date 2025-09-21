@@ -116,6 +116,21 @@ export function githubNewReleaseURL(
   }&title=v${release.version}&body=${encodeURIComponent(release.body)}`;
 }
 
+export async function getPullRequestAuthorLogin(
+  config: ResolvedChangelogConfig,
+  prNumber: number
+): Promise<string | undefined> {
+  try {
+    const pr = await githubFetch(
+      config,
+      `/repos/${config.repo.repo}/pulls/${prNumber}`
+    );
+    return pr?.user?.login;
+  } catch {
+    return undefined;
+  }
+}
+
 export async function resolveGithubToken(config: ResolvedChangelogConfig) {
   const env =
     process.env.CHANGELOGEN_TOKENS_GITHUB ||

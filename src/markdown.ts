@@ -1,9 +1,10 @@
-import { upperFirst } from "scule";
 import { convert } from "convert-gitmoji";
 import { fetch } from "node-fetch-native";
+import { upperFirst } from "scule";
 import type { ResolvedChangelogConfig } from "./config";
 import type { GitCommit, Reference } from "./git";
-import { formatReference, formatCompareChanges } from "./repo";
+import { getPullRequestAuthorLogin } from "./github";
+import { formatCompareChanges, formatReference } from "./repo";
 
 export async function generateMarkDown(
   commits: GitCommit[],
@@ -80,6 +81,19 @@ export async function generateMarkDown(
         if (user) {
           meta.github = user.username;
           break;
+        }
+      }
+
+      // Fallback: Use PR author login for any PRs referenced by this author's commits
+      if (!meta.github && config.repo?.provider === "github") {
+        const prNumber = getAuthorPRNumber(commits, authorName);
+        if (prNumber) {
+          const login = await getPullRequestAuthorLogin(config, prNumber).catch(
+            () => undefined
+          );
+          if (login) {
+            meta.github = login;
+          }
         }
       }
     })
@@ -186,6 +200,29 @@ function groupBy(items: any[], key: string) {
     groups[item[key]].push(item);
   }
   return groups;
+}
+
+function getAuthorPRNumber(
+  commits: GitCommit[],
+  authorName: string
+): number | undefined {
+  for (const commit of commits) {
+    if (!commit.author) continue;
+    const name = formatName(commit.author.name);
+    if (name !== authorName) continue;
+
+    if (commit.references && Array.isArray(commit.references)) {
+      for (const ref of commit.references) {
+        if (ref?.type === "pull-request" && typeof ref.value === "string") {
+          const num = Number.parseInt(ref.value.replace("#", ""), 10);
+          if (Number.isFinite(num)) {
+            return num;
+          }
+        }
+      }
+    }
+  }
+  return undefined;
 }
 
 const CHANGELOG_RELEASE_HEAD_RE =
