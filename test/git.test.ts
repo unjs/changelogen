@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import {
   generateMarkDown,
   getGitDiff,
@@ -8,6 +8,20 @@ import {
   formatReference,
 } from "../src";
 import { RepoConfig } from "./../src/repo";
+
+// Mock fetch to prevent network calls during tests
+vi.mock("node-fetch-native", () => ({
+  fetch: vi.fn((url: string) => {
+    if (url.includes("pooya@pi0.io")) {
+      return Promise.resolve({
+        json: () => Promise.resolve({ user: { username: "pi0" } }),
+      });
+    }
+    return Promise.resolve({
+      json: () => Promise.resolve({ user: null }),
+    });
+  }),
+}));
 
 describe("git", () => {
   test("getGitDiff should work", async () => {
