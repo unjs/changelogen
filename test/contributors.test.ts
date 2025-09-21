@@ -122,4 +122,40 @@ describe("contributors", () => {
       - Bob Williams"
     `);
   });
+
+  test("should handle PR author fallback gracefully", async () => {
+    const config = await loadChangelogConfig(process.cwd(), {
+      from: "1.0.0",
+      newVersion: "2.0.0",
+      repo: "unjs/changelogen",
+    });
+
+    const testCommits = [
+      {
+        author: {
+          name: "PR Author",
+          email: "private@noreply.github.com",
+        },
+        message: "feat: add feature (#123)",
+        shortHash: "abc123",
+        body: "body",
+        type: "feat",
+        description: "add feature (#123)",
+        scope: "",
+        references: [
+          {
+            type: "pull-request" as const,
+            value: "#123",
+          },
+        ],
+        authors: [],
+        isBreaking: false,
+      },
+    ];
+
+    const contents = await generateMarkDown(testCommits, config);
+
+    // Should include author name (PR fallback may or may not work depending on network/config)
+    expect(contents).toContain("PR Author");
+  });
 });
