@@ -48,7 +48,7 @@ export default async function defaultMain(args: Argv) {
     .filter(
       (c) =>
         config.types[c.type] &&
-        !(c.type === "chore" && c.scope === "deps" && !c.isBreaking)
+        !(c.type === "chore" && ["deps", "release"].includes(c.scope) && !c.isBreaking)
     );
 
   // Shortcut for canary releases
