@@ -111,7 +111,7 @@ export function githubNewReleaseURL(
   config: ResolvedChangelogConfig,
   release: { version: string; body: string }
 ) {
-  return `https://${config.repo.domain}/${config.repo.repo}/releases/new?tag=v${
+  return `${config.repo.protocol}//${config.repo.domain}/${config.repo.repo}/releases/new?tag=v${
     release.version
   }&title=v${release.version}&body=${encodeURIComponent(release.body)}`;
 }
@@ -148,7 +148,7 @@ async function githubFetch(
     baseURL:
       config.repo.domain === "github.com"
         ? "https://api.github.com"
-        : `https://${config.repo.domain}/api/v3`,
+        : `${config.repo.protocol}//${config.repo.domain}/api/v3`,
     headers: {
       "x-github-api-version": "2022-11-28",
       ...opts.headers,
