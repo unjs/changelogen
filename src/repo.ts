@@ -3,7 +3,7 @@ import type { Reference } from "./git";
 import type { ResolvedChangelogConfig } from "./config";
 import { getGitRemoteURL } from "./git";
 
-export type RepoProvider = "github" | "gitlab" | "bitbucket";
+export type RepoProvider = "github" | "gitlab" | "bitbucket" | "azure";
 
 export type RepoConfig = {
   domain?: string;
@@ -23,23 +23,42 @@ const providerToRefSpec: Record<
     hash: "commit",
     issue: "issues",
   },
+  azure: {
+    "pull-request": "pullrequest",
+    hash: "commit",
+    issue: "workitems",
+  },
 };
 
 const providerToDomain: Record<RepoProvider, string> = {
   github: "github.com",
   gitlab: "gitlab.com",
   bitbucket: "bitbucket.org",
+  azure: "dev.azure.com",
 };
 
 const domainToProvider: Record<string, RepoProvider> = {
   "github.com": "github",
   "gitlab.com": "gitlab",
   "bitbucket.org": "bitbucket",
+  "dev.azure.com": "azure",
+  "ssh.dev.azure.com": "azure",
 };
 
 // https://regex101.com/r/NA4Io6/1
-const providerURLRegex =
-  /^(?:(?<user>[\w-]+)@)?(?:(?<provider>[^/:]+):)?(?<repo>[\w-]+\/(?:\w|\.(?!git$)|-)+)(?:\.git)?$/;
+// Standard repository URL format (GitHub, GitLab, Bitbucket, etc.)
+const standardRepoURLRegex =
+  /^(?:(?<user>[\w-]+)@)?(?:(?<provider>[^/:]+):)?(?:(?<repo>[\w-]+\/(?:\w|\.(?!git$)|-)+))(?:\.git)?$/;
+
+// Azure DevOps specific URL formats
+const azureRepoURLRegex = {
+  // SSH format: git@ssh.dev.azure.com:v3/organization/project/repository
+  ssh: /^(?:(?<user>[\w-]+)@)?(?<provider>ssh\.dev\.azure\.com):v3\/(?<organization>[\w-]+)\/(?<project>[\w-]+)\/(?<repository>[\w-]+)(?:\.git)?$/,
+
+  // HTTPS format: https://username@dev.azure.com/organization/project/_git/repository
+  https:
+    /^https:\/\/(?:(?<user>[\w-]+)@)?(?<provider>dev\.azure\.com)\/(?<organization>[\w-]+)\/(?<project>[\w-]+)\/_git\/(?<repository>[\w-]+)$/,
+};
 
 function baseUrl(config: RepoConfig) {
   return `https://${config.domain}/${config.repo}`;
@@ -50,7 +69,9 @@ export function formatReference(ref: Reference, repo?: RepoConfig) {
     return ref.value;
   }
   const refSpec = providerToRefSpec[repo.provider];
-  return `[${ref.value}](${baseUrl(repo)}/${
+
+  const shortHash = ref.value.length > 7 ? ref.value.slice(0, 7) : ref.value;
+  return `[${shortHash}](${baseUrl(repo)}/${
     refSpec[ref.type]
   }/${ref.value.replace(/^#/, "")})`;
 }
@@ -59,12 +80,26 @@ export function formatCompareChanges(
   v: string,
   config: ResolvedChangelogConfig
 ) {
-  const part =
-    config.repo.provider === "bitbucket" ? "branches/compare" : "compare";
-  const changes =
-    config.repo.provider === "bitbucket"
-      ? `${v || config.to}%0D${config.from}`
-      : `${config.from}...${v || config.to}`;
+  let part: string;
+  let changes: string;
+  switch (config.repo.provider) {
+    case "bitbucket": {
+      part = "branches/compare";
+      changes = `${v || config.to}%0D${config.from}`;
+      break;
+    }
+    case "azure": {
+      part = "branchCompare";
+      changes = `?baseVersion=GT${v || config.to}&targetVersion=GT${config.from}`;
+      break;
+    }
+    default: {
+      part = "compare";
+      changes = `${config.from}...${v || config.to}`;
+      break;
+    }
+  }
+
   return `[compare changes](${baseUrl(config.repo)}/${part}/${changes})`;
 }
 
@@ -98,28 +133,53 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
   } catch {
     // Ignore error
   }
-
-  const m = repoUrl.match(providerURLRegex)?.groups ?? {};
-  if (m.repo && m.provider) {
-    repo = m.repo;
-    provider =
-      m.provider in domainToProvider
-        ? domainToProvider[m.provider]
-        : m.provider;
-    domain =
-      provider in providerToDomain ? providerToDomain[provider] : provider;
-  } else if (url) {
-    domain = url.hostname;
-    const paths = url.pathname.split("/");
-    repo = paths
-      .slice(1)
-      .join("/")
-      .replace(/\.git$/, "");
-    provider = domainToProvider[domain];
-  } else if (m.repo) {
-    repo = m.repo;
-    provider = "github";
+  // Try to match Azure DevOps HTTPS URL
+  const azureHttpsMatch = repoUrl.match(azureRepoURLRegex.https)?.groups;
+  if (azureHttpsMatch) {
+    const { organization, project, repository } = azureHttpsMatch;
+    repo = `${organization}/${project}/_git/${repository}`;
+    provider = "azure";
     domain = providerToDomain[provider];
+  }
+  // Try to match Azure DevOps SSH URL
+  else {
+    const azureSshMatch = repoUrl.match(azureRepoURLRegex.ssh)?.groups;
+    if (azureSshMatch) {
+      const { organization, project, repository } = azureSshMatch;
+      repo = `${organization}/${project}/_git/${repository}`;
+      provider = "azure";
+      domain = providerToDomain[provider];
+    }
+    // Try to match standard repository URL
+    else {
+      const standardMatch = repoUrl.match(standardRepoURLRegex)?.groups ?? {};
+
+      if (standardMatch.repo && standardMatch.provider) {
+        repo = standardMatch.repo;
+        provider =
+          standardMatch.provider in domainToProvider
+            ? domainToProvider[standardMatch.provider]
+            : standardMatch.provider;
+        domain =
+          provider in providerToDomain ? providerToDomain[provider] : provider;
+      }
+      // Handle URLs that don't match our regex
+      else if (url) {
+        domain = url.hostname;
+        const paths = url.pathname.split("/");
+        repo = paths
+          .slice(1)
+          .join("/")
+          .replace(/\.git$/, "");
+        provider = domainToProvider[domain];
+      }
+      // Fallback for simple repo paths
+      else if (standardMatch.repo) {
+        repo = standardMatch.repo;
+        provider = "github";
+        domain = providerToDomain[provider];
+      }
+    }
   }
 
   return {

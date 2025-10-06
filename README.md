@@ -92,7 +92,53 @@ Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You
 
 See [./src/config.ts](./src/config.ts) for available options and defaults.
 
-## 💻 Development
+## 🔌 Plugin System
+
+Changelogen supports a powerful plugin system that allows you to extend and customize the changelog generation process. Plugins can modify commits, enhance markdown output, integrate with external services, and more.
+
+### Quick Example
+
+```javascript
+// changelog.config.js
+export default {
+  plugins: {
+    "changelogen-jira-plugin": {
+      baseUrl: "https://citizenm.atlassian.net",
+      projectKeys: ["PROJ", "TASK"],
+    },
+  },
+};
+```
+
+### Plugin Capabilities
+
+- **Commit Processing**: Enrich commits with additional metadata (e.g., Jira tickets, GitHub issues)
+- **Markdown Generation**: Customize output format and add custom sections
+- **Version Management**: Influence version bumping logic
+- **Release Workflow**: Add custom release steps and notifications
+
+### Available Hooks
+
+Plugins can hook into various stages of the changelog generation:
+
+- `init` - Plugin initialization
+- `beforeCommitParsing` - Before parsing raw git commits
+- `afterCommitParsing` - After parsing commits into structured data
+- `beforeVersionBump` - Before calculating new version
+- `afterVersionBump` - After version has been bumped
+- `beforeMarkdownGeneration` - Before generating markdown
+- `afterMarkdownGeneration` - After markdown has been generated
+
+### Plugin Distribution
+
+- **NPM Packages**: `@changelogen/plugin-name` or `changelogen-plugin-name`
+- **Local Plugins**: Relative file paths in your project
+
+### Documentation
+
+For detailed plugin development guide, see [Plugin Documentation](./docs/plugins.md).
+
+## � Development
 
 - Clone this repository
 - Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable` (use `npm i -g corepack` for Node.js < 16.10)

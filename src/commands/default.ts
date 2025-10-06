@@ -10,6 +10,7 @@ import {
   bumpVersion,
   generateMarkDown,
   BumpVersionOptions,
+  PluginManager,
 } from "..";
 import { npmPublish, renamePackage } from "../package";
 import { githubRelease } from "./github";
@@ -29,6 +30,23 @@ export default async function defaultMain(args: Argv) {
     hideAuthorEmail: args.hideAuthorEmail,
   });
 
+  if (args.strictPath) {
+    config.strictPath = true;
+  }
+
+  // Initialize plugin manager
+  const pluginManager = new PluginManager(config);
+
+  // Load and initialize plugins
+  if (config.plugins && Object.keys(config.plugins).length > 0) {
+    try {
+      await pluginManager.loadPlugins(config.plugins);
+    } catch (error) {
+      consola.error("Failed to load plugins:", error.message);
+      process.exit(1);
+    }
+  }
+
   if (args.clean) {
     const dirty = await getCurrentGitStatus(cwd);
     if (dirty) {
@@ -40,10 +58,20 @@ export default async function defaultMain(args: Argv) {
   const logger = consola.create({ stdout: process.stderr });
   logger.info(`Generating changelog for ${config.from || ""}...${config.to}`);
 
-  const rawCommits = await getGitDiff(config.from, config.to, config.cwd);
+  let rawCommits = await getGitDiff(
+    config.from,
+    config.to,
+    config.cwd,
+    config.strictPath
+  );
+
+  // Plugin hook: beforeCommitParsing
+  if (pluginManager.hasPlugins()) {
+    rawCommits = await pluginManager.beforeCommitParsing(rawCommits);
+  }
 
   // Parse commits as conventional commits
-  const commits = parseCommits(rawCommits, config)
+  let commits = parseCommits(rawCommits, config)
     .map((c) => ({ ...c, type: c.type.toLowerCase() /* #198 */ }))
     .filter(
       (c) =>
@@ -54,6 +82,11 @@ export default async function defaultMain(args: Argv) {
           !c.isBreaking
         )
     );
+
+  // Plugin hook: afterCommitParsing
+  if (pluginManager.hasPlugins()) {
+    commits = await pluginManager.afterCommitParsing(commits);
+  }
 
   // Shortcut for canary releases
   if (args.canary) {
@@ -75,6 +108,11 @@ export default async function defaultMain(args: Argv) {
 
   // Bump version optionally
   if (args.bump || args.release) {
+    // Plugin hook: beforeVersionBump
+    if (pluginManager.hasPlugins()) {
+      await pluginManager.beforeVersionBump(commits);
+    }
+
     const bumpOptions = _getBumpVersionOptions(args);
     const newVersion = await bumpVersion(commits, config, bumpOptions);
     if (!newVersion) {
@@ -82,10 +120,25 @@ export default async function defaultMain(args: Argv) {
       process.exit(1);
     }
     config.newVersion = newVersion;
+
+    // Plugin hook: afterVersionBump
+    if (pluginManager.hasPlugins()) {
+      await pluginManager.afterVersionBump(newVersion);
+    }
+  }
+
+  // Plugin hook: beforeMarkdownGeneration
+  if (pluginManager.hasPlugins()) {
+    commits = await pluginManager.beforeMarkdownGeneration(commits);
   }
 
   // Generate markdown
-  const markdown = await generateMarkDown(commits, config);
+  let markdown = await generateMarkDown(commits, config);
+
+  // Plugin hook: afterMarkdownGeneration
+  if (pluginManager.hasPlugins()) {
+    markdown = await pluginManager.afterMarkdownGeneration(markdown, commits);
+  }
 
   // Show changelog in CLI unless bumping or releasing
   const displayOnly = !args.bump && !args.release;

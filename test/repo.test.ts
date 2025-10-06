@@ -112,6 +112,30 @@ describe("repo", () => {
       });
     });
 
+    describe("when using Azure DevOps URLs", () => {
+      test.each([
+        {
+          input: "git@ssh.dev.azure.com:v3/organization/project/repository",
+          output: {
+            domain: "dev.azure.com",
+            provider: "azure",
+            repo: "organization/project/_git/repository",
+          },
+        },
+        {
+          input:
+            "https://username@dev.azure.com/organization/project/_git/repository",
+          output: {
+            domain: "dev.azure.com",
+            provider: "azure",
+            repo: "organization/project/_git/repository",
+          },
+        },
+      ])("url=$input should return Azure RepoConfig", ({ input, output }) => {
+        expect(getRepoConfig(input)).toEqual(output);
+      });
+    });
+
     describe("when `repoUrl` is empty", () => {
       test("should return empty RepoConfig", () => {
         expect(getRepoConfig()).toEqual({});

@@ -1,5 +1,5 @@
-import type { ChangelogConfig } from "./config";
 import { execCommand } from "./exec";
+import type { ChangelogConfig, ResolvedChangelogConfig } from "./config";
 
 export interface GitCommitAuthor {
   name: string;
@@ -10,12 +10,14 @@ export interface RawGitCommit {
   message: string;
   body: string;
   shortHash: string;
+  fullHash: string;
   author: GitCommitAuthor;
 }
 
 export interface Reference {
-  type: "hash" | "issue" | "pull-request";
+  type: "hash" | "issue" | "pull-request" | string;
   value: string;
+  url?: string;
 }
 
 export interface GitCommit extends RawGitCommit {
@@ -67,19 +69,21 @@ export async function getGitDiff(
 ): Promise<RawGitCommit[]> {
   // https://git-scm.com/docs/pretty-formats
   const r = execCommand(
-    `git --no-pager log "${from ? `${from}...` : ""}${to}" --pretty="----%n%s|%h|%an|%ae%n%b" --name-status`,
+    `git --no-pager log "${from ? `${from}...` : ""}${to}" --pretty="----%n%s|%h|%H|%an|%ae%n%b" --name-status`,
     cwd
   );
+
   return r
     .split("----\n")
     .splice(1)
     .map((line) => {
       const [firstLine, ..._body] = line.split("\n");
-      const [message, shortHash, authorName, authorEmail] =
+      const [message, shortHash, fullHash, authorName, authorEmail] =
         firstLine.split("|");
       const r: RawGitCommit = {
         message,
         shortHash,
+        fullHash,
         author: { name: authorName, email: authorEmail },
         body: _body.join("\n"),
       };
@@ -89,7 +93,7 @@ export async function getGitDiff(
 
 export function parseCommits(
   commits: RawGitCommit[],
-  config: ChangelogConfig
+  config: ResolvedChangelogConfig
 ): GitCommit[] {
   return commits
     .map((commit) => parseGitCommit(commit, config))
@@ -106,7 +110,7 @@ const IssueRE = /(#\d+)/gm;
 
 export function parseGitCommit(
   commit: RawGitCommit,
-  config: ChangelogConfig
+  config: ResolvedChangelogConfig
 ): GitCommit | null {
   const match = commit.message.match(ConventionalCommitRegex);
   if (!match) {
@@ -132,7 +136,12 @@ export function parseGitCommit(
       references.push({ type: "issue", value: m[1] });
     }
   }
-  references.push({ value: commit.shortHash, type: "hash" });
+
+  if (config.repo.provider === "azure") {
+    references.push({ value: commit.fullHash, type: "hash" });
+  } else {
+    references.push({ value: commit.shortHash, type: "hash" });
+  }
 
   // Remove references and normalize
   description = description.replace(PullRequestRE, "").trim();
