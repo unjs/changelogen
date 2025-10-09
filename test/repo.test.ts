@@ -45,6 +45,14 @@ describe("repo", () => {
             repo: "b/c",
           },
         },
+        {
+          input: "github:account/project/sub1/sub2/myproject.git",
+          output: {
+            domain: "github.com",
+            provider: "github",
+            repo: "account/project/sub1/sub2/myproject",
+          },
+        },
       ])("url=$input should return RepoConfig", ({ input, output }) => {
         expect(getRepoConfig(input)).toEqual(output);
       });
