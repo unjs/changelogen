@@ -37,6 +37,38 @@ export async function getLastGitTag(cwd?: string) {
   }
 }
 
+export async function getPreviousGitTag(cwd?: string, ref?: string) {
+  try {
+    if (ref) {
+      return execCommand(`git describe --tags --abbrev=0 "${ref}^"`, cwd)
+        ?.split("\n")
+        .at(-1);
+    }
+  } catch {
+    // Ignore
+  }
+
+  try {
+    const tags = execCommand("git tag --sort=-v:refname", cwd)
+      .split("\n")
+      .map((t) => t.trim())
+      .filter(Boolean);
+    if (tags.length === 0) {
+      return;
+    }
+    if (ref) {
+      const index = tags.indexOf(ref);
+      if (index !== -1 && index + 1 < tags.length) {
+        return tags[index + 1];
+      }
+      return tags.find((t) => t !== ref);
+    }
+    return tags[0];
+  } catch {
+    // Ignore
+  }
+}
+
 export function getCurrentGitBranch(cwd?: string) {
   return execCommand("git rev-parse --abbrev-ref HEAD", cwd);
 }

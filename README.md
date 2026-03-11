@@ -74,17 +74,31 @@ In order to manually sync a release, you can use `changelogen gh release`. It wi
 Usage:
 
 ```sh
-npx changelogen@latest gh release [all|versions...] [--dir] [--token]
+npx changelogen@latest gh release [all|versions...] [--dir] [--token] [--no-open]
 ```
 
 To enable this integration, make sure there is a valid `repository` field in `package.json` or `repo` is set in `.changelogenrc`.
 
 By default in unauthenticated mode, changelogen will open a browser link to make manual release. By providing github token, it can be automated.
+Use `--no-open` to prevent opening a browser and only print the link.
 
 - Using environment variables or `.env`, use `CHANGELOGEN_TOKENS_GITHUB` or `GITHUB_TOKEN` or `GH_TOKEN`
 - Using CLI args, use `--token <token>`
 - Using global configuration, put `tokens.github=<token>` inside `~/.changlogenrc`
 - Using [GitHub CLI](https://cli.github.com/) token when authenticated with `gh auth login`
+
+### `changelogen gh publish`
+
+Generate release notes from git commits (same format as `CHANGELOG.md`) and create or update a GitHub release without writing to `CHANGELOG.md`.
+
+Usage:
+
+```sh
+npx changelogen@latest gh publish [--tag] [--from] [--to] [--dir] [--token] [--dry] [--no-open]
+```
+
+By default, it uses the previous tag to the current tag (or `HEAD` if no tag) as the range.
+Use `--dry` to print the generated release notes without creating a GitHub release.
 
 ## Configuration
 
