@@ -4,6 +4,7 @@ import { getLastGitTag, getCurrentGitRef } from "./git";
 import { resolveRepoConfig, getRepoConfig } from "./repo";
 import type { SemverBumpType } from "./semver";
 import type { RepoConfig, RepoProvider } from "./repo";
+import type { PluginConfigMap } from "./plugins";
 
 export interface ChangelogConfig {
   cwd: string;
@@ -29,10 +30,12 @@ export interface ChangelogConfig {
   noAuthors: boolean;
   excludeAuthors: string[];
   hideAuthorEmail?: boolean;
+  plugins?: PluginConfigMap;
 }
 
 export type ResolvedChangelogConfig = Omit<ChangelogConfig, "repo"> & {
   repo: RepoConfig;
+  plugins: PluginConfigMap;
 };
 
 const defaultOutput = "CHANGELOG.md";
@@ -75,6 +78,7 @@ const getDefaultConfig = () =>
     },
     excludeAuthors: [],
     noAuthors: false,
+    plugins: {},
   };
 
 export async function loadChangelogConfig(
@@ -122,6 +126,11 @@ export async function resolveChangelogConfig(
 
   if (typeof config.repo === "string") {
     config.repo = getRepoConfig(config.repo);
+  }
+
+  // Ensure plugins is always defined
+  if (!config.plugins) {
+    config.plugins = {};
   }
 
   return config as ResolvedChangelogConfig;

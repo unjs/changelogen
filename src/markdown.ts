@@ -30,7 +30,12 @@ export async function generateMarkDown(
       continue;
     }
 
-    markdown.push("", "### " + config.types[type].title, "");
+    const typeConfig = config.types[type];
+    if (typeof typeConfig === "boolean") {
+      continue;
+    }
+
+    markdown.push("", "### " + typeConfig.title, "");
     for (const commit of group.reverse()) {
       const line = formatCommit(commit, config);
       markdown.push(line);
@@ -153,19 +158,38 @@ function formatReferences(
 ) {
   const pr = references.filter((ref) => ref.type === "pull-request");
   const issue = references.filter((ref) => ref.type === "issue");
+  const custom = references.filter(
+    (ref) =>
+      ref.type !== "pull-request" && ref.type !== "issue" && ref.type !== "hash"
+  );
+
+  const formattedRefs = [];
+
+  // Format standard PR and issue references
   if (pr.length > 0 || issue.length > 0) {
-    return (
-      " (" +
-      [...pr, ...issue]
-        .map((ref) => formatReference(ref, config.repo))
-        .join(", ") +
-      ")"
+    formattedRefs.push(
+      ...[...pr, ...issue].map((ref) => formatReference(ref, config.repo))
     );
   }
-  if (references.length > 0) {
-    return " (" + formatReference(references[0], config.repo) + ")";
+
+  // Format custom references (like Jira tickets)
+  if (custom.length > 0) {
+    formattedRefs.push(
+      ...custom.map((ref) => {
+        if (ref.url) {
+          return `[${ref.value}](${ref.url})`;
+        }
+        return ref.value;
+      })
+    );
   }
-  return "";
+
+  const hashRef = references.find((ref) => ref.type === "hash");
+  if (hashRef) {
+    formattedRefs.push(formatReference(hashRef, config.repo));
+  }
+
+  return formattedRefs.length > 0 ? " (" + formattedRefs.join(", ") + ")" : "";
 }
 
 // function formatTitle (title: string = '') {
