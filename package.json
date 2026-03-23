@@ -53,7 +53,7 @@
     "jiti": "^2.6.1",
     "prettier": "^3.8.1",
     "standard-version": "^9.5.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.2",
     "unbuild": "^3.6.1",
     "vitest": "^3.2.4"
   },
