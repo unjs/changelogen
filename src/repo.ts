@@ -109,7 +109,7 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
     domain =
       provider in providerToDomain ? providerToDomain[provider] : provider;
   } else if (url) {
-    domain = url.hostname;
+    domain = url.host;
     const paths = url.pathname.split("/");
     repo = paths
       .slice(1)

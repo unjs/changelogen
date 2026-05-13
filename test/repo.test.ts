@@ -84,6 +84,14 @@ describe("repo", () => {
             repo: "account/project/sub1/sub2/myproject",
           },
         },
+        {
+          input: "http://192.168.0.1:30080/owner/repo.git",
+          output: {
+            domain: "192.168.0.1:30080",
+            provider: undefined,
+            repo: "owner/repo",
+          },
+        },
       ])("url=$input should return RepoConfig", ({ input, output }) => {
         expect(getRepoConfig(input)).toEqual(output);
       });
