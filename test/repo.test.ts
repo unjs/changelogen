@@ -88,6 +88,15 @@ describe("repo", () => {
             protocol: "https",
           },
         },
+        {
+          input: "http://192.168.0.1:30080/owner/repo.git",
+          output: {
+            domain: "192.168.0.1:30080",
+            provider: undefined,
+            repo: "owner/repo",
+            protocol: "http",
+          },
+        },
       ])("url=$input should return RepoConfig", ({ input, output }) => {
         expect(getRepoConfig(input)).toEqual(output);
       });
