@@ -97,6 +97,15 @@ describe("repo", () => {
             protocol: "http",
           },
         },
+        {
+          input: "https://github.com:443/unjs/changelogen.git",
+          output: {
+            domain: "github.com",
+            provider: "github",
+            repo: "unjs/changelogen",
+            protocol: "https",
+          },
+        },
       ])("url=$input should return RepoConfig", ({ input, output }) => {
         expect(getRepoConfig(input)).toEqual(output);
       });
