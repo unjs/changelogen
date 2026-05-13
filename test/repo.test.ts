@@ -92,6 +92,14 @@ describe("repo", () => {
             repo: "owner/repo",
           },
         },
+        {
+          input: "https://github.com:443/unjs/changelogen.git",
+          output: {
+            domain: "github.com",
+            provider: "github",
+            repo: "unjs/changelogen",
+          },
+        },
       ])("url=$input should return RepoConfig", ({ input, output }) => {
         expect(getRepoConfig(input)).toEqual(output);
       });

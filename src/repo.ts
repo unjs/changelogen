@@ -115,7 +115,7 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
       .slice(1)
       .join("/")
       .replace(/\.git$/, "");
-    provider = domainToProvider[domain];
+    provider = domainToProvider[url.hostname];
   } else if (m.repo) {
     repo = m.repo;
     provider = "github";
