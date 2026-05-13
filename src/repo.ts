@@ -109,13 +109,13 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
     domain =
       provider in providerToDomain ? providerToDomain[provider] : provider;
   } else if (url) {
-    domain = url.hostname;
+    domain = url.host;
     const paths = url.pathname.split("/");
     repo = paths
       .slice(1)
       .join("/")
       .replace(/\.git$/, "");
-    provider = domainToProvider[domain];
+    provider = domainToProvider[url.hostname];
   } else if (m.repo) {
     repo = m.repo;
     provider = "github";
