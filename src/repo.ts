@@ -20,7 +20,7 @@ const providerToRefSpec: Record<
   gitlab: { "pull-request": "merge_requests", hash: "commit", issue: "issues" },
   bitbucket: {
     "pull-request": "pull-requests",
-    hash: "commit",
+    hash: "commits",
     issue: "issues",
   },
 };

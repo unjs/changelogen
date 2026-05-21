@@ -616,7 +616,7 @@ describe("git", () => {
     };
 
     expect(formatReference({ type: "hash", value: "3828bda" }, bitbucket)).toBe(
-      "[3828bda](https://bitbucket.org/unjs/changelogen/commit/3828bda)"
+      "[3828bda](https://bitbucket.org/unjs/changelogen/commits/3828bda)"
     );
     expect(
       formatReference({ type: "pull-request", value: "#123" }, bitbucket)
