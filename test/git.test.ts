@@ -463,7 +463,7 @@ describe("git", () => {
       ### 🩹 Fixes
 
       - Consider docs and refactor as semver patch for bump ([648ccf1](https://github.com/unjs/changelogen/commit/648ccf1))
-      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
+      - **scope:** ⚠️ Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
 
       ### 🏡 Chore
 
@@ -476,7 +476,7 @@ describe("git", () => {
 
       #### ⚠️ Breaking Changes
 
-      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
+      - **scope:** ⚠️ Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
 
       ### ❤️ Contributors
 
@@ -616,7 +616,7 @@ describe("git", () => {
     };
 
     expect(formatReference({ type: "hash", value: "3828bda" }, bitbucket)).toBe(
-      "[3828bda](https://bitbucket.org/unjs/changelogen/commit/3828bda)"
+      "[3828bda](https://bitbucket.org/unjs/changelogen/commits/3828bda)"
     );
     expect(
       formatReference({ type: "pull-request", value: "#123" }, bitbucket)
