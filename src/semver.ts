@@ -66,10 +66,11 @@ export async function bumpVersion(
   }
 
   if (opts.suffix) {
+    const hash = commits[0]?.shortHash;
     const suffix =
       typeof opts.suffix === "string"
         ? `-${opts.suffix}`
-        : `-${fmtDate(new Date())}-${commits[0].shortHash}`;
+        : `-${fmtDate(new Date())}${hash ? `-${hash}` : ""}`;
     pkg.version = config.newVersion = config.newVersion.split("-")[0] + suffix;
   }
 
