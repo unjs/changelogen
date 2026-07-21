@@ -13,6 +13,10 @@ export interface ChangelogConfig {
   tokens: Partial<Record<RepoProvider, string>>;
   from: string;
   to: string;
+  /**
+   * Only consider commits that modified these paths (relative to the repository root).
+   */
+  paths?: string | string[];
   newVersion?: string;
   signTags?: boolean;
   output: string | boolean;

@@ -63,11 +63,17 @@ export async function getCurrentGitStatus(cwd?: string) {
 export async function getGitDiff(
   from: string | undefined,
   to = "HEAD",
-  cwd?: string
+  cwd?: string,
+  paths?: string | string[]
 ): Promise<RawGitCommit[]> {
+  const pathspec = [paths]
+    .flat()
+    .filter(Boolean)
+    .map((path) => ` "${path}"`)
+    .join("");
   // https://git-scm.com/docs/pretty-formats
   const r = execCommand(
-    `git --no-pager log "${from ? `${from}...` : ""}${to}" --pretty="----%n%s|%h|%an|%ae%n%b" --name-status`,
+    `git --no-pager log "${from ? `${from}...` : ""}${to}" --pretty="----%n%s|%h|%an|%ae%n%b" --name-status${pathspec ? ` --${pathspec}` : ""}`,
     cwd
   );
   return r
