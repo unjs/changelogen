@@ -21,12 +21,13 @@ Generate a changelog, bump the version in `package.json` and update `CHANGELOG.m
 npx changelogen@latest --bump
 ```
 
-Bump the version, update `CHANGELOG.md` and make a git commit and tag:
+Bump the version, update `CHANGELOG.md`, make a git commit and tag, and sync a **GitHub release** (when the repo is on GitHub):
 
 ```sh
 npx changelogen@latest --release
 ```
 
+Without a GitHub token, changelogen opens a browser link so you can create the release manually. With a token (see [`changelogen gh release`](#changelogen-gh-release)), the release is created automatically.
 ## CLI Usage
 
 ```sh
@@ -42,7 +43,7 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--output`: Changelog file name to create or update. Defaults to `CHANGELOG.md` and resolved relative to dir. Use `--no-output` to write to console only.
 - `--noAuthors`: Skip contributors section in changelog.
 - `--bump`: Determine semver change and update version in `package.json`.
-- `--release`. Bumps version in `package.json` and creates commit and git tags using local `git`. You can disable commit using `--no-commit` and tag using `--no-tag`. You can enable the automatic push of the new tag and release commit to your git repository by adding `--push`.
+- `--release`. Bumps version in `package.json`, creates a commit and git tags using local `git`, and **creates or updates a GitHub release** for the new version when the repository provider is GitHub. You can disable commit using `--no-commit`, tag using `--no-tag`, and the GitHub release using `--no-github`. You can enable the automatic push of the new tag and release commit to your git repository by adding `--push`.
 - `--publish`. Publishes package as a new version on `npm`. You will need to set authorisation tokens separately via `.npmrc` or environment variables.
 - `--publishTag` Use custom npm tag for publishing (Default is `latest`)
 - `--nameSuffix`: Adds suffix to package name (Example: `--nameSuffix canary` renames `foo` to `foo-canary`)
@@ -68,6 +69,8 @@ npx changelogen@latest [...args] [--dir <dir>]
 ### `changelogen gh release`
 
 Changelogen has built-in functionality to sync with Github releases.
+
+`--release` already runs this sync for the version it just bumped. Use `changelogen gh release` to sync releases manually (for example older versions from `CHANGELOG.md`) without bumping again.
 
 In order to manually sync a release, you can use `changelogen gh release`. It will parse current `CHANGELOG.md` from current repository (local, then remote) and create or update releases.
 
