@@ -101,12 +101,12 @@ export async function bumpVersion(
 }
 
 /**
- * Formats a given Date object into a YYMMDD-HHMMSS string.
+ * Formats a given Date object into a YYYYMMDD-HHMMSS string.
  * @param d - The date object to format.
  * @returns The formatted date string.
  */
 function fmtDate(d: Date): string {
-  // YYMMDD-HHMMSS: 20240919-140954
+  // YYYYMMDD-HHMMSS: 20240919-140954
   const date = joinNumbers([d.getFullYear(), d.getMonth() + 1, d.getDate()]);
   const time = joinNumbers([d.getHours(), d.getMinutes(), d.getSeconds()]);
   return `${date}-${time}`;
