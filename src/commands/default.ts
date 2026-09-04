@@ -1,5 +1,4 @@
 import { existsSync, promises as fsp } from "node:fs";
-import type { Argv } from "mri";
 import { resolve } from "pathe";
 import consola from "consola";
 import {
@@ -14,8 +13,40 @@ import {
 import { npmPublish, renamePackage } from "../package";
 import { githubRelease } from "./github";
 import { execCommand } from "../exec";
+import { type Args, type ArgsSpec, parseCliArgs } from "../args";
 
-export default async function defaultMain(args: Argv) {
+const argsSpec = {
+  dir: { type: "string" },
+  from: { type: "string" },
+  to: { type: "string" },
+  output: { type: "optional" },
+  r: { type: "string", short: "r" },
+  clean: { type: "boolean" },
+  noAuthors: { type: "boolean" },
+  hideAuthorEmail: { type: "boolean" },
+  bump: { type: "boolean" },
+  release: { type: "boolean" },
+  commit: { type: "boolean" },
+  tag: { type: "boolean" },
+  push: { type: "boolean" },
+  github: { type: "boolean" },
+  publish: { type: "boolean" },
+  publishTag: { type: "string" },
+  canary: { type: "optional" },
+  nameSuffix: { type: "string" },
+  versionSuffix: { type: "optional" },
+  major: { type: "boolean" },
+  minor: { type: "boolean" },
+  patch: { type: "boolean" },
+  premajor: { type: "optional" },
+  preminor: { type: "optional" },
+  prepatch: { type: "optional" },
+  prerelease: { type: "optional" },
+} as const satisfies ArgsSpec;
+
+export default async function defaultMain(rawArgs: string[]) {
+  const args = parseCliArgs(rawArgs, argsSpec);
+
   const cwd = resolve(args._[0] /* bw compat */ || args.dir || "");
   process.chdir(cwd);
   consola.wrapConsole();
@@ -166,7 +197,9 @@ export default async function defaultMain(args: Argv) {
   }
 }
 
-function _getBumpVersionOptions(args: Argv): BumpVersionOptions {
+function _getBumpVersionOptions(
+  args: Args<typeof argsSpec>
+): BumpVersionOptions {
   if (args.versionSuffix) {
     return {
       suffix: args.versionSuffix,
