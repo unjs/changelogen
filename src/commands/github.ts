@@ -1,5 +1,4 @@
 import { promises as fsp } from "node:fs";
-import type { Argv } from "mri";
 import { resolve } from "pathe";
 import consola from "consola";
 import { colors } from "consola/utils";
@@ -13,8 +12,16 @@ import {
   loadChangelogConfig,
   parseChangelogMarkdown,
 } from "..";
+import { type ArgsSpec, parseCliArgs } from "../args";
 
-export default async function githubMain(args: Argv) {
+const argsSpec = {
+  dir: { type: "string" },
+  token: { type: "string" },
+} as const satisfies ArgsSpec;
+
+export default async function githubMain(rawArgs: string[]) {
+  const args = parseCliArgs(rawArgs, argsSpec);
+
   const cwd = resolve(args.dir || "");
   process.chdir(cwd);
 

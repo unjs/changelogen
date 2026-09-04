@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import consola from "consola";
-import mri from "mri";
 
 const subCommands = {
   _default: () => import("./commands/default"),
@@ -22,7 +21,13 @@ async function main() {
     process.exit(1);
   }
 
-  await subCommands[subCommand]().then((r) => r.default(mri(args)));
+  await subCommands[subCommand]().then((r) => r.default(args));
 }
 
-main().catch(consola.error);
+main().catch((error) => {
+  // Argument parsing errors are self explanatory (no stack trace needed)
+  consola.error(
+    String(error.code).startsWith("ERR_PARSE_ARGS") ? error.message : error
+  );
+  process.exit(1);
+});

@@ -36,7 +36,7 @@ export function determineSemverChange(
 export type BumpVersionOptions = {
   type?: SemverBumpType;
   preid?: string;
-  suffix?: boolean;
+  suffix?: string | boolean;
 };
 
 export async function bumpVersion(
