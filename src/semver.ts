@@ -13,12 +13,6 @@ export type SemverBumpType =
   | "prepatch"
   | "prerelease";
 
-/**
- * Determine the semver bump type based on a list of commits.
- * @param commits - List of git commits to analyze.
- * @param config - The changelog configuration.
- * @returns The determined semver bump type, or null if no bump is needed.
- */
 export function determineSemverChange(
   commits: GitCommit[],
   config: ChangelogConfig
@@ -45,13 +39,6 @@ export type BumpVersionOptions = {
   suffix?: boolean;
 };
 
-/**
- * Bumps the version in the package.json file based on commits and configuration.
- * @param commits - List of parsed git commits.
- * @param config - The changelog configuration.
- * @param opts - Options for bumping the version.
- * @returns A promise that resolves to the new version string, or false if no version change occurred.
- */
 export async function bumpVersion(
   commits: GitCommit[],
   config: ChangelogConfig,
@@ -100,11 +87,6 @@ export async function bumpVersion(
   return pkg.version;
 }
 
-/**
- * Formats a given Date object into a YYYYMMDD-HHMMSS string.
- * @param d - The date object to format.
- * @returns The formatted date string.
- */
 function fmtDate(d: Date): string {
   // YYYYMMDD-HHMMSS: 20240919-140954
   const date = joinNumbers([d.getFullYear(), d.getMonth() + 1, d.getDate()]);
@@ -112,11 +94,6 @@ function fmtDate(d: Date): string {
   return `${date}-${time}`;
 }
 
-/**
- * Joins an array of numbers into a string, padding each with a leading zero if necessary.
- * @param items - Array of numbers to join.
- * @returns The joined string.
- */
 function joinNumbers(items: number[]): string {
   return items.map((i) => (i + "").padStart(2, "0")).join("");
 }
