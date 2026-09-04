@@ -36,7 +36,7 @@ export function determineSemverChange(
 export type BumpVersionOptions = {
   type?: SemverBumpType;
   preid?: string;
-  suffix?: boolean;
+  suffix?: string | boolean;
 };
 
 export async function bumpVersion(
@@ -66,10 +66,11 @@ export async function bumpVersion(
   }
 
   if (opts.suffix) {
+    const hash = commits[0]?.shortHash;
     const suffix =
       typeof opts.suffix === "string"
         ? `-${opts.suffix}`
-        : `-${fmtDate(new Date())}-${commits[0].shortHash}`;
+        : `-${fmtDate(new Date())}${hash ? `-${hash}` : ""}`;
     pkg.version = config.newVersion = config.newVersion.split("-")[0] + suffix;
   }
 
@@ -87,7 +88,7 @@ export async function bumpVersion(
 }
 
 function fmtDate(d: Date): string {
-  // YYMMDD-HHMMSS: 20240919-140954
+  // YYYYMMDD-HHMMSS: 20240919-140954
   const date = joinNumbers([d.getFullYear(), d.getMonth() + 1, d.getDate()]);
   const time = joinNumbers([d.getHours(), d.getMinutes(), d.getSeconds()]);
   return `${date}-${time}`;
