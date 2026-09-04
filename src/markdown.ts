@@ -1,6 +1,5 @@
 import { upperFirst } from "scule";
 import { convert } from "convert-gitmoji";
-import { fetch } from "node-fetch-native";
 import type { ResolvedChangelogConfig } from "./config";
 import type { GitCommit, Reference } from "./git";
 import { formatReference, formatCompareChanges } from "./repo";
