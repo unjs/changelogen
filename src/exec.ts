@@ -2,7 +2,11 @@ import { execSync, spawn } from "node:child_process";
 import { isMacOS, isWindows } from "std-env";
 
 export function execCommand(cmd: string, cwd?: string) {
-  return execSync(cmd, { encoding: "utf8", cwd }).trim();
+  return execSync(cmd, {
+    encoding: "utf8",
+    cwd,
+    maxBuffer: 10 * 1024 * 1024 /* 10 Mb */,
+  }).trim();
 }
 
 /**
