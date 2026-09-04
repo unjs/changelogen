@@ -463,7 +463,7 @@ describe("git", () => {
       ### 🩹 Fixes
 
       - Consider docs and refactor as semver patch for bump ([648ccf1](https://github.com/unjs/changelogen/commit/648ccf1))
-      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
+      - **scope:** ⚠️ Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
 
       ### 🏡 Chore
 
@@ -476,7 +476,7 @@ describe("git", () => {
 
       #### ⚠️ Breaking Changes
 
-      - **scope:** ⚠️  Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
+      - **scope:** ⚠️ Breaking change example, close #123 ([#134](https://github.com/unjs/changelogen/pull/134), [#123](https://github.com/unjs/changelogen/issues/123))
 
       ### ❤️ Contributors
 
@@ -496,12 +496,13 @@ describe("git", () => {
     };
     expect(getRepoConfig("unjs/changelogen")).toStrictEqual(github);
     expect(getRepoConfig("github:unjs/changelogen")).toStrictEqual(github);
-    expect(getRepoConfig("https://github.com/unjs/changelogen")).toStrictEqual(
-      github
-    );
+    expect(getRepoConfig("https://github.com/unjs/changelogen")).toStrictEqual({
+      ...github,
+      protocol: "https",
+    });
     expect(
       getRepoConfig("https://github.com/unjs/changelogen.git")
-    ).toStrictEqual(github);
+    ).toStrictEqual({ ...github, protocol: "https" });
     expect(getRepoConfig("git@github.com:unjs/changelogen.git")).toStrictEqual(
       github
     );
@@ -513,12 +514,13 @@ describe("git", () => {
     };
 
     expect(getRepoConfig("gitlab:unjs/changelogen")).toStrictEqual(gitlab);
-    expect(getRepoConfig("https://gitlab.com/unjs/changelogen")).toStrictEqual(
-      gitlab
-    );
+    expect(getRepoConfig("https://gitlab.com/unjs/changelogen")).toStrictEqual({
+      ...gitlab,
+      protocol: "https",
+    });
     expect(
       getRepoConfig("https://gitlab.com/unjs/changelogen.git")
-    ).toStrictEqual(gitlab);
+    ).toStrictEqual({ ...gitlab, protocol: "https" });
     expect(getRepoConfig("git@gitlab.com:unjs/changelogen.git")).toStrictEqual(
       gitlab
     );
@@ -534,13 +536,13 @@ describe("git", () => {
     );
     expect(
       getRepoConfig("https://bitbucket.org/unjs/changelogen")
-    ).toStrictEqual(bitbucket);
+    ).toStrictEqual({ ...bitbucket, protocol: "https" });
     expect(
       getRepoConfig("https://bitbucket.org/unjs/changelogen.git")
-    ).toStrictEqual(bitbucket);
+    ).toStrictEqual({ ...bitbucket, protocol: "https" });
     expect(
       getRepoConfig("https://donaldsh@bitbucket.org/unjs/changelogen.git")
-    ).toStrictEqual(bitbucket);
+    ).toStrictEqual({ ...bitbucket, protocol: "https" });
     expect(
       getRepoConfig("git@bitbucket.org:unjs/changelogen.git")
     ).toStrictEqual(bitbucket);
@@ -616,7 +618,7 @@ describe("git", () => {
     };
 
     expect(formatReference({ type: "hash", value: "3828bda" }, bitbucket)).toBe(
-      "[3828bda](https://bitbucket.org/unjs/changelogen/commit/3828bda)"
+      "[3828bda](https://bitbucket.org/unjs/changelogen/commits/3828bda)"
     );
     expect(
       formatReference({ type: "pull-request", value: "#123" }, bitbucket)

@@ -58,6 +58,7 @@ describe("repo", () => {
             domain: "github.com",
             provider: "github",
             repo: "unjs/changelogen",
+            protocol: "https",
           },
         },
         {
@@ -66,6 +67,7 @@ describe("repo", () => {
             domain: "github.com",
             provider: "github",
             repo: "unjs/changelogen",
+            protocol: "https",
           },
         },
         {
@@ -74,6 +76,7 @@ describe("repo", () => {
             domain: "github.com",
             provider: "github",
             repo: "myproject",
+            protocol: "https",
           },
         },
         {
@@ -82,6 +85,7 @@ describe("repo", () => {
             domain: "github.com",
             provider: "github",
             repo: "account/project/sub1/sub2/myproject",
+            protocol: "https",
           },
         },
       ])("url=$input should return RepoConfig", ({ input, output }) => {

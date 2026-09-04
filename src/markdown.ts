@@ -1,5 +1,4 @@
 import { convert } from "convert-gitmoji";
-import { fetch } from "node-fetch-native";
 import { upperFirst } from "scule";
 import type { ResolvedChangelogConfig } from "./config";
 import type { GitCommit, Reference } from "./git";
@@ -155,7 +154,7 @@ function formatCommit(commit: GitCommit, config: ResolvedChangelogConfig) {
   return (
     "- " +
     (commit.scope ? `**${commit.scope.trim()}:** ` : "") +
-    (commit.isBreaking ? "⚠️  " : "") +
+    (commit.isBreaking ? "⚠️ " : "") +
     upperFirst(commit.description) +
     formatReferences(commit.references, config)
   );

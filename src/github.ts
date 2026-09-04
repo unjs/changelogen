@@ -1,6 +1,5 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { homedir } from "node:os";
-import { $fetch, FetchOptions } from "ofetch";
 import { join } from "pathe";
 import { ResolvedChangelogConfig } from "./config";
 
@@ -156,20 +155,23 @@ export async function resolveGithubToken(config: ResolvedChangelogConfig) {
 async function githubFetch(
   config: ResolvedChangelogConfig,
   url: string,
-  opts: FetchOptions = {}
+  opts: RequestInit = {}
 ) {
-  return await $fetch(url, {
+  const headers = new Headers(opts.headers);
+  headers.set("x-github-api-version", "2022-11-28");
+  if (config.tokens.github) {
+    headers.set("authorization", `Bearer ${config.tokens.github}`);
+  }
+
+  const baseURL =
+    config.repo.domain === "github.com"
+      ? "https://api.github.com"
+      : `https://${config.repo.domain}/api/v3`;
+
+  const res = await fetch(baseURL + url, {
     ...opts,
-    baseURL:
-      config.repo.domain === "github.com"
-        ? "https://api.github.com"
-        : `https://${config.repo.domain}/api/v3`,
-    headers: {
-      "x-github-api-version": "2022-11-28",
-      ...opts.headers,
-      authorization: config.tokens.github
-        ? `Bearer ${config.tokens.github}`
-        : undefined,
-    },
+    headers,
   });
+
+  return await res.json();
 }

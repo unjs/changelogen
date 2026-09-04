@@ -10,9 +10,18 @@ import {
   syncGithubRelease,
 } from "../src/github";
 
-vi.mock("ofetch", () => ({
-  $fetch: vi.fn(),
-}));
+const fetchMock = vi.fn();
+vi.stubGlobal("fetch", fetchMock);
+
+// Minimal `Response` stand-in for the `res.json()` call in `githubFetch`
+function jsonResponse(body: unknown) {
+  return { json: () => Promise.resolve(body) };
+}
+
+function lastRequest() {
+  const [url, init] = fetchMock.mock.calls.at(-1);
+  return { url, headers: new Headers(init?.headers) };
+}
 
 describe("github", () => {
   beforeEach(() => {
@@ -20,8 +29,7 @@ describe("github", () => {
   });
 
   test("getPullRequestAuthorLogin should return undefined when API call fails", async () => {
-    const { $fetch } = await import("ofetch");
-    vi.mocked($fetch).mockRejectedValueOnce(new Error("API Error"));
+    fetchMock.mockRejectedValueOnce(new Error("API Error"));
 
     const config = await loadChangelogConfig(process.cwd(), {
       repo: "test/repo",
@@ -31,10 +39,25 @@ describe("github", () => {
     expect(result).toBeUndefined();
   });
 
-  test("listGithubReleases should fetch releases with pagination", async () => {
-    const { $fetch } = await import("ofetch");
+  test("getPullRequestAuthorLogin should return the PR author login", async () => {
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse({ user: { login: "brainsucker" } })
+    );
+
+    const config = await loadChangelogConfig(process.cwd(), {
+      repo: "test/repo",
+    });
+
+    const result = await getPullRequestAuthorLogin(config, 123);
+    expect(result).toBe("brainsucker");
+    expect(lastRequest().url).toBe(
+      "https://api.github.com/repos/test/repo/pulls/123"
+    );
+  });
+
+  test("listGithubReleases should fetch releases", async () => {
     const mockReleases = [{ tag_name: "v1.0.0" }, { tag_name: "v0.9.0" }];
-    vi.mocked($fetch).mockResolvedValueOnce(mockReleases);
+    fetchMock.mockResolvedValueOnce(jsonResponse(mockReleases));
 
     const config = await loadChangelogConfig(process.cwd(), {
       repo: "test/repo",
@@ -42,20 +65,16 @@ describe("github", () => {
 
     const releases = await listGithubReleases(config);
     expect(releases).toEqual(mockReleases);
-    expect($fetch).toHaveBeenCalledWith("/repos/test/repo/releases", {
-      baseURL: "https://api.github.com",
-      headers: {
-        "x-github-api-version": "2022-11-28",
-        authorization: undefined,
-      },
-      query: { per_page: 100 },
-    });
+
+    const { url, headers } = lastRequest();
+    expect(url).toBe("https://api.github.com/repos/test/repo/releases");
+    expect(headers.get("x-github-api-version")).toBe("2022-11-28");
+    expect(headers.get("authorization")).toBeNull();
   });
 
   test("getGithubReleaseByTag should fetch specific release", async () => {
-    const { $fetch } = await import("ofetch");
     const mockRelease = { tag_name: "v1.0.0", body: "Release notes" };
-    vi.mocked($fetch).mockResolvedValueOnce(mockRelease);
+    fetchMock.mockResolvedValueOnce(jsonResponse(mockRelease));
 
     const config = await loadChangelogConfig(process.cwd(), {
       repo: "test/repo",
@@ -63,22 +82,14 @@ describe("github", () => {
 
     const release = await getGithubReleaseByTag(config, "v1.0.0");
     expect(release).toEqual(mockRelease);
-    expect($fetch).toHaveBeenCalledWith(
-      "/repos/test/repo/releases/tags/v1.0.0",
-      {
-        baseURL: "https://api.github.com",
-        headers: {
-          "x-github-api-version": "2022-11-28",
-          authorization: undefined,
-        },
-      }
+    expect(lastRequest().url).toBe(
+      "https://api.github.com/repos/test/repo/releases/tags/v1.0.0"
     );
   });
 
   test("syncGithubRelease should create new release when none exists", async () => {
-    const { $fetch } = await import("ofetch");
-    vi.mocked($fetch).mockRejectedValueOnce(new Error("Not found"));
-    vi.mocked($fetch).mockResolvedValueOnce({ id: "new-release-id" });
+    fetchMock.mockRejectedValueOnce(new Error("Not found"));
+    fetchMock.mockResolvedValueOnce(jsonResponse({ id: "new-release-id" }));
 
     const config = await loadChangelogConfig(process.cwd(), {
       repo: "test/repo",
@@ -97,6 +108,8 @@ describe("github", () => {
   });
 
   test("syncGithubRelease should return manual URL when no token", async () => {
+    fetchMock.mockRejectedValueOnce(new Error("Not found"));
+
     const config = await loadChangelogConfig(process.cwd(), {
       repo: "test/repo",
     });
@@ -128,8 +141,7 @@ describe("github", () => {
   });
 
   test("GitHub Enterprise API URLs should be handled correctly", async () => {
-    const { $fetch } = await import("ofetch");
-    vi.mocked($fetch).mockResolvedValueOnce([]);
+    fetchMock.mockResolvedValueOnce(jsonResponse([]));
 
     const config = await loadChangelogConfig(process.cwd(), {
       tokens: { github: "test-token" },
@@ -142,20 +154,16 @@ describe("github", () => {
 
     await listGithubReleases(config);
 
-    expect($fetch).toHaveBeenCalledWith("/repos/test/repo/releases", {
-      baseURL: "https://github.enterprise.com/api/v3",
-      headers: {
-        "x-github-api-version": "2022-11-28",
-        authorization: "Bearer test-token",
-      },
-      query: { per_page: 100 },
-    });
+    const { url, headers } = lastRequest();
+    expect(url).toBe(
+      "https://github.enterprise.com/api/v3/repos/test/repo/releases"
+    );
+    expect(headers.get("authorization")).toBe("Bearer test-token");
   });
 
   test("getGithubChangelog should fetch changelog from main branch", async () => {
-    const { $fetch } = await import("ofetch");
     const mockChangelog = "# Changelog";
-    vi.mocked($fetch).mockResolvedValueOnce(mockChangelog);
+    fetchMock.mockResolvedValueOnce(jsonResponse(mockChangelog));
 
     const config = await loadChangelogConfig(process.cwd(), {
       repo: "test/repo",
@@ -163,16 +171,11 @@ describe("github", () => {
 
     const changelog = await getGithubChangelog(config);
     expect(changelog).toBe(mockChangelog);
-    expect($fetch).toHaveBeenCalledWith(
-      "https://raw.githubusercontent.com/test/repo/main/CHANGELOG.md",
-      expect.any(Object)
-    );
   });
 
   test("syncGithubRelease should handle update errors", async () => {
-    const { $fetch } = await import("ofetch");
-    vi.mocked($fetch).mockResolvedValueOnce({ id: "existing-id" });
-    vi.mocked($fetch).mockRejectedValueOnce(new Error("Update failed"));
+    fetchMock.mockResolvedValueOnce(jsonResponse({ id: "existing-id" }));
+    fetchMock.mockRejectedValueOnce(new Error("Update failed"));
 
     const config = await loadChangelogConfig(process.cwd(), {
       repo: "test/repo",

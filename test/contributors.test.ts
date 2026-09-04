@@ -3,8 +3,9 @@ import { loadChangelogConfig, generateMarkDown } from "../src";
 import { testCommits } from "./fixtures/commits";
 
 // Mock fetch to prevent network calls during tests
-vi.mock("node-fetch-native", () => ({
-  fetch: vi.fn((url: string) => {
+vi.stubGlobal(
+  "fetch",
+  vi.fn((url: string) => {
     if (url.includes("john@doe.com")) {
       return Promise.resolve({
         json: () => Promise.resolve({ user: { username: "brainsucker" } }),
@@ -13,8 +14,8 @@ vi.mock("node-fetch-native", () => ({
     return Promise.resolve({
       json: () => Promise.resolve({ user: null }),
     });
-  }),
-}));
+  })
+);
 
 describe("contributors", () => {
   test("should include authors", async () => {
