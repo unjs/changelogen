@@ -10,6 +10,7 @@ export type RepoConfig = {
   repo?: string;
   provider?: RepoProvider;
   token?: string;
+  protocol?: string;
 };
 
 const providerToRefSpec: Record<
@@ -42,7 +43,8 @@ const providerURLRegex =
   /^(?:(?<user>[\w-]+)@)?(?:(?<provider>[^/:]+):)?(?<repo>[\w-]+\/(?:\w|\.(?!git$)|-)+)(?:\.git)?$/;
 
 function baseUrl(config: RepoConfig) {
-  return `https://${config.domain}/${config.repo}`;
+  const protocol = config.protocol || "https";
+  return `${protocol}://${config.domain}/${config.repo}`;
 }
 
 export function formatReference(ref: Reference, repo?: RepoConfig) {
@@ -91,6 +93,7 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
   let provider;
   let repo;
   let domain;
+  let protocol;
 
   let url: URL;
   try {
@@ -110,6 +113,7 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
       provider in providerToDomain ? providerToDomain[provider] : provider;
   } else if (url) {
     domain = url.hostname;
+    protocol = url.protocol.replace(":", "");
     const paths = url.pathname.split("/");
     repo = paths
       .slice(1)
@@ -126,5 +130,6 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
     provider,
     repo,
     domain,
+    protocol,
   };
 }
