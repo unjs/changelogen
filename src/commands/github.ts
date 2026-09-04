@@ -13,6 +13,7 @@ import {
   parseChangelogMarkdown,
 } from "..";
 import { type ArgsSpec, parseCliArgs } from "../args";
+import { openURL } from "../exec";
 
 const argsSpec = {
   dir: { type: "string" },
@@ -121,8 +122,7 @@ export async function githubRelease(
       consola.error(result.error);
       process.exitCode = 1;
     }
-    const open = await import("open").then((r) => r.default);
-    await open(result.url)
+    await openURL(result.url)
       .then(() => {
         consola.info(`Followup in the browser to manually create the release.`);
       })
