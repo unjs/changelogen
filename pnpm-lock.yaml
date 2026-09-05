@@ -25,7 +25,7 @@ importers:
         version: 4.2.0
     devDependencies:
       '@types/node':
-        specifier: ^26
+        specifier: ^26.4.1
         version: 26.4.1
       '@types/semver':
         specifier: ^7.8.0
@@ -64,7 +64,7 @@ importers:
         specifier: ^9.5.0
         version: 9.5.0
       typescript:
-        specifier: ^6
+        specifier: ^6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.0
