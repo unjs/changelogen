@@ -21,6 +21,34 @@ describe("git", () => {
     );
   });
 
+  test("getGitDiff should support paths filter", async () => {
+    const COMMIT_INITIAL = "4554fc49265ac532b14c89cec15e7d21bb55d48b";
+    const COMMIT_VER002 = "38d7ba15dccc3a44931bf8bf0abaa0d4d96603eb";
+
+    // filtering by the repository root includes all commits
+    expect(
+      (await getGitDiff(COMMIT_INITIAL, COMMIT_VER002, undefined, ".")).length
+    ).toBe(2);
+
+    // filtering by a path no commit ever touched yields no commits
+    expect(
+      (
+        await getGitDiff(COMMIT_INITIAL, COMMIT_VER002, undefined, [
+          "does/not/exist",
+        ])
+      ).length
+    ).toBe(0);
+
+    // filtering only limits, never adds commits
+    const all = await getGitDiff(COMMIT_INITIAL, "HEAD");
+    const filtered = await getGitDiff(COMMIT_INITIAL, "HEAD", undefined, [
+      "src",
+      "test",
+    ]);
+    expect(filtered.length).toBeGreaterThan(0);
+    expect(filtered.length).toBeLessThanOrEqual(all.length);
+  });
+
   test("parse commit with emoji", async () => {
     const rawCommitEmojiList = [
       {

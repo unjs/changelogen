@@ -54,6 +54,7 @@ export default async function defaultMain(rawArgs: string[]) {
   const config = await loadChangelogConfig(cwd, {
     from: args.from,
     to: args.to,
+    paths: args.path,
     output: args.output,
     newVersion: typeof args.r === "string" ? args.r : undefined,
     noAuthors: args.noAuthors,
@@ -71,7 +72,12 @@ export default async function defaultMain(rawArgs: string[]) {
   const logger = consola.create({ stdout: process.stderr });
   logger.info(`Generating changelog for ${config.from || ""}...${config.to}`);
 
-  const rawCommits = await getGitDiff(config.from, config.to, config.cwd);
+  const rawCommits = await getGitDiff(
+    config.from,
+    config.to,
+    config.cwd,
+    config.paths
+  );
 
   // Parse commits as conventional commits
   const commits = parseCommits(rawCommits, config)

@@ -39,6 +39,7 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--from`: Start commit reference. When not provided, **latest git tag** will be used as default.
 - `--to`: End commit reference. When not provided, **latest commit in HEAD** will be used as default.
 - `--dir`: Path to git repository. When not provided, **current working directory** will be used as as default.
+- `--path`: Only consider commits that modified this path, relative to the repository root (example: `--path packages/foo`). Can be repeated to include multiple paths. Useful for monorepos.
 - `--clean`: Determine if the working directory is clean and if it is not clean, exit.
 - `--output`: Changelog file name to create or update. Defaults to `CHANGELOG.md` and resolved relative to dir. Use `--no-output` to write to console only.
 - `--noAuthors`: Skip contributors section in changelog.
