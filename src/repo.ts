@@ -38,9 +38,9 @@ const domainToProvider: Record<string, RepoProvider> = {
   "bitbucket.org": "bitbucket",
 };
 
-// https://regex101.com/r/NA4Io6/1
+// https://regex101.com/r/Cmuakg/1
 const providerURLRegex =
-  /^(?:(?<user>[\w-]+)@)?(?:(?<provider>[^/:]+):)?(?<repo>[\w-]+\/(?:\w|\.(?!git$)|-)+)(?:\.git)?$/;
+  /^(?:(?<user>[\w-]+)@)?(?:(?<provider>[^/:]+):)?(?<repo>[\w-]+\/(?:\/?\w|\.(?!git$)|-)+)(?:\.git)?$/;
 
 function baseUrl(config: RepoConfig) {
   const protocol = config.protocol || "https";
