@@ -70,6 +70,12 @@ export function formatCompareChanges(
   return `[compare changes](${baseUrl(config.repo)}/${part}/${changes})`;
 }
 
+export function formatEmail(email: string, repo: RepoConfig) {
+  return repo.provider === "bitbucket"
+    ? ` [${email}](mailto:${email})`
+    : ` <${email}>`;
+}
+
 export async function resolveRepoConfig(cwd: string) {
   // Try closest package.json
   const pkg = await readPackageJSON(cwd).catch(() => {});
