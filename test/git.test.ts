@@ -1,3 +1,6 @@
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { resolve } from "pathe";
 import { describe, expect, test } from "vitest";
 import {
   generateMarkDown,
@@ -8,6 +11,7 @@ import {
   formatReference,
 } from "../src";
 import { RepoConfig } from "./../src/repo";
+import { execCommand } from "../src/exec";
 
 describe("git", () => {
   test("getGitDiff should work", async () => {
@@ -19,6 +23,42 @@ describe("git", () => {
     expect((await getGitDiff(COMMIT_INITIAL, "HEAD")).length + 1).toBe(
       all.length
     );
+  });
+
+  test("getGitDiff should apply merge filter", async () => {
+    const cwd = await mkdtemp(resolve(tmpdir(), "changelogen-git-"));
+    const git = (cmd: string) => execCommand(`git ${cmd}`, cwd);
+    try {
+      git("init -q -b main");
+      git("config user.name test");
+      git("config user.email test@example.com");
+      git("commit -q --allow-empty -m 'chore: initial commit'");
+      git("checkout -q -b feature");
+      git("commit -q --allow-empty -m 'feat: on feature branch'");
+      git("checkout -q main");
+      git("commit -q --allow-empty -m 'fix: on main'");
+      git("merge -q --no-ff -m 'Merge branch feature' feature");
+
+      const messages = async (onlyMerges?: boolean) =>
+        (await getGitDiff(undefined, "HEAD", cwd, onlyMerges)).map(
+          (c) => c.message
+        );
+
+      expect(await messages(undefined)).toEqual([
+        "Merge branch feature",
+        "fix: on main",
+        "feat: on feature branch",
+        "chore: initial commit",
+      ]);
+      expect(await messages(true)).toEqual(["Merge branch feature"]);
+      expect(await messages(false)).toEqual([
+        "fix: on main",
+        "feat: on feature branch",
+        "chore: initial commit",
+      ]);
+    } finally {
+      await rm(cwd, { recursive: true, force: true });
+    }
   });
 
   test("parse commit with emoji", async () => {

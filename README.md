@@ -44,6 +44,8 @@ npx changelogen@latest [...args] [--dir <dir>]
 - `--noAuthors`: Skip contributors section in changelog.
 - `--bump`: Determine semver change and update version in `package.json`.
 - `--release`. Bumps version in `package.json`, creates a commit and git tags using local `git`, and **creates or updates a GitHub release** for the new version when the repository provider is GitHub. You can disable commit using `--no-commit`, tag using `--no-tag`, and the GitHub release using `--no-github`. You can enable the automatic push of the new tag and release commit to your git repository by adding `--push`.
+- `--onlyMerges`: Use merge commits in changelog.
+- `--noMerges`: Exclude merge commits in changelog.
 - `--publish`. Publishes package as a new version on `npm`. You will need to set authorisation tokens separately via `.npmrc` or environment variables.
 - `--publishTag` Use custom npm tag for publishing (Default is `latest`)
 - `--nameSuffix`: Adds suffix to package name (Example: `--nameSuffix canary` renames `foo` to `foo-canary`)

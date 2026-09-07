@@ -42,6 +42,8 @@ const argsSpec = {
   preminor: { type: "optional" },
   prepatch: { type: "optional" },
   prerelease: { type: "optional" },
+  onlyMerges: { type: "boolean" },
+  noMerges: { type: "boolean" },
 } as const satisfies ArgsSpec;
 
 export default async function defaultMain(rawArgs: string[]) {
@@ -71,7 +73,20 @@ export default async function defaultMain(rawArgs: string[]) {
   const logger = consola.create({ stdout: process.stderr });
   logger.info(`Generating changelog for ${config.from || ""}...${config.to}`);
 
-  const rawCommits = await getGitDiff(config.from, config.to, config.cwd);
+  let onlyMerges: boolean;
+  if (args.onlyMerges) {
+    onlyMerges = true;
+  }
+  if (args.noMerges) {
+    onlyMerges = false;
+  }
+
+  const rawCommits = await getGitDiff(
+    config.from,
+    config.to,
+    config.cwd,
+    onlyMerges
+  );
 
   // Parse commits as conventional commits
   const commits = parseCommits(rawCommits, config)
