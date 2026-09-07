@@ -6,6 +6,7 @@ import {
   parseCommits,
   getRepoConfig,
   formatReference,
+  getLastGitTag,
 } from "../src";
 import { RepoConfig } from "./../src/repo";
 
@@ -19,6 +20,12 @@ describe("git", () => {
     expect((await getGitDiff(COMMIT_INITIAL, "HEAD")).length + 1).toBe(
       all.length
     );
+  });
+
+  test("getLastGitTag should return previous tag", async () => {
+    const lastTag = await getLastGitTag();
+    expect(typeof lastTag).toBe("string");
+    expect(lastTag).toMatch(/^v\d+\.\d+\.\d+/);
   });
 
   test("parse commit with emoji", async () => {
