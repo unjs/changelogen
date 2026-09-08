@@ -72,8 +72,8 @@ export function formatCompareChanges(
 
 export function formatEmail(email: string, repo: RepoConfig) {
   return repo.provider === "bitbucket"
-    ? ` [${email}](mailto:${email})`
-    : ` <${email}>`;
+    ? `[${email}](mailto:${email})`
+    : `<${email}>`;
 }
 
 export async function resolveRepoConfig(cwd: string) {
