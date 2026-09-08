@@ -2,7 +2,7 @@ import { upperFirst } from "scule";
 import { convert } from "convert-gitmoji";
 import type { ResolvedChangelogConfig } from "./config";
 import type { GitCommit, Reference } from "./git";
-import { formatReference, formatCompareChanges } from "./repo";
+import { formatReference, formatCompareChanges, formatEmail } from "./repo";
 
 export async function generateMarkDown(
   commits: GitCommit[],
@@ -96,7 +96,9 @@ export async function generateMarkDown(
           (e) => !e.includes("noreply.github.com")
         );
         const email =
-          config.hideAuthorEmail !== true && _email ? ` <${_email}>` : "";
+          config.hideAuthorEmail !== true && _email
+            ? ` ${formatEmail(_email, config.repo)}`
+            : "";
         const github = i.github
           ? ` ([@${i.github}](https://github.com/${i.github}))`
           : "";

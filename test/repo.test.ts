@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { getRepoConfig } from "../src";
+import { formatEmail, getRepoConfig } from "../src";
 
 describe("repo", () => {
   describe("getRepoConfig", () => {
@@ -120,6 +120,25 @@ describe("repo", () => {
       test("should return empty RepoConfig", () => {
         expect(getRepoConfig()).toEqual({});
       });
+    });
+  });
+
+  describe("formatEmail", () => {
+    test.each([
+      {
+        provider: "bitbucket" as const,
+        output: "[author@example.com](mailto:author@example.com)",
+      },
+      {
+        provider: "github" as const,
+        output: "<author@example.com>",
+      },
+      {
+        provider: "gitlab" as const,
+        output: "<author@example.com>",
+      },
+    ])("formats email for $provider", ({ provider, output }) => {
+      expect(formatEmail("author@example.com", { provider })).toBe(output);
     });
   });
 });
