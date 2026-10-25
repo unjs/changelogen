@@ -56,4 +56,19 @@ describe("markdown", () => {
       }
     `);
   });
+
+  test("should parse multi-digit versions in headings", () => {
+    const contents = [
+      "## v10.2.3",
+      "",
+      "- Fix bug",
+      "",
+      "## v9.12.0 (2026-01-01)",
+      "",
+      "- Add feature",
+    ].join("\n");
+    expect(
+      parseChangelogMarkdown(contents).releases.map((r) => r.version)
+    ).toEqual(["10.2.3", "9.12.0"]);
+  });
 });

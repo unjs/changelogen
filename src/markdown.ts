@@ -188,6 +188,6 @@ function groupBy(items: any[], key: string) {
 }
 
 const CHANGELOG_RELEASE_HEAD_RE =
-  /^#{2,}\s+.*(v?(\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?)).*$/gm;
+  /^#{2,}\s+.*(?<!\d)(v?(\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?)).*$/gm;
 
 const VERSION_RE = /^v?(\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?)$/;
