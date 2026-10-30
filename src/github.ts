@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { existsSync, promises as fsp } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "pathe";
@@ -115,7 +116,27 @@ export function githubNewReleaseURL(
   }&title=v${release.version}&body=${encodeURIComponent(release.body)}`;
 }
 
-export async function resolveGithubToken(config: ResolvedChangelogConfig) {
+export type ResolveGithubTokenOptions = {
+  /**
+   * Override for resolving a token via the GitHub CLI.
+   * Used in tests; production uses `gh auth token`.
+   */
+  getGhCliToken?: (hostname: string) => string | undefined;
+};
+
+/**
+ * Resolve a GitHub token from env, `~/.config/gh/hosts.yml`, or `gh auth token`.
+ *
+ * Modern `gh auth login` often stores the token in the OS keyring, so
+ * `hosts.yml` has no `oauth_token`. In that case we shell out to
+ * `gh auth token`, matching the README claim that an authenticated `gh`
+ * CLI is enough. Failures soft-fall through so callers can open a manual
+ * browser release URL.
+ */
+export async function resolveGithubToken(
+  config: ResolvedChangelogConfig,
+  options: ResolveGithubTokenOptions = {}
+) {
   const env =
     process.env.CHANGELOGEN_TOKENS_GITHUB ||
     process.env.GITHUB_TOKEN ||
@@ -129,11 +150,35 @@ export async function resolveGithubToken(config: ResolvedChangelogConfig) {
   if (existsSync(ghCLIPath)) {
     const yamlContents = await fsp.readFile(ghCLIPath, "utf8");
     const { parseYAML } = await import("confbox/yaml");
-    const ghCLIConfig = parseYAML(yamlContents);
-    if (ghCLIConfig && ghCLIConfig[config.repo.domain]) {
-      return ghCLIConfig["github.com"].oauth_token;
+    const ghCLIConfig = parseYAML(yamlContents) as
+      Record<string, { oauth_token?: string }> | undefined;
+    const hostToken = ghCLIConfig?.[config.repo.domain]?.oauth_token;
+    if (hostToken) {
+      return hostToken;
     }
   }
+
+  const getGhCliToken = options.getGhCliToken || getTokenFromGhCli;
+  try {
+    return getGhCliToken(config.repo.domain || "github.com");
+  } catch {
+    return undefined;
+  }
+}
+
+function getTokenFromGhCli(hostname: string): string | undefined {
+  const stdout = execFileSync(
+    "gh",
+    ["auth", "token", "-h", hostname || "github.com"],
+    {
+      encoding: "utf8",
+      // Keep failures quiet; callers soft-fail to manual browser release.
+      stdio: ["ignore", "pipe", "ignore"],
+      timeout: 10_000,
+    }
+  );
+  const token = stdout.trim();
+  return token || undefined;
 }
 
 // --- Internal utils ---
