@@ -3,7 +3,8 @@ import { parseArgs } from "node:util";
 export type ArgSpec = {
   /**
    * - `string`: always expects a value (`--from v1.0.0`)
-   * - `boolean`: never consumes a value (`--bump`, `--no-bump`)
+   * - `boolean`: flag (`--bump`, `--no-bump`); also accepts an explicit
+   *   `true`/`false` token (`--bump false`) so space form matches `=false`
    * - `optional`: `true` when used as a flag, otherwise the given value
    */
   type: "string" | "boolean" | "optional";
@@ -63,9 +64,20 @@ function _normalize(rawArgs: string[], spec: ArgsSpec): string[] {
           args.push(`--${name}=false`);
           continue;
         }
-        // Optional args only consume the next token when it looks like a value
         const next = rawArgs[i + 1];
-        if (type === "boolean" || !next || next.startsWith("-")) {
+        // Boolean flags are usually bare, but also accept an explicit true/false
+        // token so `--github false` matches `--github=false` / `--no-github` (#196).
+        if (type === "boolean") {
+          if (next === "true" || next === "false") {
+            args.push(`--${name}=${next}`);
+            i++;
+            continue;
+          }
+          args.push(`--${name}=true`);
+          continue;
+        }
+        // Optional args only consume the next token when it looks like a value
+        if (!next || next.startsWith("-")) {
           args.push(`--${name}=true`);
           continue;
         }
