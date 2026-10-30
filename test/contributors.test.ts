@@ -108,4 +108,135 @@ describe("contributors", () => {
       - Bob Williams"
     `);
   });
+
+  test("should dedupe authors that share an email under different names", async () => {
+    const config = await loadChangelogConfig(process.cwd(), {
+      from: "1.0.0",
+      newVersion: "2.0.0",
+    });
+    const commits = [
+      {
+        author: {
+          name: "Colin Ozanne",
+          email: "git@finxol.io",
+        },
+        message: "feat: first",
+        shortHash: "aaaa",
+        body: "",
+        type: "feat",
+        description: "first",
+        scope: "",
+        references: [],
+        authors: [],
+        isBreaking: false,
+      },
+      {
+        author: {
+          name: "Finxol",
+          email: "git@finxol.io",
+        },
+        message: "fix: second",
+        shortHash: "bbbb",
+        body: "",
+        type: "fix",
+        description: "second",
+        scope: "",
+        references: [],
+        authors: [],
+        isBreaking: false,
+      },
+      {
+        author: {
+          name: "Other Person",
+          email: "other@example.com",
+        },
+        message: "chore: third",
+        shortHash: "cccc",
+        body: "",
+        type: "chore",
+        description: "third",
+        scope: "",
+        references: [],
+        authors: [],
+        isBreaking: false,
+      },
+    ];
+    const contents = await generateMarkDown(commits as any, config);
+
+    // Last name for the shared email wins; only one contributor line for it.
+    expect(contents).toContain("Finxol");
+    expect(contents).not.toContain("Colin Ozanne");
+    expect(contents).toContain("Other Person");
+    const contributorLines = contents
+      .split("\n")
+      .filter(
+        (l) =>
+          l.startsWith("- ") &&
+          (l.includes("Finxol") || l.includes("finxol") || l.includes("Colin"))
+      );
+    expect(contributorLines).toHaveLength(1);
+    expect(contributorLines[0]).toContain("Finxol");
+  });
+
+  test("should keep unrelated emails on the previous display name when one email moves", async () => {
+    const config = await loadChangelogConfig(process.cwd(), {
+      from: "1.0.0",
+      newVersion: "2.0.0",
+    });
+    const commits = [
+      {
+        author: {
+          name: "Alex",
+          email: "alex@example.com",
+        },
+        message: "feat: first",
+        shortHash: "aaaa",
+        body: "",
+        type: "feat",
+        description: "first",
+        scope: "",
+        references: [],
+        authors: [],
+        isBreaking: false,
+      },
+      {
+        author: {
+          name: "Alex",
+          email: "alex.other@example.com",
+        },
+        message: "feat: second",
+        shortHash: "bbbb",
+        body: "",
+        type: "feat",
+        description: "second",
+        scope: "",
+        references: [],
+        authors: [],
+        isBreaking: false,
+      },
+      {
+        author: {
+          name: "Sam",
+          email: "alex@example.com",
+        },
+        message: "fix: third",
+        shortHash: "cccc",
+        body: "",
+        type: "fix",
+        description: "third",
+        scope: "",
+        references: [],
+        authors: [],
+        isBreaking: false,
+      },
+    ];
+    const contents = await generateMarkDown(commits as any, config);
+
+    expect(contents).toContain("Sam");
+    expect(contents).toContain("Alex");
+    // Shared email moved to Sam; Alex's other email must remain under Alex.
+    const lines = contents.split("\n").filter((l) => l.startsWith("- "));
+    expect(lines.some((l) => l.includes("Sam"))).toBe(true);
+    expect(lines.some((l) => l.includes("Alex"))).toBe(true);
+  });
 });

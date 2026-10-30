@@ -43,7 +43,11 @@ export async function generateMarkDown(
     markdown.push("", "#### ⚠️ Breaking Changes", "", ...breakingChanges);
   }
 
+  // Keyed by display name. Same email under different names is collapsed
+  // (last seen name wins) so local git name vs GitHub display name do not
+  // produce duplicate contributor lines. See #262.
   const _authors = new Map<string, { email: Set<string>; github?: string }>();
+  const emailToName = new Map<string, string>();
   for (const commit of commits) {
     if (!commit.author) {
       continue;
@@ -60,11 +64,58 @@ export async function generateMarkDown(
     ) {
       continue;
     }
+    const rawEmail = commit.author.email;
+    const emailKey = rawEmail?.trim().toLowerCase();
+
+    if (emailKey && emailToName.has(emailKey)) {
+      const prevName = emailToName.get(emailKey)!;
+      if (prevName !== name) {
+        // Move only this email to the new display name. Other emails that
+        // shared prevName (different people who happened to share a label)
+        // must stay on prevName
+        const prev = _authors.get(prevName)!;
+        for (const e of prev.email) {
+          if (e?.trim().toLowerCase() === emailKey) {
+            prev.email.delete(e);
+          }
+        }
+        const emptied = prev.email.size === 0;
+        if (emptied) {
+          _authors.delete(prevName);
+        }
+        if (_authors.has(name)) {
+          if (rawEmail) {
+            _authors.get(name)!.email.add(rawEmail);
+          }
+          // Only inherit github when the previous name is fully gone.
+          if (emptied && prev.github && !_authors.get(name)!.github) {
+            _authors.get(name)!.github = prev.github;
+          }
+        } else {
+          _authors.set(name, {
+            email: new Set(rawEmail ? [rawEmail] : []),
+            ...(emptied && prev.github ? { github: prev.github } : {}),
+          });
+        }
+        emailToName.set(emailKey, name);
+      } else if (rawEmail) {
+        _authors.get(name)!.email.add(rawEmail);
+      }
+      continue;
+    }
+
     if (_authors.has(name)) {
-      const entry = _authors.get(name);
-      entry.email.add(commit.author.email);
+      const entry = _authors.get(name)!;
+      if (rawEmail) {
+        entry.email.add(rawEmail);
+      }
     } else {
-      _authors.set(name, { email: new Set([commit.author.email]) });
+      _authors.set(name, {
+        email: new Set(rawEmail ? [rawEmail] : []),
+      });
+    }
+    if (emailKey) {
+      emailToName.set(emailKey, name);
     }
   }
 
