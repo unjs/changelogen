@@ -70,24 +70,35 @@ export async function generateMarkDown(
     if (emailKey && emailToName.has(emailKey)) {
       const prevName = emailToName.get(emailKey)!;
       if (prevName !== name) {
-        const entry = _authors.get(prevName)!;
-        _authors.delete(prevName);
+        // Move only this email to the new display name. Other emails that
+        // shared prevName (different people who happened to share a label)
+        // must stay on prevName
+        const prev = _authors.get(prevName)!;
+        for (const e of prev.email) {
+          if (e?.trim().toLowerCase() === emailKey) {
+            prev.email.delete(e);
+          }
+        }
+        const emptied = prev.email.size === 0;
+        if (emptied) {
+          _authors.delete(prevName);
+        }
         if (_authors.has(name)) {
-          const dest = _authors.get(name)!;
-          for (const e of entry.email) {
-            dest.email.add(e);
+          if (rawEmail) {
+            _authors.get(name)!.email.add(rawEmail);
+          }
+          // Only inherit github when the previous name is fully gone.
+          if (emptied && prev.github && !_authors.get(name)!.github) {
+            _authors.get(name)!.github = prev.github;
           }
         } else {
-          _authors.set(name, entry);
+          _authors.set(name, {
+            email: new Set(rawEmail ? [rawEmail] : []),
+            ...(emptied && prev.github ? { github: prev.github } : {}),
+          });
         }
-        for (const e of entry.email) {
-          const k = e?.trim().toLowerCase();
-          if (k) {
-            emailToName.set(k, name);
-          }
-        }
-      }
-      if (rawEmail) {
+        emailToName.set(emailKey, name);
+      } else if (rawEmail) {
         _authors.get(name)!.email.add(rawEmail);
       }
       continue;
