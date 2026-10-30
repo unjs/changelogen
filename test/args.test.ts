@@ -6,6 +6,7 @@ const spec = {
   r: { type: "string", short: "r" },
   bump: { type: "boolean" },
   commit: { type: "boolean" },
+  github: { type: "boolean" },
   output: { type: "optional" },
   canary: { type: "optional" },
 } as const satisfies ArgsSpec;
@@ -15,6 +16,14 @@ describe("parseCliArgs", () => {
     { args: [], expected: { _: [] } },
     { args: ["--bump"], expected: { _: [], bump: true } },
     { args: ["--bump=false"], expected: { _: [], bump: false } },
+    { args: ["--bump", "false"], expected: { _: [], bump: false } },
+    { args: ["--bump", "true"], expected: { _: [], bump: true } },
+    { args: ["--github", "false"], expected: { _: [], github: false } },
+    { args: ["--github", "true"], expected: { _: [], github: true } },
+    {
+      args: ["--github", "false", "--bump"],
+      expected: { _: [], github: false, bump: true },
+    },
     { args: ["--no-commit"], expected: { _: [], commit: false } },
     { args: ["--dir", "."], expected: { _: [], dir: "." } },
     { args: ["--dir=."], expected: { _: [], dir: "." } },
