@@ -43,7 +43,11 @@ export async function generateMarkDown(
     markdown.push("", "#### ⚠️ Breaking Changes", "", ...breakingChanges);
   }
 
+  // Keyed by display name. Same email under different names is collapsed
+  // (last seen name wins) so local git name vs GitHub display name do not
+  // produce duplicate contributor lines. See #262.
   const _authors = new Map<string, { email: Set<string>; github?: string }>();
+  const emailToName = new Map<string, string>();
   for (const commit of commits) {
     if (!commit.author) {
       continue;
@@ -60,11 +64,47 @@ export async function generateMarkDown(
     ) {
       continue;
     }
+    const rawEmail = commit.author.email;
+    const emailKey = rawEmail?.trim().toLowerCase();
+
+    if (emailKey && emailToName.has(emailKey)) {
+      const prevName = emailToName.get(emailKey)!;
+      if (prevName !== name) {
+        const entry = _authors.get(prevName)!;
+        _authors.delete(prevName);
+        if (_authors.has(name)) {
+          const dest = _authors.get(name)!;
+          for (const e of entry.email) {
+            dest.email.add(e);
+          }
+        } else {
+          _authors.set(name, entry);
+        }
+        for (const e of entry.email) {
+          const k = e?.trim().toLowerCase();
+          if (k) {
+            emailToName.set(k, name);
+          }
+        }
+      }
+      if (rawEmail) {
+        _authors.get(name)!.email.add(rawEmail);
+      }
+      continue;
+    }
+
     if (_authors.has(name)) {
-      const entry = _authors.get(name);
-      entry.email.add(commit.author.email);
+      const entry = _authors.get(name)!;
+      if (rawEmail) {
+        entry.email.add(rawEmail);
+      }
     } else {
-      _authors.set(name, { email: new Set([commit.author.email]) });
+      _authors.set(name, {
+        email: new Set(rawEmail ? [rawEmail] : []),
+      });
+    }
+    if (emailKey) {
+      emailToName.set(emailKey, name);
     }
   }
 

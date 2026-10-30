@@ -108,4 +108,73 @@ describe("contributors", () => {
       - Bob Williams"
     `);
   });
+
+  test("should dedupe authors that share an email under different names", async () => {
+    const config = await loadChangelogConfig(process.cwd(), {
+      from: "1.0.0",
+      newVersion: "2.0.0",
+    });
+    const commits = [
+      {
+        author: {
+          name: "Colin Ozanne",
+          email: "git@finxol.io",
+        },
+        message: "feat: first",
+        shortHash: "aaaa",
+        body: "",
+        type: "feat",
+        description: "first",
+        scope: "",
+        references: [],
+        authors: [],
+        isBreaking: false,
+      },
+      {
+        author: {
+          name: "Finxol",
+          email: "git@finxol.io",
+        },
+        message: "fix: second",
+        shortHash: "bbbb",
+        body: "",
+        type: "fix",
+        description: "second",
+        scope: "",
+        references: [],
+        authors: [],
+        isBreaking: false,
+      },
+      {
+        author: {
+          name: "Other Person",
+          email: "other@example.com",
+        },
+        message: "chore: third",
+        shortHash: "cccc",
+        body: "",
+        type: "chore",
+        description: "third",
+        scope: "",
+        references: [],
+        authors: [],
+        isBreaking: false,
+      },
+    ];
+    const contents = await generateMarkDown(commits as any, config);
+
+    // Last name for the shared email wins; only one contributor line for it.
+    expect(contents).toContain("Finxol");
+    expect(contents).not.toContain("Colin Ozanne");
+    expect(contents).toContain("Other Person");
+    const contributorLines = contents
+      .split("\n")
+      .filter(
+        (l) =>
+          l.startsWith("- ") &&
+          (l.includes("Finxol") || l.includes("finxol") || l.includes("Colin"))
+      );
+    expect(contributorLines).toHaveLength(1);
+    expect(contributorLines[0]).toContain("Finxol");
+  });
 });
