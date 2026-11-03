@@ -1,3 +1,7 @@
+import { execSync } from "node:child_process";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { describe, expect, test } from "vitest";
 import {
   generateMarkDown,
@@ -19,6 +23,28 @@ describe("git", () => {
     expect((await getGitDiff(COMMIT_INITIAL, "HEAD")).length + 1).toBe(
       all.length
     );
+  });
+
+  test("getGitDiff should handle `|` in commit messages", async () => {
+    const cwd = mkdtempSync(join(tmpdir(), "changelogen-"));
+    try {
+      const git = (args: string) =>
+        execSync(`git ${args}`, { cwd, stdio: "ignore" });
+      git("init");
+      git(
+        `-c user.name="Test User" -c user.email=test@example.com commit --allow-empty -m "feat: support a | b"`
+      );
+
+      const [commit] = await getGitDiff(undefined, "HEAD", cwd);
+      expect(commit.message).toBe("feat: support a | b");
+      expect(commit.shortHash).toMatch(/^[\da-f]{7,}$/);
+      expect(commit.author).toEqual({
+        name: "Test User",
+        email: "test@example.com",
+      });
+    } finally {
+      rmSync(cwd, { recursive: true, force: true });
+    }
   });
 
   test("parse commit with emoji", async () => {
