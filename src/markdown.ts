@@ -105,7 +105,7 @@ export async function generateMarkDown(
     );
   }
 
-  return convert(markdown.join("\n").trim(), true);
+  return convert(markdown.join("\n").trim());
 }
 
 export function parseChangelogMarkdown(contents: string) {

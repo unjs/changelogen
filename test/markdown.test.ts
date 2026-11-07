@@ -1,8 +1,39 @@
 import { promises as fsp } from "node:fs";
 import { describe, expect, test } from "vitest";
-import { parseChangelogMarkdown } from "../src";
+import {
+  loadChangelogConfig,
+  generateMarkDown,
+  parseChangelogMarkdown,
+} from "../src";
+import type { GitCommit } from "../src/git";
 
 describe("markdown", () => {
+  test("should not add an extra space after a gitmoji code in a description (#122)", async () => {
+    const config = await loadChangelogConfig(process.cwd(), {
+      from: "1.0.0",
+      newVersion: "2.0.0",
+      noAuthors: true,
+    });
+    const commits = [
+      {
+        author: { name: "John Doe", email: "john@doe.com" },
+        message: "feat: add :sparkles: feature",
+        shortHash: "1234",
+        body: "",
+        type: "feat",
+        description: "add :sparkles: feature",
+        scope: "",
+        references: [],
+        authors: [],
+        isBreaking: false,
+      } as GitCommit,
+    ];
+    const contents = await generateMarkDown(commits, config);
+    // The gitmoji code is replaced by the emoji; the space that followed
+    // the code in the description must stay a single space.
+    expect(contents).toContain("- Add ✨ feature");
+    expect(contents).not.toContain("✨  ");
+  });
   test("should parse markdown", async () => {
     const contents = await fsp.readFile(
       new URL("fixtures/CHANGELOG.md", import.meta.url),
