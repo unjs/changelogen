@@ -496,12 +496,13 @@ describe("git", () => {
     };
     expect(getRepoConfig("unjs/changelogen")).toStrictEqual(github);
     expect(getRepoConfig("github:unjs/changelogen")).toStrictEqual(github);
-    expect(getRepoConfig("https://github.com/unjs/changelogen")).toStrictEqual(
-      github
-    );
+    expect(getRepoConfig("https://github.com/unjs/changelogen")).toStrictEqual({
+      ...github,
+      protocol: "https",
+    });
     expect(
       getRepoConfig("https://github.com/unjs/changelogen.git")
-    ).toStrictEqual(github);
+    ).toStrictEqual({ ...github, protocol: "https" });
     expect(getRepoConfig("git@github.com:unjs/changelogen.git")).toStrictEqual(
       github
     );
@@ -513,12 +514,13 @@ describe("git", () => {
     };
 
     expect(getRepoConfig("gitlab:unjs/changelogen")).toStrictEqual(gitlab);
-    expect(getRepoConfig("https://gitlab.com/unjs/changelogen")).toStrictEqual(
-      gitlab
-    );
+    expect(getRepoConfig("https://gitlab.com/unjs/changelogen")).toStrictEqual({
+      ...gitlab,
+      protocol: "https",
+    });
     expect(
       getRepoConfig("https://gitlab.com/unjs/changelogen.git")
-    ).toStrictEqual(gitlab);
+    ).toStrictEqual({ ...gitlab, protocol: "https" });
     expect(getRepoConfig("git@gitlab.com:unjs/changelogen.git")).toStrictEqual(
       gitlab
     );
@@ -534,13 +536,13 @@ describe("git", () => {
     );
     expect(
       getRepoConfig("https://bitbucket.org/unjs/changelogen")
-    ).toStrictEqual(bitbucket);
+    ).toStrictEqual({ ...bitbucket, protocol: "https" });
     expect(
       getRepoConfig("https://bitbucket.org/unjs/changelogen.git")
-    ).toStrictEqual(bitbucket);
+    ).toStrictEqual({ ...bitbucket, protocol: "https" });
     expect(
       getRepoConfig("https://donaldsh@bitbucket.org/unjs/changelogen.git")
-    ).toStrictEqual(bitbucket);
+    ).toStrictEqual({ ...bitbucket, protocol: "https" });
     expect(
       getRepoConfig("git@bitbucket.org:unjs/changelogen.git")
     ).toStrictEqual(bitbucket);

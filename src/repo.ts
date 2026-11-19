@@ -130,6 +130,6 @@ export function getRepoConfig(repoUrl = ""): RepoConfig {
     provider,
     repo,
     domain,
-    protocol,
+    ...(protocol && { protocol }),
   };
 }
